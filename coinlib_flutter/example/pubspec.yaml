@@ -10,7 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  coinlib_flutter: ^1.1.0
+  coinlib_flutter:
+    git:
+      url: https://github.com/cypherstack/coinlib.git
+      path: coinlib_flutter
+      ref: main
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
