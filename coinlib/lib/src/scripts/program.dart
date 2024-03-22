@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'programs/p2pkh.dart';
 import 'programs/p2sh.dart';
+import 'programs/p2tr.dart';
 import 'programs/p2wpkh.dart';
 import 'programs/p2wsh.dart';
 import 'programs/p2witness.dart';
@@ -19,8 +20,8 @@ abstract class Program {
 
   /// Takes a [script] and constructs a matching Program subclass if one exists,
   /// or a basic [RawProgram] if there is no match. The script should use
-  /// minimal pushes. [decompile] can be used directly on compiled scripts or
-  /// [fromAsm] can be used to match directly against ASM.
+  /// minimal pushes. [Program.decompile] can be used directly on compiled
+  /// scripts or [Program.fromAsm] can be used to match directly against ASM.
   factory Program.match(Script script) {
 
     try {
@@ -29,6 +30,10 @@ abstract class Program {
 
     try {
       return P2SH.fromScript(script);
+    } on NoProgramMatch catch(_) {}
+
+    try {
+      return P2TR.fromScript(script);
     } on NoProgramMatch catch(_) {}
 
     try {

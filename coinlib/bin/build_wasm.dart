@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'docker_util.dart';
 import 'util.dart';
@@ -6,7 +7,7 @@ import 'util.dart';
 /// file with the wasm as a Uint8List static variable
 
 String dockerfile = r"""
-FROM debian:bullseye
+FROM debian:bookworm
 
 # Install dependenices
 RUN apt-get update -y \
@@ -23,10 +24,10 @@ RUN wget -nv https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-
 RUN tar xvf $WASI_ARCHIVE
 RUN rm $WASI_ARCHIVE
 
-# Clone libsecp256k1 and use v0.3.1
+# Clone libsecp256k1 and use v0.4.1
 RUN git clone https://github.com/bitcoin-core/secp256k1 \
   && cd secp256k1 \
-  && git checkout 346a053d4c442e08191f075c3932d03140579d47
+  && git checkout 1ad5185cd42c0636104129fcc9f6a4bf9c67cc40
 WORKDIR /secp256k1
 
 # Build using wasi-sdk
@@ -65,6 +66,11 @@ RUN ${WASI_SDK_PATH}/bin/wasm-ld \
   --export secp256k1_ecdsa_recover \
   --export secp256k1_ec_seckey_tweak_add \
   --export secp256k1_ec_pubkey_tweak_add \
+  --export secp256k1_ec_seckey_negate \
+  --export secp256k1_keypair_create \
+  --export secp256k1_xonly_pubkey_parse \
+  --export secp256k1_schnorrsig_sign32 \
+  --export secp256k1_schnorrsig_verify \
   # The secp256k1 library object files
   src/libsecp256k1_la-secp256k1.o \
   src/libsecp256k1_precomputed_la-precomputed_ecmult.o \
@@ -78,10 +84,10 @@ RUN ${WASI_SDK_PATH}/bin/wasm-ld \
 
 void binaryFileToDart(String inPath, String outPath, String name) {
   final bytes = File(inPath).readAsBytesSync();
-  final hexList = bytes.map((b) => "0x${b.toRadixString(16)}").join(",");
+  final b64 = base64Encode(bytes);
   final output = """\
-import 'dart:typed_data';
-final $name = Uint8List.fromList([$hexList]);""";
+import 'dart:convert';
+final $name = base64Decode("$b64");""";
   File(outPath).writeAsStringSync(output, flush: true);
 }
 
@@ -100,7 +106,7 @@ void main() async {
       dockerfile,
       "coinlib_build_secp256k1_wasm",
       tmpDir,
-      "cp /secp256k1/output/secp256k1.wasm /host/secp256k1.wasm",
+      "cp output/secp256k1.wasm /host/secp256k1.wasm",
   )) {
     exit(1);
   }
@@ -108,7 +114,7 @@ void main() async {
   // Convert secp256k1.wasm file into Uint8List in dart file
   binaryFileToDart(
     "$tmpDir/secp256k1.wasm",
-    "${Directory.current.path}/lib/src/generated/secp256k1.wasm.g.dart",
+    "${Directory.current.path}/lib/src/secp256k1/secp256k1.wasm.g.dart",
     "secp256k1WasmData",
   );
   print("Output secp256k1.wasm.g.dart successfully");

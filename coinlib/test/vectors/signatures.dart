@@ -1,4 +1,3 @@
-
 final validSignatures = [
   "a951b0cf98bd51c614c802a65a418fa42482dc5c45c9394e39c0d98773c51cd530104fdc36d91582b5757e1de73d982e803cc14d75e82c65daf924e38d27d834",
   "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -30,6 +29,8 @@ final invalidDerSigs = [
   "3005020100020100",
 ];
 
+final validSchnorrSig = "e907831f80848d1069a5371b402410364bdf1c5f8307b0084c55f1ce2dca821525f66a4a85ea8b71e482a74f382d2ce5ebeee8fdb2172f477df4900d310536c0";
+
 class RecSigVector {
   final String compact;
   final bool compressed;
@@ -41,7 +42,7 @@ class RecSigVector {
     required this.recid,
     required this.pubkey,
   });
-  get signature => compact.substring(2);
+  String get signature => compact.substring(2);
 }
 
 final validRecoverableSigs = [

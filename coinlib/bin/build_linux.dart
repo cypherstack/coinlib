@@ -4,7 +4,7 @@ import 'docker_util.dart';
 /// Build the linux shared library for secp256k1 using the Dockerfile string
 
 String dockerfile = r"""
-FROM debian:bullseye
+FROM debian:bookworm
 
 # Install dependenices
 RUN apt-get update -y \
@@ -14,10 +14,10 @@ RUN apt-get update -y \
 # Could use secp256k1 already in code-base but this makes the dockerfile more
 # independent and avoids complexity of copying everything into the correct
 # context. It's not a large library to download.
-# Use 0.3.1 release
+# Use 0.4.1 release
 RUN git clone https://github.com/bitcoin-core/secp256k1 \
   && cd secp256k1 \
-  && git checkout 346a053d4c442e08191f075c3932d03140579d47
+  && git checkout 1ad5185cd42c0636104129fcc9f6a4bf9c67cc40
 
 WORKDIR /secp256k1
 
@@ -34,7 +34,7 @@ RUN make
 # maintained.
 RUN make install
 RUN mkdir output
-RUN cp /usr/local/lib/libsecp256k1.so.2.0.1 output/libsecp256k1.so
+RUN cp /usr/local/lib/libsecp256k1.so.2.1.1 output/libsecp256k1.so
 """;
 
 void main() async {
@@ -47,7 +47,7 @@ void main() async {
       cmd,
       dockerfile,
       "coinlib_build_secp256k1_linux",
-      "/secp256k1/output/libsecp256k1.so",
+      "output/libsecp256k1.so",
   )) {
     exit(1);
   }

@@ -22,7 +22,8 @@ void main() async {
   Directory.current = Directory("$tmpDir/secp256k1");
   await execWithStdio(
     "git",
-    ["checkout", "346a053d4c442e08191f075c3932d03140579d47"],
+    // Use version 0.4.1
+    ["checkout", "1ad5185cd42c0636104129fcc9f6a4bf9c67cc40"],
   );
 
   // Build in tmpDir/secp256k1/lib.
@@ -41,4 +42,7 @@ void main() async {
   // Copy the DLL to build/libsecp256k1.dll.
   Directory("$workDir/build").createSync();
   File("src/libsecp256k1.dll").copySync("$workDir/build/secp256k1.dll");
+
+  print("Output libsecp256k1.dll successfully");
+
 }

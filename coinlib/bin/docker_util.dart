@@ -9,7 +9,7 @@ Future<String> getDockerCmd() async {
   } else if (await cmdAvailable("docker")) {
     return "docker";
   } else {
-    print("Could not find podman or docker to use for wasm build");
+    print("Could not find podman or docker to use for build");
     exit(1);
   }
 
@@ -37,7 +37,10 @@ Future<bool> dockerRun(
   // Run
   print("Running $containerCmd");
   exitCode = await execWithStdio(
-    dockerCmd, ["run", "--volume", "$bindDir:/host", tag, "bash", "-c", containerCmd],
+    dockerCmd, [
+      "run", "--rm", "--volume", "$bindDir:/host:Z", tag, "bash", "-c",
+      containerCmd,
+    ],
   );
 
   if (exitCode != 0) {

@@ -1,8 +1,8 @@
 import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
-final privPrefix = NetworkParams.mainnet.privHDPrefix;
-final pubPrefix = NetworkParams.mainnet.pubHDPrefix;
+final privPrefix = Network.mainnet.privHDPrefix;
+final pubPrefix = Network.mainnet.pubHDPrefix;
 
 class HDVector {
   final String? seedHex;
@@ -29,7 +29,7 @@ class HDVector {
     required this.hardened,
   });
 
-  expectHDKey(HDKey key) {
+  void expectHDKey(HDKey key) {
 
     late HDPublicKey pubKey;
     if (key is HDPrivateKey) {
@@ -51,7 +51,7 @@ class HDVector {
   }
 
   // Adds a static check to the key type
-  expectHDPrivateKey(HDPrivateKey key) => expectHDKey(key);
+  void expectHDPrivateKey(HDPrivateKey key) => expectHDKey(key);
 
 }
 

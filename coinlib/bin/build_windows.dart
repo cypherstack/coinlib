@@ -7,6 +7,7 @@ import 'util.dart';
 /// Runnable in "Developer Command Prompt for VS 2022".
 
 void main() async {
+
   // Make temporary directory.
   final workDir = Directory.current.path;
   final tmpDir = createTmpDir();
@@ -19,7 +20,8 @@ void main() async {
   Directory.current = Directory("$tmpDir/secp256k1");
   await execWithStdio(
     "git",
-    ["checkout", "346a053d4c442e08191f075c3932d03140579d47"],
+    // Use version 0.4.1
+    ["checkout", "1ad5185cd42c0636104129fcc9f6a4bf9c67cc40"],
   );
 
   // Build in tmpDir/secp256k1/build.
@@ -42,10 +44,14 @@ void main() async {
     "--build",
     "build",
     "--config",
-    "RelWithDebInfo"
+    "RelWithDebInfo",
   ]);
 
   // Copy the DLL to build/windows/x64/secp256k1.dll.
   Directory("$workDir/build").createSync();
-  File("$tmpDir/secp256k1/build/src/RelWithDebInfo/secp256k1.dll").copySync("$workDir/build/secp256k1.dll");
+  File("$tmpDir/secp256k1/build/src/RelWithDebInfo/secp256k1.dll")
+    .copySync("$workDir/build/secp256k1.dll");
+
+  print("Output libsecp256k1.dll successfully");
+
 }

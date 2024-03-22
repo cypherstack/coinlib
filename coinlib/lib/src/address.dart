@@ -3,16 +3,18 @@ import 'package:coinlib/src/common/bytes.dart';
 import 'package:coinlib/src/common/hex.dart';
 import 'package:coinlib/src/crypto/ec_public_key.dart';
 import 'package:coinlib/src/crypto/hash.dart';
-import 'package:coinlib/src/network_params.dart';
+import 'package:coinlib/src/network.dart';
 import 'package:coinlib/src/encode/base58.dart';
 import 'package:coinlib/src/encode/bech32.dart';
 import 'package:coinlib/src/scripts/program.dart';
 import 'package:coinlib/src/scripts/programs/p2pkh.dart';
 import 'package:coinlib/src/scripts/programs/p2sh.dart';
+import 'package:coinlib/src/scripts/programs/p2tr.dart';
 import 'package:coinlib/src/scripts/programs/p2witness.dart';
 import 'package:coinlib/src/scripts/programs/p2wpkh.dart';
 import 'package:coinlib/src/scripts/programs/p2wsh.dart';
 import 'package:coinlib/src/scripts/script.dart';
+import 'package:coinlib/src/taproot.dart';
 
 class InvalidAddress implements Exception {}
 class InvalidAddressNetwork implements Exception {}
@@ -25,7 +27,7 @@ abstract class Address {
   /// the type of address. Throws [InvalidAddress], [InvalidAddressNetwork],
   /// [InvalidBech32Checksum] or [InvalidBase58Checksum] if there is an error
   /// with the address. The address must match the [network] provided.
-  factory Address.fromString(String encoded, NetworkParams network) {
+  factory Address.fromString(String encoded, Network network) {
     // Try base58
     try {
       return Base58Address.fromString(encoded, network);
@@ -66,7 +68,7 @@ abstract class Base58Address implements Address {
     }
   }
 
-  factory Base58Address.fromString(String encoded, NetworkParams network) {
+  factory Base58Address.fromString(String encoded, Network network) {
 
     final data = base58Decode(encoded);
     if (data.length != 21) throw InvalidAddress();
@@ -119,7 +121,7 @@ class P2SHAddress extends Base58Address {
     : super._(copyCheckBytes(hash, 20), version);
 
   /// Constructs a P2SH address for a redeemScript
-  P2SHAddress.fromScript(Script script, { required int version })
+  P2SHAddress.fromRedeemScript(Script script, { required int version })
     : super._(hash160(script.compiled), version);
 
   @override
@@ -170,7 +172,7 @@ abstract class Bech32Address implements Address {
 
   }
 
-  factory Bech32Address.fromString(String encoded, NetworkParams network) {
+  factory Bech32Address.fromString(String encoded, Network network) {
 
     final bech32 = Bech32.decode(encoded);
 
@@ -203,8 +205,15 @@ abstract class Bech32Address implements Address {
       } else {
         throw InvalidAddress();
       }
+    } else if (version == 1) {
+      // Version 1 is Taproot
+      if (bytes.length == 32) {
+        addr = P2TRAddress.fromTweakedKeyX(bytes, hrp: bech32.hrp);
+      } else {
+        throw InvalidAddress();
+      }
     } else if (version <= 16) {
-      // Treat other versions as unknown. Will add version 1 taproot later
+      // Treat other versions as unknown.
       if (bytes.length < 2 || bytes.length > maxWitnessProgramLength) {
         throw InvalidAddress();
       }
@@ -254,7 +263,7 @@ class P2WSHAddress extends Bech32Address {
     : super._(0, copyCheckBytes(hash, 32), hrp);
 
   /// Constructs a P2WSH address for a witnessScript
-  P2WSHAddress.fromScript(Script script, { required String hrp })
+  P2WSHAddress.fromWitnessScript(Script script, { required String hrp })
     : super._(0, sha256Hash(script.compiled), hrp);
 
   @override
@@ -262,9 +271,24 @@ class P2WSHAddress extends Bech32Address {
 
 }
 
+class P2TRAddress extends Bech32Address {
+
+  P2TRAddress.fromTweakedKeyX(Uint8List tweakedKeyX, { required String hrp })
+    : super._(1, copyCheckBytes(tweakedKeyX, 32), hrp);
+
+  P2TRAddress.fromTweakedKey(ECPublicKey tweakedKey, { required String hrp })
+    : super._(1, tweakedKey.x, hrp);
+
+  P2TRAddress.fromTaproot(Taproot taproot, { required String hrp })
+    : super._(1, taproot.tweakedKey.x, hrp);
+
+  @override
+  P2TR get program => P2TR.fromTweakedKeyX(_data);
+
+}
+
 /// This address type is for all bech32 addresses that do not match known
-/// witness versions. Currently this includes taproot until it is fully
-/// specified.
+/// witness versions.
 class UnknownWitnessAddress extends Bech32Address {
 
   /// Constructs a bech32 witness address from the "witness program" [data],

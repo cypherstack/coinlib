@@ -18,8 +18,8 @@
 # Coinlib
 
 Coinlib is a straight-forward and modular library for Peercoin and other similar
-cryptocoins. This library allows for the construction and signing of
-transactions and management of BIP32 wallets.
+cryptocoins including Taproot support. This library allows for the construction
+and signing of transactions and management of BIP32 wallets.
 
 ## Installation and Usage
 
@@ -34,7 +34,7 @@ dart pub add coinlib
 If you are using the library for web, the library is ready to use. If you are
 using the library on Linux, macOS, or Windows, then please see
 ["Building for Linux"](#building-for-linux),
-["Building for macOS"](#building-for-macos), or 
+["Building for macOS"](#building-for-macos), or
 ["Building for Windows"](#building-for-windows) below.
 
 The library can be imported via:
@@ -84,19 +84,29 @@ To build the dynamic library, run `dart run coinlib:build_macos` which will
 place the library under a `build` directory.
 
 ## Building for Windows
+
 ### Native Windows build
+
+**Please note that native windows builds under this section can sometimes freeze
+during the build process.** If this happens please use the WSL build process
+described in
+["Cross-compiling for Windows using WSL"](#cross-compiling-for-windows-using-wsl).
+
+Building on Windows requires CMake as a dependency.
 
 The Windows shared library can be built using `dart run coinlib:build_windows` in
 the root directory of your package which will produce a shared library into
-`build/libsecp256k1.dll`.  This can also be run in the `coinlib` root directory
+`build/libsecp256k1.dll`. This can also be run in the `coinlib` root directory
 via `dart run bin/build_windows.dart`.
 
-Windows builds use the Visual Studio 17 2022 generator.  Earlier Visual Studio toolchains may work by editing `bin/build_windows.dart`.
+Windows builds use the Visual Studio 17 2022 generator.  Earlier Visual Studio
+toolchains may work by editing `bin/build_windows.dart`.
 
 ### Cross-compiling for Windows from Linux
 
 Cross-compile a secp256k1 DLL for Windows on an Ubuntu 20.04 host with
-`dart run coinlib:build_windows_crosscompile` or `dart run bin/build_windows_crosscompile.dart`.
+`dart run coinlib:build_windows_crosscompile`. This can also be run in the
+`coinlib` root directory via `dart run bin/build_windows_crosscompile.dart`.
 
 ### Cross-compiling for Windows using WSL
 
@@ -117,12 +127,13 @@ apt-get update -y
 apt-get install -y autoconf libtool build-essential git cmake mingw-w64
 ```
 
-Then, cross-compile a secp256k1 DLL for Windows on an Ubuntu 20.04 WSL2
-instance on a Windows host with `dart run coinlib:build_wsl` or 
-`dart run bin/build_wsl.dart`, or complete the above 
-["Building for Windows on Linux"](#building-for-windows-on-linux) after 
-installing Docker or Podman in WSL.  The build can also be completed without 
-installing Flutter to WSL by following 
+Then, cross-compile a secp256k1 DLL for Windows on an Ubuntu 20.04 WSL2 instance
+on a Windows host with `dart run coinlib:build_wsl` or
+`dart run bin/build_wsl.dart` in the `coinlib` root directory, or complete the
+above
+["Cross-compiling for Windows on Linux"](#cross-compiling-for-windows-from-linux)
+after installing Docker or Podman in WSL. The build can also be completed
+without installing Flutter to WSL by following
 [bitcoin-core/secp256k1's "Cross compiling" guide](https://github.com/bitcoin-core/secp256k1?tab=readme-ov-file#cross-compiling).
 
 ## Development
@@ -139,6 +150,5 @@ Bindings for the native libraries (excluding WebAssembly) are generated from the
 `headers/secp256k1.h` file using `dart run ffigen` within the `coinlib` package.
 
 The WebAssembly module has been pre-built to
-`lib/src/generated/secp256k1.wasm.g.dart`. It may be rebuilt using `dart run
+`lib/src/secp256k1/secp256k1.wasm.g.dart`. It may be rebuilt using `dart run
 bin/build_wasm.dart` in the `coinlib` root directory.
-
