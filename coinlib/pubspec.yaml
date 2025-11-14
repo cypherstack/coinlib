@@ -20,7 +20,7 @@ dependencies:
   ffi: ^2.1.0
   hex: ^0.2.0
   path: ^1.8.0
-  pointycastle: ^3.7.3
+  pointycastle: ^4.0.0
   wasm_interop: ^2.0.1
 
 ffigen:
