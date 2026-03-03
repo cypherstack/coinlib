@@ -48,6 +48,7 @@ export 'package:coinlib/src/tx/inputs/legacy_input.dart';
 export 'package:coinlib/src/tx/inputs/legacy_witness_input.dart';
 export 'package:coinlib/src/tx/inputs/p2pkh_input.dart';
 export 'package:coinlib/src/tx/inputs/p2sh_multisig_input.dart';
+export 'package:coinlib/src/tx/inputs/p2sh_p2wpkh_input.dart';
 export 'package:coinlib/src/tx/inputs/p2wpkh_input.dart';
 export 'package:coinlib/src/tx/inputs/pkh_input.dart';
 export 'package:coinlib/src/tx/inputs/raw_input.dart';
