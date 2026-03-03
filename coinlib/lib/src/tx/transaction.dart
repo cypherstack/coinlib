@@ -12,6 +12,7 @@ import 'inputs/input.dart';
 import 'inputs/input_signature.dart';
 import 'inputs/legacy_input.dart';
 import 'inputs/legacy_witness_input.dart';
+import 'inputs/p2sh_p2wpkh_input.dart';
 import 'inputs/raw_input.dart';
 import 'inputs/witness_input.dart';
 import 'output.dart';
@@ -168,7 +169,13 @@ class Transaction with Writable {
 
     if (isWitness) {
       for (final input in inputs) {
-        writer.writeVector(input is WitnessInput ? input.witness : []);
+        if (input is WitnessInput) {
+          writer.writeVector(input.witness);
+        } else if (input is P2SHP2WPKHInput) {
+          writer.writeVector(input.witness);
+        } else {
+          writer.writeVector([]);
+        }
       }
     }
 
@@ -233,6 +240,28 @@ class Transaction with Writable {
       _replaceNewlySigned(
         inputN,
         _requireInputOfType<LegacyWitnessInput>(inputN).sign(
+          details: LegacyWitnessSignDetails(
+            tx: this,
+            inputN: inputN,
+            value: value,
+            hashType: hashType,
+          ),
+          key: key,
+        ),
+      );
+
+  /// Sign a [P2SHP2WPKHInput] (BIP49 / P2SH-P2WPKH) at [inputN] with the
+  /// [key]. Must contain the [value] being spent. Uses the BIP143 witness
+  /// sighash. The signature hash type is SIGHASH_ALL by default.
+  Transaction signP2SHP2WPKH({
+    required int inputN,
+    required ECPrivateKey key,
+    required BigInt value,
+    SigHashType hashType = const SigHashType.all(),
+  }) =>
+      _replaceNewlySigned(
+        inputN,
+        _requireInputOfType<P2SHP2WPKHInput>(inputN).sign(
           details: LegacyWitnessSignDetails(
             tx: this,
             inputN: inputN,
@@ -394,7 +423,8 @@ class Transaction with Writable {
           inputs: inputs.map(
             // Raw inputs remove all witness data and are serialized as legacy
             // inputs. Don't waste creating a new object for non-witness inputs.
-            (input) => input is WitnessInput
+            // P2SHP2WPKHInput keeps its scriptSig but drops witness data.
+            (input) => (input is WitnessInput || input is P2SHP2WPKHInput)
                 ? RawInput(
                     prevOut: input.prevOut,
                     scriptSig: input.scriptSig,
@@ -428,9 +458,11 @@ class Transaction with Writable {
   String get txid =>
       bytesToHex(Uint8List.fromList(legacyHash.reversed.toList()));
 
-  /// If the transaction has any witness inputs.
+  /// If the transaction has any witness inputs (including P2SH-P2WPKH).
   bool get isWitness =>
-      inputs.any((input) => input is WitnessInput) || mwebBytes != null;
+      inputs
+          .any((input) => input is WitnessInput || input is P2SHP2WPKHInput) ||
+      mwebBytes != null;
 
   bool get isCoinBase =>
       inputs.length == 1 && inputs.first.prevOut.coinbase && outputs.isNotEmpty;
