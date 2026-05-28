@@ -86,7 +86,7 @@ class Transaction with Writable {
     } else {
       hasWitness = false;
       hasMweb = false;
-      reader.offset -= 2;
+      reader.offset -= 1;
     }
 
     final rawInputs = List.generate(
