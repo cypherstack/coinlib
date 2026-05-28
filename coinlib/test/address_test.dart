@@ -372,8 +372,11 @@ void main() {
 
     test("arguments too long", () {
       expect(
-        () => UnknownWitnessAddress.fromHex("0001",
-            version: 16, hrp: "${longHrp}1"),
+        () => UnknownWitnessAddress.fromHex(
+          "0001",
+          version: 16,
+          hrp: "${longHrp}1",
+        ),
         throwsArgumentError,
       );
     });
