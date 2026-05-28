@@ -138,8 +138,8 @@ class Transaction with Writable {
         return _tryRead(reader, witness);
       } on TransactionTooLarge {
         tooLarge = true;
-        return null;
-      }
+      } on Exception catch (_) {}
+      return null;
     }
 
     if (expectWitness != false) {
@@ -151,13 +151,10 @@ class Transaction with Writable {
 
     if (expectWitness != true) {
       final tx = tryRead(false);
-      if (tx != null) {
-        if (tooLarge) throw TransactionTooLarge();
-        return tx;
-      }
+      if (tx != null) return tx;
     }
 
-    throw InvalidTransaction();
+    throw tooLarge ? TransactionTooLarge() : InvalidTransaction();
   }
 
   /// Constructs a transaction from serialised bytes. See [fromReader()].
