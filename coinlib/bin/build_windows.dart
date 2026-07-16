@@ -37,6 +37,7 @@ void main() async {
     ".",
     "-B",
     "build",
+    "-DSECP256K1_ENABLE_MODULE_RECOVERY=ON",
     "--debug-output",
   ]);
 
