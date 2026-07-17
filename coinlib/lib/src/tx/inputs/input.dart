@@ -1,7 +1,9 @@
 import 'dart:typed_data';
+
 import 'package:coinlib/src/common/serial.dart';
 import 'package:coinlib/src/scripts/script.dart';
 import 'package:coinlib/src/tx/outpoint.dart';
+
 import 'input_signature.dart';
 import 'p2pkh_input.dart';
 import 'p2sh_multisig_input.dart';
@@ -36,11 +38,11 @@ abstract class Input with Writable {
   /// Given a [RawInput] and witness data, the specific [Input] subclass is
   /// returned. If there is no witness data for the input, the [witness] can be
   /// excluded or provided as an empty list.
-  factory Input.match(RawInput raw, [List<Uint8List> witness = const[]])
-    => P2PKHInput.match(raw)
-    ?? P2SHMultisigInput.match(raw)
-    ?? WitnessInput.match(raw, witness)
-    ?? raw;
+  factory Input.match(RawInput raw, [List<Uint8List> witness = const []]) =>
+      P2PKHInput.match(raw) ??
+      P2SHMultisigInput.match(raw) ??
+      WitnessInput.match(raw, witness) ??
+      raw;
 
   /// Removes signatures that the [predicate] returns false for. This is used to
   /// remove invalidated signatures.
@@ -56,4 +58,11 @@ abstract class Input with Writable {
     }
   }
 
+  @override
+  String toString() => "$runtimeType("
+      "prevOut: $prevOut, "
+      "scriptSig: $scriptSig, "
+      "sequence: $sequence, "
+      "signedSize: $signedSize"
+      ")";
 }
