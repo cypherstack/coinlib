@@ -497,7 +497,7 @@ void main() {
             feePerKb: feePerKb,
             minFee: minFee,
             minChange: minChange,
-            locktime: 0xabcd1234,
+            locktime: Locktime(0xabcd1234),
           );
 
       // Single input is an exact-fee match: input = coin + 1910 funds the
@@ -592,7 +592,7 @@ void main() {
           feePerKb: feePerKb,
           minFee: minFee,
           minChange: minChange,
-          locktime: 0xabcd1234,
+          locktime: Locktime(0xabcd1234),
         ),
         throwsA(isA<InsufficientFunds>()),
       );

@@ -331,7 +331,7 @@ class CoinSelection {
     required BigInt minFee,
     required BigInt minChange,
     int maxCandidates = 6800,
-    int locktime = 0,
+    Locktime locktime = Locktime.zero,
   }) {
     CoinSelection trySelection(Iterable<InputCandidate> selected) =>
         CoinSelection(
