@@ -47,6 +47,7 @@ class Transaction with Writable {
   final List<Input> inputs;
   final List<Output> outputs;
   final Locktime locktime;
+  final Uint8List? vExtraData;
 
   /// Constructs a transaction with the given [inputs] and [outputs].
   /// [TransactionTooLarge] will be thrown if the resulting transction exceeds
@@ -59,6 +60,7 @@ class Transaction with Writable {
     required Iterable<Input> inputs,
     required Iterable<Output> outputs,
     this.locktime = Locktime.zero,
+    this.vExtraData,
   })
   : inputs = List.unmodifiable(inputs),
   outputs = List.unmodifiable(outputs)
@@ -187,6 +189,10 @@ class Transaction with Writable {
 
     writer.writeUInt32(locktime.value);
 
+    if (vExtraData != null) {
+      writer.writeVarSlice(vExtraData!);
+    }
+
   }
 
   Transaction _newInputs(List<Input> newInputs) => Transaction(
@@ -194,6 +200,7 @@ class Transaction with Writable {
     inputs: newInputs,
     outputs: outputs,
     locktime: locktime,
+    vExtraData: vExtraData,
   );
 
   T _requireInputOfType<T>(int inputN) {
@@ -346,6 +353,7 @@ class Transaction with Writable {
     ],
     outputs: outputs,
     locktime: locktime,
+    vExtraData: vExtraData,
   );
 
   /// Returns a new [Transaction] with the [output] added to the end of the
@@ -370,6 +378,7 @@ class Transaction with Writable {
       inputs: modifiedInputs,
       outputs: [...outputs, output],
       locktime: locktime,
+      vExtraData: vExtraData,
     );
 
   }
@@ -394,6 +403,7 @@ class Transaction with Writable {
       ),
       outputs: outputs,
       locktime: locktime,
+      vExtraData: vExtraData,
     )
     : this;
 
