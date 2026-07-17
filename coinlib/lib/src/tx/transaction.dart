@@ -48,6 +48,9 @@ class Transaction with Writable {
   final List<Output> outputs;
   final Locktime locktime;
   final Uint8List? vExtraData;
+  /// Raw MWEB extension data carried between the witness data and locktime,
+  /// as used by Litecoin. This is kept as opaque bytes.
+  final Uint8List? mwebBytes;
 
   /// Constructs a transaction with the given [inputs] and [outputs].
   /// [TransactionTooLarge] will be thrown if the resulting transction exceeds
@@ -61,6 +64,7 @@ class Transaction with Writable {
     required Iterable<Output> outputs,
     this.locktime = Locktime.zero,
     this.vExtraData,
+    this.mwebBytes,
   })
   : inputs = List.unmodifiable(inputs),
   outputs = List.unmodifiable(outputs)
@@ -79,11 +83,17 @@ class Transaction with Writable {
 
     final version = reader.readInt32();
 
+    bool hasWitness = false;
+    bool hasMweb = false;
     if (witness) {
-      // Check for witness data
+      // Check for witness data. The 0x01 flag bit signals witness data and
+      // the 0x08 flag bit signals MWEB data as used by Litecoin.
       final marker = reader.readUInt8();
       final flag = reader.readUInt8();
-      if (marker != 0 || flag != 1) return null;
+      if (marker != 0) return null;
+      hasWitness = (flag & 1) != 0;
+      hasMweb = (flag & 8) != 0;
+      if (!hasWitness && !hasMweb) return null;
     }
 
     final rawInputs = List.generate(
@@ -98,9 +108,18 @@ class Transaction with Writable {
 
     // Match the raw inputs with witness data if this is a witness transaction
     final inputs = rawInputs.map(
-      (raw) => Input.match(raw, witness ? reader.readVector() : []),
+      (raw) => Input.match(raw, hasWitness ? reader.readVector() : []),
     // Create list now to ensure we read the witness data before the locktime
     ).toList();
+
+    // Any MWEB data is carried between the witness data and the locktime
+    Uint8List? mwebBytes;
+    if (hasMweb) {
+      final remaining = reader.bytes.lengthInBytes - reader.offset;
+      if (remaining > 4) {
+        mwebBytes = reader.readSlice(remaining - 4);
+      }
+    }
 
     final locktime = reader.readUInt32();
 
@@ -109,6 +128,7 @@ class Transaction with Writable {
       inputs: inputs,
       outputs: outputs,
       locktime: Locktime(locktime),
+      mwebBytes: mwebBytes,
     );
 
   }
@@ -168,7 +188,7 @@ class Transaction with Writable {
 
     if (isWitness) {
       writer.writeUInt8(0); // Marker
-      writer.writeUInt8(1); // Flag
+      writer.writeUInt8(mwebBytes != null ? 9 : 1); // Flag
     }
 
     writer.writeVarInt(BigInt.from(inputs.length));
@@ -187,6 +207,10 @@ class Transaction with Writable {
       }
     }
 
+    if (mwebBytes != null) {
+      writer.writeSlice(mwebBytes!);
+    }
+
     writer.writeUInt32(locktime.value);
 
     if (vExtraData != null) {
@@ -201,6 +225,7 @@ class Transaction with Writable {
     outputs: outputs,
     locktime: locktime,
     vExtraData: vExtraData,
+    mwebBytes: mwebBytes,
   );
 
   T _requireInputOfType<T>(int inputN) {
@@ -354,6 +379,7 @@ class Transaction with Writable {
     outputs: outputs,
     locktime: locktime,
     vExtraData: vExtraData,
+    mwebBytes: mwebBytes,
   );
 
   /// Returns a new [Transaction] with the [output] added to the end of the
@@ -379,6 +405,7 @@ class Transaction with Writable {
       outputs: [...outputs, output],
       locktime: locktime,
       vExtraData: vExtraData,
+      mwebBytes: mwebBytes,
     );
 
   }
@@ -404,6 +431,7 @@ class Transaction with Writable {
       outputs: outputs,
       locktime: locktime,
       vExtraData: vExtraData,
+      mwebBytes: mwebBytes,
     )
     : this;
 
@@ -424,8 +452,9 @@ class Transaction with Writable {
   String get txid
     => bytesToHex(Uint8List.fromList(legacyHash.reversed.toList()));
 
-  /// If the transaction has any witness inputs.
-  bool get isWitness => inputs.any((input) => input is WitnessInput);
+  /// If the transaction has any witness inputs or carries MWEB data.
+  bool get isWitness
+    => inputs.any((input) => input is WitnessInput) || mwebBytes != null;
 
   bool get isCoinBase
     => inputs.length == 1
