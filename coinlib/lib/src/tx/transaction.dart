@@ -468,4 +468,17 @@ class Transaction with Writable {
     required int blockHeight,
   }) => !locktimeIsEnforced || locktime.isUnlocked(medianTime, blockHeight);
 
+  @override
+  String toString() => "Transaction("
+      "version: $version, "
+      "locktime: $locktime, "
+      "isWitness: $isWitness, "
+      "isCoinBase: $isCoinBase, "
+      "isCoinStake: $isCoinStake, "
+      "complete: $complete, "
+      "hashHex: $hashHex, "
+      "txid: $txid, "
+      "inputs: $inputs, "
+      "outputs: $outputs"
+      ")";
 }
