@@ -19,7 +19,7 @@ RUN git clone https://github.com/bitcoin-core/secp256k1 \
 WORKDIR /secp256k1/build
 
 # Build shared library for Windows.
-RUN cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.toolchain.cmake
+RUN cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.toolchain.cmake -DSECP256K1_ENABLE_MODULE_RECOVERY=ON
 RUN make
 
 # Build DLL and copy into output.

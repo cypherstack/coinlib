@@ -34,6 +34,7 @@ void main() async {
   await execWithStdio("cmake", [
     "..",
     "-DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.toolchain.cmake",
+    "-DSECP256K1_ENABLE_MODULE_RECOVERY=ON",
   ]);
 
   // Build the project using "make".
