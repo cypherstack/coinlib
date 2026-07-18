@@ -7,6 +7,7 @@ import 'package:coinlib/src/tx/outpoint.dart';
 import 'input_signature.dart';
 import 'p2pkh_input.dart';
 import 'p2sh_multisig_input.dart';
+import 'p2sh_p2wpkh_input.dart';
 import 'raw_input.dart';
 import 'witness_input.dart';
 
@@ -37,6 +38,7 @@ abstract class Input with Writable {
       P2PKHInput.match(raw) ??
       P2SHMultisigInput.match(raw) ??
       WitnessInput.match(raw, witness) ??
+      P2SHP2WPKHInput.match(raw, witness) ??
       raw;
 
   /// Removes signatures that the [predicate] returns false for. This is used to
