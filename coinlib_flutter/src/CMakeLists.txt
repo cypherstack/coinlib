@@ -37,6 +37,8 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL Android)
     -DANDROID_NDK=${ANDROID_NDK}
     -DANDROID_ABI=${ANDROID_ABI}
     -DANDROID_PLATFORM=${ANDROID_PLATFORM}
+    # Align ELF LOAD segments to 16 KB for Android 15+ page size requirement
+    -DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384
   )
 endif()
 
