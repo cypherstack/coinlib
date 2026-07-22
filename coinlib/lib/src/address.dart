@@ -64,7 +64,9 @@ abstract class Base58Address implements Address {
   Base58Address._(Uint8List hash, this.version) : _hash = hash {
     if (version < 0 || version > 255) {
       throw ArgumentError(
-          "base58 version must be within 0-255", "this.version");
+        "base58 version must be within 0-255",
+        "this.version",
+      );
     }
   }
 

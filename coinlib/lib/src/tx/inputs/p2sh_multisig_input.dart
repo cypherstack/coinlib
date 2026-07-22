@@ -178,7 +178,8 @@ class P2SHMultisigInput extends LegacyInput {
 
   @override
   P2SHMultisigInput filterSignatures(
-          bool Function(InputSignature insig) predicate) =>
+    bool Function(InputSignature insig) predicate,
+  ) =>
       P2SHMultisigInput(
         prevOut: prevOut,
         program: program,

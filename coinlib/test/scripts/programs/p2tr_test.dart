@@ -53,8 +53,10 @@ void main() {
         "5120${tweakedKey}00",
         "",
       ]) {
-        expect(() => P2TR.decompile(hexToBytes(bad)),
-            throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2TR.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 

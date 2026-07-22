@@ -63,7 +63,7 @@ void main() {
       for (final badWords in [
         [0, -1],
         [32, 1],
-        [0xffffffff]
+        [0xffffffff],
       ]) {
         expect(
           () => Bech32(hrp: "bc", words: badWords, type: Bech32Type.bech32),

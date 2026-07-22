@@ -44,8 +44,10 @@ void main() {
         "0020${scriptHash}00",
         "",
       ]) {
-        expect(() => P2WSH.decompile(hexToBytes(bad)),
-            throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2WSH.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 

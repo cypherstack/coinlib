@@ -9,12 +9,14 @@ final prevOuts = [
   Output.fromScriptBytes(
     BigInt.parse("420000000"),
     hexToBytes(
-        "512053a1f6e454df1aa2776a2814a721372d6258050de330b3c6d10ee8f4e0dda343"),
+      "512053a1f6e454df1aa2776a2814a721372d6258050de330b3c6d10ee8f4e0dda343",
+    ),
   ),
   Output.fromScriptBytes(
     BigInt.parse("462000000"),
     hexToBytes(
-        "5120147c9c57132f6e7ecddba9800bb0c4449251c92a1e60371ee77557b6620f3ea3"),
+      "5120147c9c57132f6e7ecddba9800bb0c4449251c92a1e60371ee77557b6620f3ea3",
+    ),
   ),
   Output.fromScriptBytes(
     BigInt.parse("294000000"),
@@ -23,12 +25,14 @@ final prevOuts = [
   Output.fromScriptBytes(
     BigInt.parse("504000000"),
     hexToBytes(
-        "5120e4d810fd50586274face62b8a807eb9719cef49c04177cc6b76a9a4251d5450e"),
+      "5120e4d810fd50586274face62b8a807eb9719cef49c04177cc6b76a9a4251d5450e",
+    ),
   ),
   Output.fromScriptBytes(
     BigInt.parse("630000000"),
     hexToBytes(
-        "512091b64d5324723a985170e4dc5a0f84c041804f2cd12660fa5dec09fc21783605"),
+      "512091b64d5324723a985170e4dc5a0f84c041804f2cd12660fa5dec09fc21783605",
+    ),
   ),
   Output.fromScriptBytes(
     BigInt.parse("378000000"),
@@ -37,17 +41,20 @@ final prevOuts = [
   Output.fromScriptBytes(
     BigInt.parse("672000000"),
     hexToBytes(
-        "512075169f4001aa68f15bbed28b218df1d0a62cbbcf1188c6665110c293c907b831"),
+      "512075169f4001aa68f15bbed28b218df1d0a62cbbcf1188c6665110c293c907b831",
+    ),
   ),
   Output.fromScriptBytes(
     BigInt.parse("546000000"),
     hexToBytes(
-        "5120712447206d7a5238acc7ff53fbe94a3b64539ad291c7cdbc490b7577e4b17df5"),
+      "5120712447206d7a5238acc7ff53fbe94a3b64539ad291c7cdbc490b7577e4b17df5",
+    ),
   ),
   Output.fromScriptBytes(
     BigInt.parse("588000000"),
     hexToBytes(
-        "512077e30a5522dd9f894c3f8b8bd4c4b2cf82ca7da8a3ea6a239655c39c050ab220"),
+      "512077e30a5522dd9f894c3f8b8bd4c4b2cf82ca7da8a3ea6a239655c39c050ab220",
+    ),
   ),
 ];
 

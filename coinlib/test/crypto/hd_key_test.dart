@@ -159,7 +159,9 @@ void main() {
     test("fromSeed() invalid seed size", () {
       for (final size in [15, 65]) {
         expect(
-            () => HDPrivateKey.fromSeed(Uint8List(size)), throwsArgumentError);
+          () => HDPrivateKey.fromSeed(Uint8List(size)),
+          throwsArgumentError,
+        );
       }
     });
 
