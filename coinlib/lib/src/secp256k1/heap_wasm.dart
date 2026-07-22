@@ -10,7 +10,6 @@ final int _intBytes = 4;
 
 /// Represents objects on the heap. These can be created using [HeapFactory].
 class HeapWasm implements Heap<int> {
-
   static final Finalizer<void Function()> _finalizer = Finalizer(
     (free) => free(),
   );
@@ -21,13 +20,11 @@ class HeapWasm implements Heap<int> {
   HeapWasm._(this.ptr, FreeFunction free) {
     _finalizer.attach(this, () => free(ptr));
   }
-
 }
 
 /// Encapsulates a WASM heap-allocated unsigned char array, accessible as a
 /// Uint8List. Must be created through [HeapFactory].
 class HeapBytesWasm extends HeapWasm implements HeapBytes<int> {
-
   final int size;
   final MemoryGetter _memory;
 
@@ -43,11 +40,9 @@ class HeapBytesWasm extends HeapWasm implements HeapBytes<int> {
 
   @override
   load(Uint8List data) => _view.setAll(0, data);
-
 }
 
 class HeapIntWasm extends HeapWasm implements HeapInt<int> {
-
   final MemoryGetter _memory;
 
   HeapIntWasm._(this._memory, super.ptr, super.free) : super._();
@@ -61,15 +56,12 @@ class HeapIntWasm extends HeapWasm implements HeapInt<int> {
   int get value => _data.getUint32(ptr, Endian.little);
 
   /// If this represents an integer array, get the integer at the [i] position.
-  HeapIntWasm operator[](int i)
-    => HeapIntWasm._(_memory, ptr+_intBytes*i, (_) {});
-
+  HeapIntWasm operator [](int i) =>
+      HeapIntWasm._(_memory, ptr + _intBytes * i, (_) {});
 }
 
-class HeapPointerArrayWasm
-extends HeapIntWasm
-implements HeapPointerArray<int, int> {
-
+class HeapPointerArrayWasm extends HeapIntWasm
+    implements HeapPointerArray<int, int> {
   // Also store the objects in dart to handle the lifetimes
   final List<HeapWasm> _objs;
 
@@ -87,13 +79,11 @@ implements HeapPointerArray<int, int> {
 
   @override
   List<int> get list => List.generate(_objs.length, (i) => this[i].value);
-
 }
 
 /// Provides [HeapWasm] objects with the same memory and malloc and free
 /// functions.
 class HeapFactory {
-
   final MemoryGetter _memory;
   final MallocFunction _malloc;
   final FreeFunction _free;
@@ -108,7 +98,7 @@ class HeapFactory {
 
   /// Allocate data for a miscellaneous object with [size] bytes.
   /// If [copyFrom] is specified, data shall be copied from this pointer.
-  HeapWasm alloc(int size, { int? copyFrom }) {
+  HeapWasm alloc(int size, {int? copyFrom}) {
     final heap = HeapWasm._(_malloc(size), _free);
     if (copyFrom != null) {
       final memory = _memory();
@@ -121,19 +111,18 @@ class HeapFactory {
   HeapIntWasm integer() => HeapIntWasm._(_memory, _malloc(_intBytes), _free);
 
   /// Creates an array of pointers to the [objs].
-  HeapPointerArrayWasm assignPointerArray(List<HeapWasm> objs)
-    => HeapPointerArrayWasm._(
-      _memory,
-      _malloc(objs.length*_intBytes),
-      _free,
-      objs,
-    );
+  HeapPointerArrayWasm assignPointerArray(List<HeapWasm> objs) =>
+      HeapPointerArrayWasm._(
+        _memory,
+        _malloc(objs.length * _intBytes),
+        _free,
+        objs,
+      );
 
   /// Creates an array with [length] of pointers to objects allocated with
   /// [objSize].
-  HeapPointerArrayWasm allocPointerArray(int length, int objSize)
-    => assignPointerArray(
-      List.generate(length, (_) => HeapWasm._(_malloc(objSize), _free)),
-    );
-
+  HeapPointerArrayWasm allocPointerArray(int length, int objSize) =>
+      assignPointerArray(
+        List.generate(length, (_) => HeapWasm._(_malloc(objSize), _free)),
+      );
 }

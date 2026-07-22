@@ -7,10 +7,10 @@ import 'package:coinlib/src/secp256k1/secp256k1.dart';
 /// the point (private key to a public key). The signature will be complete and
 /// valid if the correct adaptor was given.
 class SchnorrAdaptorSignature {
-
   /// The signature that contains the adapted nonce but requires the adaptor
   /// scalar
   final SchnorrSignature preSig;
+
   /// True when the nonce y-coord is odd
   final bool parity;
 
@@ -51,5 +51,4 @@ class SchnorrAdaptorSignature {
       throw InvalidSchnorrSignature();
     }
   }
-
 }

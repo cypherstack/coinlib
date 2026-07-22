@@ -3,9 +3,7 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("OutPoint", () {
-
     test("requires 32 byte hash", () {
       expect(() => OutPoint(Uint8List(31), 0), throwsArgumentError);
     });
@@ -18,7 +16,10 @@ void main() {
     test("can be read and written", () {
       final bytes = Uint8List.fromList([
         ...List<int>.generate(32, (i) => i),
-        1,2,3,4,
+        1,
+        2,
+        3,
+        4,
       ]);
       final op = OutPoint.fromReader(BytesReader(bytes));
       expect(op.size, 36);
@@ -29,7 +30,8 @@ void main() {
 
     test("fromHex takes reversed hash", () {
       final op = OutPoint.fromHex(
-        "6d7ed9914625c73c0288694a6819196a27ef6c08f98e1270d975a8e65a3dc09a", 0,
+        "6d7ed9914625c73c0288694a6819196a27ef6c08f98e1270d975a8e65a3dc09a",
+        0,
       );
       expect(
         bytesToHex(op.hash),
@@ -46,7 +48,6 @@ void main() {
     });
 
     test("allows equality comparison", () {
-
       final hash = Uint8List(32);
       final outp = OutPoint(hash, 0);
       final identical = OutPoint(hash, 0);
@@ -60,9 +61,6 @@ void main() {
       expect(outp, outp);
       expect(outp, isNot(equals(diff1)));
       expect(outp, isNot(equals(diff2)));
-
     });
-
   });
-
 }

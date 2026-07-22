@@ -23,7 +23,7 @@ final unsignedTx = Transaction(
     TaprootSingleScriptSigInput(
       prevOut: prevOut,
       taproot: regularTR,
-      leaf:regularLeaf,
+      leaf: regularLeaf,
     ),
     apoInput,
     apoInput,
@@ -32,20 +32,16 @@ final unsignedTx = Transaction(
 );
 
 void main() {
-
   group("TaprootSingleScriptSigInput", () {
-
     setUpAll(loadCoinlib);
 
     test(".sign() success", () {
-
       void expectSign(
-        int i, SigHashType hashType, {
-          bool addPrevOutBeforeSign = false,
-          bool addPrevOut = false,
-        }
-      ) {
-
+        int i,
+        SigHashType hashType, {
+        bool addPrevOutBeforeSign = false,
+        bool addPrevOut = false,
+      }) {
         var input = unsignedTx.inputs[i] as TaprootSingleScriptSigInput;
         if (addPrevOutBeforeSign) {
           input = input.addPrevOut(examplePrevOut);
@@ -68,7 +64,6 @@ void main() {
 
         input = input.addPrevOut(examplePrevOut);
         expect(input.complete, true);
-
       }
 
       // non-APO
@@ -82,11 +77,9 @@ void main() {
 
       // APOAS
       expectSign(2, sigHashAPOAS, addPrevOut: true);
-
     });
 
     test("signatures invalidate on new prevout", () {
-
       void expectComplete(SchnorrInputSignature inputSig, bool onPrevOut) {
         final input = TaprootSingleScriptSigInput(
           prevOut: examplePrevOut,
@@ -101,7 +94,6 @@ void main() {
       expectComplete(schnorrInSig, false);
       expectComplete(schnorrInSigAPO, true);
       expectComplete(schnorrInSigAPOAS, true);
-
     });
 
     test(".sign() cannot sign APO for non-APO key", () {
@@ -121,7 +113,6 @@ void main() {
     });
 
     test(".match() success", () {
-
       for (final withSig in [true, false]) {
         final input = TaprootSingleScriptSigInput.match(
           rawWitnessInput,
@@ -134,11 +125,9 @@ void main() {
         expect(input!.complete, withSig);
         expect(input.insig?.bytes, withSig ? schnorrInSig.bytes : null);
       }
-
     });
 
     test(".match() fail", () {
-
       for (final witness in [
         // Doesn't match with more than 3 witness elements
         [
@@ -167,9 +156,6 @@ void main() {
           isNull,
         );
       }
-
     });
-
   });
-
 }

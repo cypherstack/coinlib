@@ -11,7 +11,6 @@ import 'sequence.dart';
 
 /// A [TaprootInput] which spends using the key-path
 class TaprootKeyInput extends TaprootInput {
-
   final SchnorrInputSignature? insig;
 
   @override
@@ -35,7 +34,6 @@ class TaprootKeyInput extends TaprootInput {
   /// a [TaprootKeyInput], with a signature. If it does it returns a
   /// [TaprootKeyInput] for the input or else it returns null.
   static TaprootKeyInput? match(RawInput raw, List<Uint8List> witness) {
-
     if (raw.scriptSig.isNotEmpty) return null;
     if (witness.length != 1) return null;
 
@@ -49,7 +47,6 @@ class TaprootKeyInput extends TaprootInput {
     } on InvalidInputSignature {
       return null;
     }
-
   }
 
   /// Return a signed Taproot input using tweaked private key for the key-path
@@ -58,7 +55,6 @@ class TaprootKeyInput extends TaprootInput {
     required TaprootKeySignDetails details,
     required ECPrivateKey key,
   }) {
-
     // Check key corresponds to matching prevOut
     final program = details.program;
     if (program is! P2TR || key.pubkey.xonly != program.tweakedKey) {
@@ -68,27 +64,28 @@ class TaprootKeyInput extends TaprootInput {
     }
 
     return addSignature(createInputSignature(key: key, details: details));
-
   }
 
   /// Returns a new [TaprootKeyInput] with the [SchnorrInputSignature] added.
   /// Any existing signature is replaced.
   TaprootKeyInput addSignature(SchnorrInputSignature insig) => TaprootKeyInput(
-    prevOut: prevOut,
-    insig: insig,
-    sequence: sequence,
-  );
+        prevOut: prevOut,
+        insig: insig,
+        sequence: sequence,
+      );
 
   @override
   TaprootKeyInput filterSignatures(
     bool Function(InputSignature insig) predicate,
-  ) => insig == null || predicate(insig!) ? this : TaprootKeyInput(
-    prevOut: prevOut,
-    insig: null,
-    sequence: sequence,
-  );
+  ) =>
+      insig == null || predicate(insig!)
+          ? this
+          : TaprootKeyInput(
+              prevOut: prevOut,
+              insig: null,
+              sequence: sequence,
+            );
 
   @override
   bool get complete => insig != null;
-
 }

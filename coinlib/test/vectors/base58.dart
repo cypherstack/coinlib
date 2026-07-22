@@ -4,8 +4,8 @@ import 'package:coinlib/src/common/hex.dart';
 class Base58Vector {
   final Uint8List data;
   final String encoded;
-  Base58Vector({ required String hex, required this.encoded })
-    : data = hexToBytes(hex);
+  Base58Vector({required String hex, required this.encoded})
+      : data = hexToBytes(hex);
 }
 
 final base58ValidVectors = [
@@ -47,4 +47,3 @@ final base58InvalidChecksumVectors = [
   "1111111111111111111113oLvT2",
   "3QJmn",
 ];
-

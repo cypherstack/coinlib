@@ -8,10 +8,10 @@ import 'package:coinlib/src/encode/base58.dart';
 import 'ec_public_key.dart';
 
 class InvalidHDKey implements Exception {}
+
 class InvalidHDKeyVersion implements Exception {}
 
 abstract class HDKey {
-
   static const maxIndex = 0xffffffff;
   static const hardenBit = 0x80000000;
   static const encodedLength = 78;
@@ -33,8 +33,7 @@ abstract class HDKey {
   /// If [privVersion] or/and [pubVersion] is provided, it shall require that
   /// the version is equal to either one of these for a corresponsing private or
   /// public key or else it shall throw [InvalidHDKeyVersion].
-  factory HDKey.decode(String b58, { int? privVersion, int? pubVersion }) {
-
+  factory HDKey.decode(String b58, {int? privVersion, int? pubVersion}) {
     final data = base58Decode(b58);
     if (data.length != encodedLength) throw InvalidHDKey();
 
@@ -65,33 +64,32 @@ abstract class HDKey {
     final chaincode = data.sublist(13, 45);
 
     try {
-
       return isPriv
-        ? HDPrivateKey(
-          privateKey: ECPrivateKey(data.sublist(46)),
-          chaincode: chaincode,
-          depth: depth,
-          index: index,
-          parentFingerprint: parentFingerprint,
-        )
-        : HDPublicKey(
-          publicKey: ECPublicKey(data.sublist(45)),
-          chaincode: chaincode,
-          depth: depth,
-          index: index,
-          parentFingerprint: parentFingerprint,
-        );
-
+          ? HDPrivateKey(
+              privateKey: ECPrivateKey(data.sublist(46)),
+              chaincode: chaincode,
+              depth: depth,
+              index: index,
+              parentFingerprint: parentFingerprint,
+            )
+          : HDPublicKey(
+              publicKey: ECPublicKey(data.sublist(45)),
+              chaincode: chaincode,
+              depth: depth,
+              index: index,
+              parentFingerprint: parentFingerprint,
+            );
     } on Exception {
       // If the key provided is invalid, an exception will have been thrown.
       throw InvalidHDKey();
     }
-
   }
 
   Uint8List? _identifierCache;
+
   /// The identifier hash for this key
   Uint8List get identifier => _identifierCache ??= hash160(publicKey.data);
+
   /// The integer fingerprint of the identifier
   int get fingerprint => identifier.buffer.asByteData().getUint32(0);
   Uint8List get chaincode => Uint8List.fromList(_chaincode);
@@ -100,10 +98,11 @@ abstract class HDKey {
   /// private. The [index] can inlcude the [hardenBit] to specify that it is
   /// hardened.
   HDKey derive(int index) {
-
     if (index > HDKey.maxIndex || index < 0) {
       throw ArgumentError.value(
-        index, "index", "Can only derive 32-bit indicies",
+        index,
+        "index",
+        "Can only derive 32-bit indicies",
       );
     }
 
@@ -127,11 +126,11 @@ abstract class HDKey {
 
     if (privateKey != null) {
       final newKey = privateKey!.tweak(il);
-      if (newKey == null) return derive(index+1);
+      if (newKey == null) return derive(index + 1);
       return HDPrivateKey(
         privateKey: newKey,
         chaincode: ir,
-        depth: depth+1,
+        depth: depth + 1,
         index: index,
         parentFingerprint: fingerprint,
       );
@@ -139,15 +138,14 @@ abstract class HDKey {
 
     // Public key
     final newKey = publicKey.tweak(il);
-    if (newKey == null) return derive(index+1);
+    if (newKey == null) return derive(index + 1);
     return HDPublicKey(
       publicKey: newKey,
       chaincode: ir,
-      depth: depth+1,
+      depth: depth + 1,
       index: index,
       parentFingerprint: fingerprint,
     );
-
   }
 
   /// Derives a hardened key at [index] which only applies to private keys. The
@@ -155,7 +153,9 @@ abstract class HDKey {
   HDPrivateKey deriveHardened(int index) {
     if (index < 0 || index >= hardenBit) {
       throw ArgumentError.value(
-        index, "index", "should be below hardered index",
+        index,
+        "index",
+        "should be below hardered index",
       );
     }
     return derive(index + hardenBit) as HDPrivateKey;
@@ -165,7 +165,6 @@ abstract class HDKey {
   /// optional "m" specifies that this key is a master key and "'" specifies
   /// that an index is a hardened key.
   HDKey derivePath(String path) {
-
     final regex = RegExp(r"^(m\/)?(\d+'?\/)*\d+'?$");
     if (!regex.hasMatch(path)) throw ArgumentError("Expected BIP32 Path");
 
@@ -191,12 +190,10 @@ abstract class HDKey {
         return prev.derive(index);
       }
     });
-
   }
 
   /// Encodes the base58 representation of this key using the [version] prefix.
   String encode(int version) {
-
     checkUint32(version, "version");
 
     Uint8List data = Uint8List(encodedLength);
@@ -215,17 +212,14 @@ abstract class HDKey {
     }
 
     return base58Encode(data);
-
   }
 
   ECPublicKey get publicKey;
   ECPrivateKey? get privateKey;
-
 }
 
 /// Represents a private key with a chain code that can derive BIP32 keys.
 class HDPrivateKey extends HDKey {
-
   @override
   final ECPrivateKey privateKey;
 
@@ -239,19 +233,18 @@ class HDPrivateKey extends HDKey {
 
   /// Creates a master key from an existing private key and chain code.
   HDPrivateKey.fromKeyAndChainCode(this.privateKey, Uint8List chaincode)
-    : super._(
-    chaincode: chaincode,
-    depth: 0,
-    index: 0,
-    parentFingerprint: 0,
-  ) {
+      : super._(
+          chaincode: chaincode,
+          depth: 0,
+          index: 0,
+          parentFingerprint: 0,
+        ) {
     checkBytes(chaincode, 32, name: "Chaincode");
   }
 
   /// Generates a master key from a 16-64 byte [seed]. The default BIP32 HMAC
   /// [key] can also be changed.
-  factory HDPrivateKey.fromSeed(Uint8List seed, { String key = "Bitcoin seed" }) {
-
+  factory HDPrivateKey.fromSeed(Uint8List seed, {String key = "Bitcoin seed"}) {
     if (seed.length < 16 || seed.length > 64) {
       throw ArgumentError("Seed should be between 16 and 64 bytes", "seed");
     }
@@ -260,9 +253,10 @@ class HDPrivateKey extends HDKey {
     return HDPrivateKey(
       privateKey: ECPrivateKey(hash.sublist(0, 32)),
       chaincode: hash.sublist(32),
-      depth: 0, index: 0, parentFingerprint: 0,
+      depth: 0,
+      index: 0,
+      parentFingerprint: 0,
     );
-
   }
 
   /// Creates a HD private key from a base58 encoded representation ([b58]). May
@@ -279,23 +273,22 @@ class HDPrivateKey extends HDKey {
   HDPrivateKey derive(int index) => super.derive(index) as HDPrivateKey;
 
   @override
-  HDPrivateKey derivePath(String path) => super.derivePath(path) as HDPrivateKey;
+  HDPrivateKey derivePath(String path) =>
+      super.derivePath(path) as HDPrivateKey;
 
   HDPublicKey get hdPublicKey => HDPublicKey(
-    publicKey: publicKey,
-    chaincode: chaincode,
-    depth: depth,
-    index: index,
-    parentFingerprint: parentFingerprint,
-  );
+        publicKey: publicKey,
+        chaincode: chaincode,
+        depth: depth,
+        index: index,
+        parentFingerprint: parentFingerprint,
+      );
 
   @override
   ECPublicKey get publicKey => privateKey.pubkey;
-
 }
 
 class HDPublicKey extends HDKey {
-
   @override
   ECPrivateKey? privateKey;
   @override
@@ -318,5 +311,4 @@ class HDPublicKey extends HDKey {
     if (key is HDPublicKey) return key;
     throw InvalidHDKey();
   }
-
 }

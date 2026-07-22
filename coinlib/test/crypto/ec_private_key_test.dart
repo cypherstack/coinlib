@@ -4,13 +4,10 @@ import 'package:test/test.dart';
 import '../vectors/keys.dart';
 
 void main() {
-
   group("ECPrivateKey", () {
-
     setUpAll(loadCoinlib);
 
     test("requires 32 bytes", () {
-
       for (final failing in [
         // Too small
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e",
@@ -22,11 +19,9 @@ void main() {
           throwsArgumentError,
         );
       }
-
     });
 
     test("requires key is within 1 to order-1", () {
-
       for (final failing in [
         "0000000000000000000000000000000000000000000000000000000000000000",
         "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141",
@@ -36,7 +31,6 @@ void main() {
           throwsA(isA<InvalidPrivateKey>()),
         );
       }
-
     });
 
     test(".generate() gives new key each time", () {
@@ -48,8 +42,8 @@ void main() {
     });
 
     test("tweak() produces correct key and keeps compression flag", () {
-
-      expectTweak(String keyHex, String tweakHex, String resultHex, bool compressed) {
+      expectTweak(
+          String keyHex, String tweakHex, String resultHex, bool compressed) {
         final key = ECPrivateKey.fromHex(keyHex, compressed: compressed);
         final tweak = hexToBytes(tweakHex);
         final result = ECPrivateKey.fromHex(resultHex, compressed: compressed);
@@ -79,7 +73,6 @@ void main() {
         "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140",
         true,
       );
-
     });
 
     test("invalid tweak scalar returns null", () {
@@ -101,10 +94,9 @@ void main() {
     });
 
     test(".xonly", () {
-
       // Already even-y = 1
-      final privEvenHex
-        = "0000000000000000000000000000000000000000000000000000000000000001";
+      final privEvenHex =
+          "0000000000000000000000000000000000000000000000000000000000000001";
       final privEven = ECPrivateKey.fromHex(privEvenHex);
       expect(privEven.pubkey.yIsEven, true);
       // Gives same object
@@ -117,7 +109,6 @@ void main() {
       expect(privOdd.pubkey.yIsEven, false);
       // Negates back to 1
       expect(bytesToHex(privOdd.xonly.data), privEvenHex);
-
     });
 
     test(".data", () {
@@ -142,7 +133,6 @@ void main() {
     });
 
     test("data is copied and cannot be mutated", () {
-
       final expectedData = Uint8List(32);
       expectedData.last = 1;
 
@@ -153,9 +143,6 @@ void main() {
       data[1] = 0xff;
 
       expect(key.data, expectedData);
-
     });
-
   });
-
 }

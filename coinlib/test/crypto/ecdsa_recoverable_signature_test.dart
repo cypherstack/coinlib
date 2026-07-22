@@ -3,9 +3,7 @@ import 'package:test/test.dart';
 import '../vectors/signatures.dart';
 
 void main() {
-
   group("ECDSARecoverableSignature", () {
-
     setUpAll(loadCoinlib);
 
     final hash = hexToBytes(
@@ -21,7 +19,6 @@ void main() {
     }
 
     group(".fromCompactHex()", () {
-
       test("must be 65 bytes", () {
         for (final failing in [
           // Too small
@@ -34,11 +31,10 @@ void main() {
             throwsArgumentError,
           );
         }
-
       });
 
       test("valid signature", () {
-        for (final vector in validRecoverableSigs+validRecSigSigns) {
+        for (final vector in validRecoverableSigs + validRecSigSigns) {
           expectRecSig(
             ECDSARecoverableSignature.fromCompactHex(vector.compact),
             vector,
@@ -55,13 +51,11 @@ void main() {
           );
         }
       });
-
     });
 
     group(".sign()", () {
-
-      final privateHex
-        = "6c4313b03f2e7324d75e642f0ab81b734b724e13fec930f309e222470236d66b";
+      final privateHex =
+          "6c4313b03f2e7324d75e642f0ab81b734b724e13fec930f309e222470236d66b";
 
       test("produces correct signature", () {
         for (final vector in validRecSigSigns) {
@@ -74,11 +68,9 @@ void main() {
           );
         }
       });
-
     });
 
     test(".signature is copied and cannot be mutated", () {
-
       final hex = validRecoverableSigs[0].compact;
       final data = hexToBytes(hex);
       final sig = ECDSARecoverableSignature.fromCompact(data);
@@ -86,9 +78,6 @@ void main() {
       // Compact signature ignores first recid byte
       data[1] = 0xff;
       expect(bytesToHex(sig.signature.compact), hex.substring(2));
-
     });
-
   });
-
 }

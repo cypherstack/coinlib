@@ -8,7 +8,6 @@ import 'util.dart';
 /// apt-get install -y autoconf libtool build-essential git cmake mingw-w64
 /// ```
 void main() async {
-
   final workDir = Directory.current.path;
 
   // Clone into tmp directory
@@ -16,7 +15,8 @@ void main() async {
 
   // Run cmake with the provided toolchain file.
   await execWithStdio("cmake", [
-    "-B", "build",
+    "-B",
+    "build",
     "-DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.toolchain.cmake",
     "-DSECP256K1_ENABLE_MODULE_RECOVERY=ON",
     "-DSECP256K1_BUILD_TESTS=OFF",
@@ -34,5 +34,4 @@ void main() async {
   File("build/bin/libsecp256k1-6.dll").copySync("$workDir/build/secp256k1.dll");
 
   print("Output libsecp256k1.dll successfully");
-
 }

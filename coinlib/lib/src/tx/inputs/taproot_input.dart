@@ -8,7 +8,6 @@ import 'witness_input.dart';
 
 /// Represents v1 Taproot program inputs
 abstract class TaprootInput extends WitnessInput {
-
   TaprootInput({
     required super.prevOut,
     required super.witness,
@@ -20,12 +19,12 @@ abstract class TaprootInput extends WitnessInput {
   SchnorrInputSignature createInputSignature({
     required ECPrivateKey key,
     required TaprootSignDetails details,
-  }) => SchnorrInputSignature(
-    SchnorrSignature.sign(key, TaprootSignatureHasher(details).hash),
-    details.hashType,
-  );
+  }) =>
+      SchnorrInputSignature(
+        SchnorrSignature.sign(key, TaprootSignatureHasher(details).hash),
+        details.hashType,
+      );
 
   /// The signed size when SIGHASH_DEFAULT is used for all signatures
   int? get defaultSignedSize => signedSize;
-
 }

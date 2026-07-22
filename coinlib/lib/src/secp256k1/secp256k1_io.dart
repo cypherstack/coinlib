@@ -11,7 +11,6 @@ import "secp256k1_base.dart";
 const _name = "secp256k1";
 
 String _libraryPath() {
-
   final String localLib, flutterLib;
   if (Platform.isLinux || Platform.isAndroid) {
     flutterLib = localLib = "lib$_name.so";
@@ -33,7 +32,6 @@ String _libraryPath() {
 
   // Load from flutter library name
   return flutterLib;
-
 }
 
 DynamicLibrary _openLibrary() => DynamicLibrary.open(_libraryPath());
@@ -53,50 +51,47 @@ typedef OpaqueMuSigPartialSig = OpaqueGeneric<MuSigPartialSigPtr>;
 
 /// Specialises Secp256k1Base to use the FFI
 class Secp256k1 extends Secp256k1Base<
-  Pointer<secp256k1_context>,
-  Pointer<UnsignedChar>,
-  PubKeyPtr,
-  Pointer<Size>,
-  Pointer<secp256k1_ecdsa_signature>,
-  Pointer<secp256k1_ecdsa_recoverable_signature>,
-  Pointer<secp256k1_keypair>,
-  Pointer<secp256k1_xonly_pubkey>,
-  Pointer<Int>,
-  MuSigAggCachePtr,
-  Pointer<PubKeyPtr>,
-  MuSigSecNoncePtr,
-  MuSigPublicNoncePtr,
-  Pointer<secp256k1_musig_aggnonce>,
-  Pointer<MuSigPublicNoncePtr>,
-  MuSigSessionPtr,
-  MuSigPartialSigPtr,
-  Pointer<MuSigPartialSigPtr>,
-  Pointer<Never>
-> {
-
+    Pointer<secp256k1_context>,
+    Pointer<UnsignedChar>,
+    PubKeyPtr,
+    Pointer<Size>,
+    Pointer<secp256k1_ecdsa_signature>,
+    Pointer<secp256k1_ecdsa_recoverable_signature>,
+    Pointer<secp256k1_keypair>,
+    Pointer<secp256k1_xonly_pubkey>,
+    Pointer<Int>,
+    MuSigAggCachePtr,
+    Pointer<PubKeyPtr>,
+    MuSigSecNoncePtr,
+    MuSigPublicNoncePtr,
+    Pointer<secp256k1_musig_aggnonce>,
+    Pointer<MuSigPublicNoncePtr>,
+    MuSigSessionPtr,
+    MuSigPartialSigPtr,
+    Pointer<MuSigPartialSigPtr>,
+    Pointer<Never>> {
   final _lib = NativeSecp256k1(_openLibrary());
 
   Secp256k1() {
-
     // Set functions
     extEcSeckeyVerify = _lib.secp256k1_ec_seckey_verify;
     extEcPubkeyCreate = _lib.secp256k1_ec_pubkey_create;
     extEcPubkeySerialize = _lib.secp256k1_ec_pubkey_serialize;
     extEcPubkeyParse = _lib.secp256k1_ec_pubkey_parse;
     extEcdsaSign = _lib.secp256k1_ecdsa_sign;
-    extEcdsaSignatureSerializeCompact
-      = _lib.secp256k1_ecdsa_signature_serialize_compact;
-    extEcdsaSignatureParseCompact
-      = _lib.secp256k1_ecdsa_signature_parse_compact;
+    extEcdsaSignatureSerializeCompact =
+        _lib.secp256k1_ecdsa_signature_serialize_compact;
+    extEcdsaSignatureParseCompact =
+        _lib.secp256k1_ecdsa_signature_parse_compact;
     extEcdsaSignatureNormalize = _lib.secp256k1_ecdsa_signature_normalize;
     extEcdsaSignatureSerializeDer =
-      _lib.secp256k1_ecdsa_signature_serialize_der;
+        _lib.secp256k1_ecdsa_signature_serialize_der;
     extEcdsaSignatureParseDer = _lib.secp256k1_ecdsa_signature_parse_der;
     extEcdsaVerify = _lib.secp256k1_ecdsa_verify;
-    extEcdsaRecoverableSignatureSerializeCompact
-      = _lib.secp256k1_ecdsa_recoverable_signature_serialize_compact;
-    extEcdsaRecoverableSignatureParseCompact
-      = _lib.secp256k1_ecdsa_recoverable_signature_parse_compact;
+    extEcdsaRecoverableSignatureSerializeCompact =
+        _lib.secp256k1_ecdsa_recoverable_signature_serialize_compact;
+    extEcdsaRecoverableSignatureParseCompact =
+        _lib.secp256k1_ecdsa_recoverable_signature_parse_compact;
     extEcdsaSignRecoverable = _lib.secp256k1_ecdsa_sign_recoverable;
     extEcdsaRecover = _lib.secp256k1_ecdsa_recover;
     extEcSeckeyTweakAdd = _lib.secp256k1_ec_seckey_tweak_add;
@@ -161,24 +156,21 @@ class Secp256k1 extends Secp256k1Base<
     if (_lib.secp256k1_context_randomize(ctxPtr, randArray.ptr) != 1) {
       throw Secp256k1Exception("Secp256k1 context couldn't be randomised");
     }
-
   }
 
   @override
-  HeapPointerArray<Pointer<PubKeyPtr>, PubKeyPtr> allocPubKeyArray(int size)
-    => HeapPointerArrayFfi.alloc(malloc(size), size, () => malloc());
+  HeapPointerArray<Pointer<PubKeyPtr>, PubKeyPtr> allocPubKeyArray(int size) =>
+      HeapPointerArrayFfi.alloc(malloc(size), size, () => malloc());
 
   @override
-  HeapPointerArray<
-    Pointer<MuSigPublicNoncePtr>, MuSigPublicNoncePtr
-  > setMuSigPubNonceArray(Iterable<Heap<MuSigPublicNoncePtr>> objs)
-    => HeapPointerArrayFfi.assign(malloc(objs.length), objs.cast());
+  HeapPointerArray<Pointer<MuSigPublicNoncePtr>, MuSigPublicNoncePtr>
+      setMuSigPubNonceArray(Iterable<Heap<MuSigPublicNoncePtr>> objs) =>
+          HeapPointerArrayFfi.assign(malloc(objs.length), objs.cast());
 
   @override
-  HeapPointerArray<
-    Pointer<MuSigPartialSigPtr>, MuSigPartialSigPtr
-  > setMuSigPartialSigArray(Iterable<Heap<MuSigPartialSigPtr>> objs)
-    => HeapPointerArrayFfi.assign(malloc(objs.length), objs.cast());
+  HeapPointerArray<Pointer<MuSigPartialSigPtr>, MuSigPartialSigPtr>
+      setMuSigPartialSigArray(Iterable<Heap<MuSigPartialSigPtr>> objs) =>
+          HeapPointerArrayFfi.assign(malloc(objs.length), objs.cast());
 
   @override
   Heap<MuSigAggCachePtr> allocMuSigCache() => HeapFfi(malloc());
@@ -201,5 +193,4 @@ class Secp256k1 extends Secp256k1Base<
 
   @override
   Heap<MuSigPartialSigPtr> allocMuSigPartialSig() => HeapFfi(malloc());
-
 }

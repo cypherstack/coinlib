@@ -113,7 +113,6 @@ final $name = base64Decode("$b64");""";
 }
 
 void main() async {
-
   String cmd = await getDockerCmd();
   print("Using $cmd to run dockerfile");
 
@@ -123,11 +122,11 @@ void main() async {
 
   // Build secp256k1 to wasm and copy wasm file to tempdir
   if (!await dockerRun(
-      cmd,
-      dockerfile,
-      "coinlib_build_secp256k1_wasm",
-      tmpDir,
-      "cp output/secp256k1.wasm /host/secp256k1.wasm",
+    cmd,
+    dockerfile,
+    "coinlib_build_secp256k1_wasm",
+    tmpDir,
+    "cp output/secp256k1.wasm /host/secp256k1.wasm",
   )) {
     exit(1);
   }
@@ -139,5 +138,4 @@ void main() async {
     "secp256k1WasmData",
   );
   print("Output secp256k1.wasm.g.dart successfully");
-
 }
