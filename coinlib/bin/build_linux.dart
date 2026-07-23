@@ -36,18 +36,16 @@ RUN cp /usr/local/lib/libsecp256k1.so.6.0.0 output/libsecp256k1.so
 """;
 
 void main() async {
-
   String cmd = await getDockerCmd();
   print("Using $cmd to run dockerfile");
 
   // Build secp256k1 and copy shared library to build directory
   if (!await dockerBuild(
-      cmd,
-      dockerfile,
-      "coinlib_build_secp256k1_linux",
-      "output/libsecp256k1.so",
+    cmd,
+    dockerfile,
+    "coinlib_build_secp256k1_linux",
+    "output/libsecp256k1.so",
   )) {
     exit(1);
   }
-
 }

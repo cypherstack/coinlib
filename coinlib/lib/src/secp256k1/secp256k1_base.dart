@@ -22,13 +22,25 @@ class OpaqueGeneric<Ptr> {
 }
 
 abstract class Secp256k1Base<
-  CtxPtr, UCharPtr, PubKeyPtr, SizeTPtr, SignaturePtr,
-  RecoverableSignaturePtr, KeyPairPtr, XPubKeyPtr, IntPtr, MuSigAggCachePtr,
-  PubKeyPtrPtr, MuSigSecNoncePtr, MuSigPubNoncePtr, MuSigAggNoncePtr,
-  MuSigPubNoncePtrPtr, MuSigSessionPtr, MuSigPartialSigPtr,
-  MuSigPartialSigPtrPtr, NullPtr
-> {
-
+    CtxPtr,
+    UCharPtr,
+    PubKeyPtr,
+    SizeTPtr,
+    SignaturePtr,
+    RecoverableSignaturePtr,
+    KeyPairPtr,
+    XPubKeyPtr,
+    IntPtr,
+    MuSigAggCachePtr,
+    PubKeyPtrPtr,
+    MuSigSecNoncePtr,
+    MuSigPubNoncePtr,
+    MuSigAggNoncePtr,
+    MuSigPubNoncePtrPtr,
+    MuSigSessionPtr,
+    MuSigPartialSigPtr,
+    MuSigPartialSigPtrPtr,
+    NullPtr> {
   static const contextNone = 1;
   static const compressedFlags = 258;
   static const uncompressedFlags = 2;
@@ -50,42 +62,79 @@ abstract class Secp256k1Base<
   late int Function(CtxPtr, UCharPtr) extEcSeckeyVerify;
   late int Function(CtxPtr, PubKeyPtr, UCharPtr) extEcPubkeyCreate;
   late int Function(
-    CtxPtr, UCharPtr, SizeTPtr, PubKeyPtr, int,
+    CtxPtr,
+    UCharPtr,
+    SizeTPtr,
+    PubKeyPtr,
+    int,
   ) extEcPubkeySerialize;
   late int Function(CtxPtr, PubKeyPtr, UCharPtr, int) extEcPubkeyParse;
   late int Function(
-    CtxPtr, UCharPtr, SignaturePtr,
+    CtxPtr,
+    UCharPtr,
+    SignaturePtr,
   ) extEcdsaSignatureSerializeCompact;
   late int Function(
-    CtxPtr, SignaturePtr, UCharPtr,
+    CtxPtr,
+    SignaturePtr,
+    UCharPtr,
   ) extEcdsaSignatureParseCompact;
   late int Function(
-    CtxPtr, SignaturePtr, SignaturePtr,
+    CtxPtr,
+    SignaturePtr,
+    SignaturePtr,
   ) extEcdsaSignatureNormalize;
   late int Function(
-    CtxPtr, UCharPtr, SizeTPtr, SignaturePtr,
+    CtxPtr,
+    UCharPtr,
+    SizeTPtr,
+    SignaturePtr,
   ) extEcdsaSignatureSerializeDer;
   late int Function(
-    CtxPtr, SignaturePtr, UCharPtr, int,
+    CtxPtr,
+    SignaturePtr,
+    UCharPtr,
+    int,
   ) extEcdsaSignatureParseDer;
   late int Function(
-    CtxPtr, SignaturePtr, UCharPtr, UCharPtr, NullPtr, NullPtr,
+    CtxPtr,
+    SignaturePtr,
+    UCharPtr,
+    UCharPtr,
+    NullPtr,
+    NullPtr,
   ) extEcdsaSign;
   late int Function(
-    CtxPtr, SignaturePtr, UCharPtr, PubKeyPtr,
+    CtxPtr,
+    SignaturePtr,
+    UCharPtr,
+    PubKeyPtr,
   ) extEcdsaVerify;
   late int Function(
-    CtxPtr, UCharPtr, IntPtr, RecoverableSignaturePtr,
+    CtxPtr,
+    UCharPtr,
+    IntPtr,
+    RecoverableSignaturePtr,
   ) extEcdsaRecoverableSignatureSerializeCompact;
   late int Function(
-    CtxPtr, RecoverableSignaturePtr, UCharPtr, int,
+    CtxPtr,
+    RecoverableSignaturePtr,
+    UCharPtr,
+    int,
   ) extEcdsaRecoverableSignatureParseCompact;
   late int Function(
-    CtxPtr, RecoverableSignaturePtr, UCharPtr, UCharPtr, NullPtr,
+    CtxPtr,
+    RecoverableSignaturePtr,
+    UCharPtr,
+    UCharPtr,
+    NullPtr,
     NullPtr,
   ) extEcdsaSignRecoverable;
   late int Function(
-    CtxPtr, PubKeyPtr, RecoverableSignaturePtr, UCharPtr,
+    CtxPtr,
+    PubKeyPtr,
+    RecoverableSignaturePtr,
+    UCharPtr,
   ) extEcdsaRecover;
   late int Function(CtxPtr, UCharPtr, UCharPtr) extEcSeckeyTweakAdd;
   late int Function(CtxPtr, PubKeyPtr, UCharPtr) extEcPubkeyTweakAdd;
@@ -96,59 +145,115 @@ abstract class Secp256k1Base<
   late int Function(CtxPtr, XPubKeyPtr, UCharPtr) extXOnlyPubkeyParse;
   late int Function(CtxPtr, UCharPtr, XPubKeyPtr) extXOnlyPubkeySerialize;
   late int Function(
-    CtxPtr, UCharPtr, UCharPtr, KeyPairPtr, UCharPtr,
+    CtxPtr,
+    UCharPtr,
+    UCharPtr,
+    KeyPairPtr,
+    UCharPtr,
   ) extSchnorrSign32;
   late int Function(
-    CtxPtr, UCharPtr, UCharPtr, int, XPubKeyPtr,
+    CtxPtr,
+    UCharPtr,
+    UCharPtr,
+    int,
+    XPubKeyPtr,
   ) extSchnorrVerify;
   late int Function(
-    CtxPtr, UCharPtr, PubKeyPtr, UCharPtr, NullPtr, NullPtr,
+    CtxPtr,
+    UCharPtr,
+    PubKeyPtr,
+    UCharPtr,
+    NullPtr,
+    NullPtr,
   ) extEcdh;
 
   // MuSig2 relevant functions
   late int Function(CtxPtr, PubKeyPtrPtr, int) extEcPubkeySort;
   late int Function(
-    CtxPtr, XPubKeyPtr, MuSigAggCachePtr, PubKeyPtrPtr, int,
+    CtxPtr,
+    XPubKeyPtr,
+    MuSigAggCachePtr,
+    PubKeyPtrPtr,
+    int,
   ) extMuSigPubkeyAgg;
   late int Function(
-    CtxPtr, PubKeyPtr, MuSigAggCachePtr, UCharPtr,
+    CtxPtr,
+    PubKeyPtr,
+    MuSigAggCachePtr,
+    UCharPtr,
   ) extMuSigPubkeyXOnlyTweakAdd;
   late int Function(
-    CtxPtr, MuSigSecNoncePtr, MuSigPubNoncePtr, UCharPtr, NullPtr, PubKeyPtr,
-    NullPtr, NullPtr, NullPtr,
+    CtxPtr,
+    MuSigSecNoncePtr,
+    MuSigPubNoncePtr,
+    UCharPtr,
+    NullPtr,
+    PubKeyPtr,
+    NullPtr,
+    NullPtr,
+    NullPtr,
   ) extMuSigNonceGen;
   late int Function(CtxPtr, MuSigPubNoncePtr, UCharPtr) extMuSigPubNonceParse;
   late int Function(
-    CtxPtr, UCharPtr, MuSigPubNoncePtr,
+    CtxPtr,
+    UCharPtr,
+    MuSigPubNoncePtr,
   ) extMuSigPubNonceSerialize;
   late int Function(
-    CtxPtr, MuSigAggNoncePtr, MuSigPubNoncePtrPtr, int,
+    CtxPtr,
+    MuSigAggNoncePtr,
+    MuSigPubNoncePtrPtr,
+    int,
   ) extMuSigNonceAgg;
   late int Function(
-    CtxPtr, MuSigSessionPtr, MuSigAggNoncePtr, UCharPtr, MuSigAggCachePtr,
+    CtxPtr,
+    MuSigSessionPtr,
+    MuSigAggNoncePtr,
+    UCharPtr,
+    MuSigAggCachePtr,
     NullPtr,
   ) extMuSigNonceProcess;
   late int Function(
-    CtxPtr, MuSigPartialSigPtr, MuSigSecNoncePtr, KeyPairPtr, MuSigAggCachePtr,
+    CtxPtr,
+    MuSigPartialSigPtr,
+    MuSigSecNoncePtr,
+    KeyPairPtr,
+    MuSigAggCachePtr,
     MuSigSessionPtr,
   ) extMuSigPartialSign;
   late int Function(
-    CtxPtr, MuSigPartialSigPtr, UCharPtr,
+    CtxPtr,
+    MuSigPartialSigPtr,
+    UCharPtr,
   ) extMuSigPartialSigParse;
   late int Function(
-    CtxPtr, UCharPtr, MuSigPartialSigPtr,
+    CtxPtr,
+    UCharPtr,
+    MuSigPartialSigPtr,
   ) extMuSigPartialSigSerialize;
   late int Function(
-    CtxPtr, MuSigPartialSigPtr, MuSigPubNoncePtr, PubKeyPtr, MuSigAggCachePtr,
+    CtxPtr,
+    MuSigPartialSigPtr,
+    MuSigPubNoncePtr,
+    PubKeyPtr,
+    MuSigAggCachePtr,
     MuSigSessionPtr,
   ) extMuSigPartialSigVerify;
   late int Function(
-    CtxPtr, UCharPtr, MuSigSessionPtr, MuSigPartialSigPtrPtr, int,
+    CtxPtr,
+    UCharPtr,
+    MuSigSessionPtr,
+    MuSigPartialSigPtrPtr,
+    int,
   ) extMuSigPartialSigAgg;
   late int Function(CtxPtr, IntPtr, MuSigSessionPtr) extMuSigNonceParity;
   late int Function(CtxPtr, UCharPtr, UCharPtr, UCharPtr, int) extMuSigAdapt;
   late int Function(
-    CtxPtr, UCharPtr, UCharPtr, UCharPtr, int,
+    CtxPtr,
+    UCharPtr,
+    UCharPtr,
+    UCharPtr,
+    int,
   ) extMuSigExtractAdaptor;
 
   // Heap arrays
@@ -183,22 +288,24 @@ abstract class Secp256k1Base<
   late NullPtr nullPtr;
 
   Uint8List _serializePubKeyFromPtr(bool compressed) {
-
     sizeT.value = compressed
-      ? Secp256k1Base.compressedPubkeySize
-      : Secp256k1Base.uncompressedPubkeySize;
+        ? Secp256k1Base.compressedPubkeySize
+        : Secp256k1Base.uncompressedPubkeySize;
 
     final flags = compressed
-      ? Secp256k1Base.compressedFlags
-      : Secp256k1Base.uncompressedFlags;
+        ? Secp256k1Base.compressedFlags
+        : Secp256k1Base.uncompressedFlags;
 
     extEcPubkeySerialize(
-      ctxPtr, serializedPubKeyArray.ptr, sizeT.ptr, pubKey.ptr, flags,
+      ctxPtr,
+      serializedPubKeyArray.ptr,
+      sizeT.ptr,
+      pubKey.ptr,
+      flags,
     );
 
     // Return a sized copy of public key
     return serializedPubKeyArray.copyNBytes(sizeT.value);
-
   }
 
   Uint8List _serializeXPubKeyFromPtr() {
@@ -213,33 +320,38 @@ abstract class Secp256k1Base<
 
   void _parsePubkeyIntoPtr(Uint8List bytes, [PubKeyPtr? ptr]) {
     serializedPubKeyArray.load(bytes);
-    if (
-      extEcPubkeyParse(
-        ctxPtr, ptr ?? pubKey.ptr, serializedPubKeyArray.ptr, bytes.length,
-      ) != 1
-    ) {
+    if (extEcPubkeyParse(
+          ctxPtr,
+          ptr ?? pubKey.ptr,
+          serializedPubKeyArray.ptr,
+          bytes.length,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid public key");
     }
   }
 
   void _parseSignatureIntoPtr(Uint8List signature) {
     serializedSigArray.load(signature);
-    if (
-      extEcdsaSignatureParseCompact(
-        ctxPtr, sig.ptr, serializedSigArray.ptr,
-      ) != 1
-    ) {
+    if (extEcdsaSignatureParseCompact(
+          ctxPtr,
+          sig.ptr,
+          serializedSigArray.ptr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid compact signature");
     }
   }
 
   void _parseRecoverableSignatureIntoPtr(Uint8List signature, int recid) {
     serializedSigArray.load(signature);
-    if (
-      extEcdsaRecoverableSignatureParseCompact(
-        ctxPtr, recSig.ptr, serializedSigArray.ptr, recid,
-      ) != 1
-    ) {
+    if (extEcdsaRecoverableSignatureParseCompact(
+          ctxPtr,
+          recSig.ptr,
+          serializedSigArray.ptr,
+          recid,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid compact recoverable signature");
     }
   }
@@ -292,20 +404,20 @@ abstract class Secp256k1Base<
   }
 
   /// Returns true if a compressed or uncompressed public key is valid.
-  bool pubKeyVerify(Uint8List pubKey)
-    => _noRaiseAfterRequireLoad(() => _parsePubkeyIntoPtr(pubKey));
+  bool pubKeyVerify(Uint8List pubKey) =>
+      _noRaiseAfterRequireLoad(() => _parsePubkeyIntoPtr(pubKey));
 
   /// Returns true if the compact [signature] can be parsed with valid R and S
   /// values
-  bool ecdsaCompactSignatureVerify(Uint8List signature)
-    => _noRaiseAfterRequireLoad(() => _parseSignatureIntoPtr(signature));
+  bool ecdsaCompactSignatureVerify(Uint8List signature) =>
+      _noRaiseAfterRequireLoad(() => _parseSignatureIntoPtr(signature));
 
   /// Returns true if the compact recoverable signature can be parsed given the
   /// [signature] and [recid]
-  bool ecdsaCompactRecoverableSignatureVerify(Uint8List signature, int recid)
-    => _noRaiseAfterRequireLoad(
-      () => _parseRecoverableSignatureIntoPtr(signature, recid),
-    );
+  bool ecdsaCompactRecoverableSignatureVerify(Uint8List signature, int recid) =>
+      _noRaiseAfterRequireLoad(
+        () => _parseRecoverableSignatureIntoPtr(signature, recid),
+      );
 
   /// Converts a 32-byte [privKey] into a either a 33-byte compressed or a
   /// 65-byte uncompressed public key.
@@ -320,7 +432,6 @@ abstract class Secp256k1Base<
     }
 
     return _serializePubKeyFromPtr(compressed);
-
   }
 
   /// Takes a [signature] and returns an equally valid signature that has a low
@@ -343,7 +454,6 @@ abstract class Secp256k1Base<
     extEcdsaSignatureSerializeDer(ctxPtr, derSigArray.ptr, sizeT.ptr, sig.ptr);
 
     return derSigArray.copyNBytes(sizeT.value);
-
   }
 
   /// Takes a BIP66 DER ([der]) representation of a signature and returns the
@@ -353,16 +463,17 @@ abstract class Secp256k1Base<
 
     derSigArray.load(der);
 
-    if (
-      extEcdsaSignatureParseDer(
-        ctxPtr, sig.ptr, derSigArray.ptr, der.length,
-      ) != 1
-    ) {
+    if (extEcdsaSignatureParseDer(
+          ctxPtr,
+          sig.ptr,
+          derSigArray.ptr,
+          der.length,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid DER signature");
     }
 
     return _serializeSignatureFromPtr();
-
   }
 
   /// Constructs a signature in the compact format using a 32-byte message
@@ -371,8 +482,10 @@ abstract class Secp256k1Base<
   /// Signatures are deterministic according to RFC6979. Additional entropy may
   /// be added as 32 bytes with [extraEntropy].
   Uint8List ecdsaSign(
-    Uint8List hash, Uint8List privKey, [Uint8List? extraEntropy,]
-  ) {
+    Uint8List hash,
+    Uint8List privKey, [
+    Uint8List? extraEntropy,
+  ]) {
     _requireLoad();
 
     key32Array.load(privKey);
@@ -380,25 +493,23 @@ abstract class Secp256k1Base<
     if (extraEntropy != null) entropyArray.load(extraEntropy);
 
     // Sign
-    if (
-      extEcdsaSign(
-        ctxPtr, sig.ptr, hashArray.ptr, key32Array.ptr,
-        // Passing null will give secp256k1_nonce_function_rfc6979. If secp256k1
-        // changes this default function in the future,
-        // secp256k1_nonce_function_rfc6979 should be used directly.
-        // Using null as it doesn't require passing an additional constant from
-        // the web and io implementations.
-        nullPtr,
-        // The pointer is not actually null when entropy is provided but NullPtr
-        // works for void pointers too
-        extraEntropy == null ? nullPtr : entropyArray.ptr as NullPtr,
-      ) != 1
-    ) {
+    if (extEcdsaSign(
+          ctxPtr, sig.ptr, hashArray.ptr, key32Array.ptr,
+          // Passing null will give secp256k1_nonce_function_rfc6979. If secp256k1
+          // changes this default function in the future,
+          // secp256k1_nonce_function_rfc6979 should be used directly.
+          // Using null as it doesn't require passing an additional constant from
+          // the web and io implementations.
+          nullPtr,
+          // The pointer is not actually null when entropy is provided but NullPtr
+          // works for void pointers too
+          extraEntropy == null ? nullPtr : entropyArray.ptr as NullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot sign message with private key");
     }
 
     return _serializeSignatureFromPtr();
-
   }
 
   /// Verifies a compact [signature] against a 32-byte [hash] for a
@@ -411,7 +522,6 @@ abstract class Secp256k1Base<
     hashArray.load(hash);
 
     return extEcdsaVerify(ctxPtr, sig.ptr, hashArray.ptr, pubKey.ptr) == 1;
-
   }
 
   SigWithRecId ecdsaSignRecoverable(Uint8List hash, Uint8List privKey) {
@@ -420,19 +530,25 @@ abstract class Secp256k1Base<
     key32Array.load(privKey);
     hashArray.load(hash);
 
-    if (
-      extEcdsaSignRecoverable(
-        ctxPtr, recSig.ptr, hashArray.ptr, key32Array.ptr, nullPtr, nullPtr,
-      ) != 1
-    ) {
+    if (extEcdsaSignRecoverable(
+          ctxPtr,
+          recSig.ptr,
+          hashArray.ptr,
+          key32Array.ptr,
+          nullPtr,
+          nullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot sign message with private key");
     }
 
     extEcdsaRecoverableSignatureSerializeCompact(
-      ctxPtr, serializedSigArray.ptr, recId.ptr, recSig.ptr,
+      ctxPtr,
+      serializedSigArray.ptr,
+      recId.ptr,
+      recSig.ptr,
     );
     return SigWithRecId(serializedSigArray.copy, recId.value);
-
   }
 
   /// Takes a compact recoverable [signature] with [recid] and message [hash]
@@ -440,7 +556,10 @@ abstract class Secp256k1Base<
   /// public key will be compressed or else it shall be uncompressed. Will
   /// return null if no public key can be extracted.
   Uint8List? ecdaSignatureRecoverPubKey(
-    Uint8List signature, int recid, Uint8List hash, bool compressed,
+    Uint8List signature,
+    int recid,
+    Uint8List hash,
+    bool compressed,
   ) {
     _requireLoad();
 
@@ -452,7 +571,6 @@ abstract class Secp256k1Base<
     }
 
     return _serializePubKeyFromPtr(compressed);
-
   }
 
   /// Tweaks a 32-byte private key ([privKey]) by a [scalar]. Returns null if a
@@ -468,7 +586,6 @@ abstract class Secp256k1Base<
     }
 
     return key32Array.copy;
-
   }
 
   /// Tweaks a public key ([pubKeyBytes]) by adding the generator point multiplied by
@@ -477,7 +594,9 @@ abstract class Secp256k1Base<
   /// not be created. Will return a compressed public key if [compressed] is
   /// true regardless of the size of the passed [pubKey].
   Uint8List? pubKeyTweak(
-    Uint8List pubKeyBytes, Uint8List scalar, bool compressed,
+    Uint8List pubKeyBytes,
+    Uint8List scalar,
+    bool compressed,
   ) {
     _requireLoad();
 
@@ -489,7 +608,6 @@ abstract class Secp256k1Base<
     }
 
     return _serializePubKeyFromPtr(compressed);
-
   }
 
   /// Takes a 32-byte private key ([privKey]) and negates it.
@@ -503,7 +621,6 @@ abstract class Secp256k1Base<
     }
 
     return key32Array.copy;
-
   }
 
   /// Constructs a 64-byte Schnorr signature for the 32-byte message [hash] and
@@ -512,25 +629,28 @@ abstract class Secp256k1Base<
   /// but the Peercoin client does not use it and it causes signatures to lose
   /// determinism.
   Uint8List schnorrSign(
-    Uint8List hash, Uint8List privKey, [Uint8List? extraEntropy,]
-  ) {
+    Uint8List hash,
+    Uint8List privKey, [
+    Uint8List? extraEntropy,
+  ]) {
     _requireLoad();
 
     _parsePrivKeyIntoKeyPairPtr(privKey);
     hashArray.load(hash);
     if (extraEntropy != null) entropyArray.load(extraEntropy);
 
-    if (
-      extSchnorrSign32(
-        ctxPtr, serializedSigArray.ptr, hashArray.ptr, keyPair.ptr,
-        extraEntropy == null ? nullPtr as UCharPtr : entropyArray.ptr,
-      ) != 1
-    ) {
+    if (extSchnorrSign32(
+          ctxPtr,
+          serializedSigArray.ptr,
+          hashArray.ptr,
+          keyPair.ptr,
+          extraEntropy == null ? nullPtr as UCharPtr : entropyArray.ptr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot sign Schnorr signature");
     }
 
     return serializedSigArray.copy;
-
   }
 
   /// Verifies a 64-byte Schnorr [signature] against a 32-byte [hash] with a
@@ -543,9 +663,13 @@ abstract class Secp256k1Base<
     _parseXPubKeyIntoPtr(xBytes);
 
     return extSchnorrVerify(
-      ctxPtr, serializedSigArray.ptr, hashArray.ptr, 32, xPubKey.ptr,
-    ) == 1;
-
+          ctxPtr,
+          serializedSigArray.ptr,
+          hashArray.ptr,
+          32,
+          xPubKey.ptr,
+        ) ==
+        1;
   }
 
   /// Generates a Diffie-Hellman shared 32-byte hash between a private and
@@ -556,17 +680,19 @@ abstract class Secp256k1Base<
     key32Array.load(privKey);
     _parsePubkeyIntoPtr(pubKeyBytes);
 
-    if (
-      extEcdh(
-        ctxPtr, hashArray.ptr, pubKey.ptr, key32Array.ptr, nullPtr,
-        nullPtr,
-      ) != 1
-    ) {
+    if (extEcdh(
+          ctxPtr,
+          hashArray.ptr,
+          pubKey.ptr,
+          key32Array.ptr,
+          nullPtr,
+          nullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot generate ECDH shared key");
     }
 
     return hashArray.copy;
-
   }
 
   /// Given a list of 32-byte x-only [pubKeysBytes], orders and aggregates them
@@ -594,16 +720,18 @@ abstract class Secp256k1Base<
 
     // Aggregate public keys
     final musigCache = allocMuSigCache();
-    if (
-      extMuSigPubkeyAgg(
-        ctxPtr, xPubKey.ptr, musigCache.ptr, heapPubKeys.ptr, n,
-      ) != 1
-    ) {
+    if (extMuSigPubkeyAgg(
+          ctxPtr,
+          xPubKey.ptr,
+          musigCache.ptr,
+          heapPubKeys.ptr,
+          n,
+        ) !=
+        1) {
       throw Secp256k1Exception("Couldn't aggregate public keys for MuSig2");
     }
 
     return (_serializeXPubKeyFromPtr(), OpaqueGeneric(musigCache));
-
   }
 
   /// Tweaks the aggregate MuSig key returning the new aggregate key and cache.
@@ -620,16 +748,17 @@ abstract class Secp256k1Base<
     // Copy cache to avoid side-effects
     final newCache = copyMuSigCache(cache._heap.ptr);
 
-    if (
-      extMuSigPubkeyXOnlyTweakAdd(
-        ctxPtr, pubKey.ptr, newCache.ptr, scalarArray.ptr,
-      ) != 1
-    ) {
+    if (extMuSigPubkeyXOnlyTweakAdd(
+          ctxPtr,
+          pubKey.ptr,
+          newCache.ptr,
+          scalarArray.ptr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Couldn't apply tweak to MuSig key");
     }
 
     return (_serializePubKeyFromPtr(true), OpaqueGeneric(newCache));
-
   }
 
   /// Generates and returns an opaque secret and opaque public nonce for a MuSig
@@ -641,8 +770,8 @@ abstract class Secp256k1Base<
   /// The [pubKeyBytes] must be the compressed or uncompressed public key used
   /// by the signer.
   (
-   OpaqueGeneric<MuSigSecNoncePtr>,
-   OpaqueGeneric<MuSigPubNoncePtr>,
+    OpaqueGeneric<MuSigSecNoncePtr>,
+    OpaqueGeneric<MuSigPubNoncePtr>,
   ) muSigGenerateNonce(
     Uint8List pubKeyBytes,
   ) {
@@ -654,17 +783,22 @@ abstract class Secp256k1Base<
     final secNonce = allocMuSigSecNonce();
     final pubNonce = allocMuSigPubNonce();
 
-    if (
-      extMuSigNonceGen(
-        ctxPtr, secNonce.ptr, pubNonce.ptr, entropyArray.ptr, nullPtr,
-        pubKey.ptr, nullPtr, nullPtr, nullPtr,
-      ) != 1
-    ) {
+    if (extMuSigNonceGen(
+          ctxPtr,
+          secNonce.ptr,
+          pubNonce.ptr,
+          entropyArray.ptr,
+          nullPtr,
+          pubKey.ptr,
+          nullPtr,
+          nullPtr,
+          nullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Couldn't generate MuSig nonce for key");
     }
 
     return (OpaqueGeneric(secNonce), OpaqueGeneric(pubNonce));
-
   }
 
   /// Returns an opaque public MuSig2 nonce from the 66-byte [bytes]. If the
@@ -684,7 +818,6 @@ abstract class Secp256k1Base<
     }
 
     return OpaqueGeneric(nonce);
-
   }
 
   /// Obtains the 66 byte serialised public MuSig nonce
@@ -705,9 +838,9 @@ abstract class Secp256k1Base<
   OpaqueGeneric<MuSigSessionPtr> muSigCreateSigningSession(
     OpaqueGeneric<MuSigAggCachePtr> cache,
     Set<OpaqueGeneric<MuSigPubNoncePtr>> nonces,
-    Uint8List msg,
-    [Uint8List? adaptorPoint,]
-  ) {
+    Uint8List msg, [
+    Uint8List? adaptorPoint,
+  ]) {
     _requireLoad();
 
     hashArray.load(msg);
@@ -716,28 +849,31 @@ abstract class Secp256k1Base<
       nonces.map((opaque) => opaque._heap),
     );
 
-    if (
-      extMuSigNonceAgg(
-        ctxPtr, muSigAggNonce.ptr, nonceArray.ptr, nonces.length,
-      ) != 1
-    ) {
+    if (extMuSigNonceAgg(
+          ctxPtr,
+          muSigAggNonce.ptr,
+          nonceArray.ptr,
+          nonces.length,
+        ) !=
+        1) {
       throw Secp256k1Exception("Could not aggregate MuSig nonces");
     }
 
     final session = allocMuSigSession();
 
-    if (
-      extMuSigNonceProcess(
-        ctxPtr, session.ptr, muSigAggNonce.ptr, hashArray.ptr,
-        cache._heap.ptr,
-        adaptorPoint == null ? nullPtr : pubKey.ptr as NullPtr,
-      ) != 1
-    ) {
+    if (extMuSigNonceProcess(
+          ctxPtr,
+          session.ptr,
+          muSigAggNonce.ptr,
+          hashArray.ptr,
+          cache._heap.ptr,
+          adaptorPoint == null ? nullPtr : pubKey.ptr as NullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Could not process MuSig aggregate nonce");
     }
 
     return OpaqueGeneric(session);
-
   }
 
   /// Produces a partial signature for the MuSig signing [session] using the
@@ -756,17 +892,19 @@ abstract class Secp256k1Base<
 
     final partialSig = allocMuSigPartialSig();
 
-    if (
-      extMuSigPartialSign(
-        ctxPtr, partialSig.ptr, secNonce._heap.ptr, keyPair.ptr,
-        cache._heap.ptr, session._heap.ptr,
-      ) != 1
-    ) {
+    if (extMuSigPartialSign(
+          ctxPtr,
+          partialSig.ptr,
+          secNonce._heap.ptr,
+          keyPair.ptr,
+          cache._heap.ptr,
+          session._heap.ptr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Could not create partial MuSig signature");
     }
 
     return OpaqueGeneric(partialSig);
-
   }
 
   /// Returns an opaque MuSig2 partial signature from the 32-byte [bytes].
@@ -787,7 +925,6 @@ abstract class Secp256k1Base<
     }
 
     return OpaqueGeneric(partialSig);
-
   }
 
   /// Obtains the serialised 32 bytes of a MuSig partial signature
@@ -811,10 +948,14 @@ abstract class Secp256k1Base<
     _parsePubkeyIntoPtr(pubKeyBytes);
 
     return extMuSigPartialSigVerify(
-      ctxPtr, partialSig._heap.ptr, pubNonce._heap.ptr, pubKey.ptr,
-      cache._heap.ptr, session._heap.ptr,
-    ) == 1;
-
+          ctxPtr,
+          partialSig._heap.ptr,
+          pubNonce._heap.ptr,
+          pubKey.ptr,
+          cache._heap.ptr,
+          session._heap.ptr,
+        ) ==
+        1;
   }
 
   /// Takes a set of [partialSigs] for a given MuSig [session] and then returns
@@ -829,17 +970,18 @@ abstract class Secp256k1Base<
       partialSigs.map((partial) => partial._heap),
     );
 
-    if (
-      extMuSigPartialSigAgg(
-        ctxPtr, serializedSigArray.ptr, session._heap.ptr, partialSigArray.ptr,
-        partialSigs.length,
-      ) != 1
-    ) {
+    if (extMuSigPartialSigAgg(
+          ctxPtr,
+          serializedSigArray.ptr,
+          session._heap.ptr,
+          partialSigArray.ptr,
+          partialSigs.length,
+        ) !=
+        1) {
       throw Secp256k1Exception("Could not aggregate partial signatures");
     }
 
     return serializedSigArray.copy;
-
   }
 
   /// Gets the nonce parity (true if odd) from the MuSig [session].
@@ -853,7 +995,6 @@ abstract class Secp256k1Base<
     }
 
     return integer.value == 1;
-
   }
 
   /// Takes a 64-byte adaptor pre-signature ([preSig]) and a 32-byte scalar
@@ -868,17 +1009,18 @@ abstract class Secp256k1Base<
     serializedSigArray.load(preSig);
     scalarArray.load(adaptor);
 
-    if (
-      extMuSigAdapt(
-        ctxPtr, serializedSigArray.ptr, serializedSigArray.ptr, scalarArray.ptr,
-        parity ? 1 : 0,
-      ) != 1
-    ) {
+    if (extMuSigAdapt(
+          ctxPtr,
+          serializedSigArray.ptr,
+          serializedSigArray.ptr,
+          scalarArray.ptr,
+          parity ? 1 : 0,
+        ) !=
+        1) {
       throw Secp256k1Exception("Could not adapt Schnorr signature");
     }
 
     return serializedSigArray.copy;
-
   }
 
   /// Given an adaptor pre-signature, a completed signature and the nonce
@@ -887,24 +1029,27 @@ abstract class Secp256k1Base<
   /// The caller must ensure each signature is 64 bytes. Overflowing data in the
   /// [preSig] or [completeSig] will result in a [Secp256k1Exception].
   Uint8List extractSchnorrAdaptor(
-    Uint8List preSig, Uint8List completeSig, bool parity,
+    Uint8List preSig,
+    Uint8List completeSig,
+    bool parity,
   ) {
     _requireLoad();
 
     preSigArray.load(preSig);
     serializedSigArray.load(completeSig);
 
-    if (
-      extMuSigExtractAdaptor(
-        ctxPtr, scalarArray.ptr, serializedSigArray.ptr, preSigArray.ptr,
-        parity ? 1 : 0,
-      ) != 1
-    ) {
+    if (extMuSigExtractAdaptor(
+          ctxPtr,
+          scalarArray.ptr,
+          serializedSigArray.ptr,
+          preSigArray.ptr,
+          parity ? 1 : 0,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot extract Schnorr signature adaptor");
     }
 
     return scalarArray.copy;
-
   }
 
   /// Specialised sub-classes should override to allocate a [size] number of
@@ -915,16 +1060,15 @@ abstract class Secp256k1Base<
   /// Specialised sub-classes should override to allocate an array to
   /// secp256k1_musig_pubnonce pointers and then set the heap objects in [objs]
   /// as pointers in this array.
-  HeapPointerArray<
-    MuSigPubNoncePtrPtr, MuSigPubNoncePtr
-  > setMuSigPubNonceArray(Iterable<Heap<MuSigPubNoncePtr>> objs);
+  HeapPointerArray<MuSigPubNoncePtrPtr, MuSigPubNoncePtr> setMuSigPubNonceArray(
+    Iterable<Heap<MuSigPubNoncePtr>> objs,
+  );
 
   /// Specialised sub-classes should override to allocate an array to
   /// secp256k1_musig_partial_sig pointers and then set the heap objects in
   /// [objs] as pointers in this array.
-  HeapPointerArray<
-    MuSigPartialSigPtrPtr, MuSigPartialSigPtr
-  > setMuSigPartialSigArray(Iterable<Heap<MuSigPartialSigPtr>> objs);
+  HeapPointerArray<MuSigPartialSigPtrPtr, MuSigPartialSigPtr>
+      setMuSigPartialSigArray(Iterable<Heap<MuSigPartialSigPtr>> objs);
 
   /// Specialised sub-classes should override to allocate an
   /// secp256k1_musig_keyagg_cache on the heap.
@@ -950,5 +1094,4 @@ abstract class Secp256k1Base<
   /// Specialised sub-classes should override to allocate an
   /// secp256k1_musig_partial_sig on the heap.
   Heap<MuSigPartialSigPtr> allocMuSigPartialSig();
-
 }

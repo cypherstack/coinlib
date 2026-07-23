@@ -9,11 +9,12 @@ typedef KeyToNonceMap = Map<ECPublicKey, MuSigPublicNonce>;
 /// prevent re-use of earlier parts of the signing session, ensuring signing
 /// nonces are used no more than once.
 class MuSigStatefulSigningSession {
-
   /// The keys being used for MuSig2
   final MuSigPublicKeys keys;
+
   /// The public key of the signer
   final ECPublicKey ourPublicKey;
+
   /// The public signing nonce that must be shared with all other signers
   late final MuSigPublicNonce ourPublicNonce;
 
@@ -35,7 +36,6 @@ class MuSigStatefulSigningSession {
     required this.keys,
     required this.ourPublicKey,
   }) {
-
     if (!keys.pubKeys.contains(ourPublicKey)) {
       throw ArgumentError.value(
         ourPublicKey,
@@ -47,7 +47,6 @@ class MuSigStatefulSigningSession {
     final (secret, public) = secp256k1.muSigGenerateNonce(ourPublicKey.data);
     _ourSecretNonce = secret;
     ourPublicNonce = MuSigPublicNonce._fromUnderlying(public);
-
   }
 
   /// Produces a partial signature with the required details. This can only be
@@ -68,7 +67,6 @@ class MuSigStatefulSigningSession {
     required ECPrivateKey privKey,
     ECPublicKey? adaptor,
   }) {
-
     checkBytes(hash, 32);
 
     // Check private key matches the participant's public key
@@ -87,10 +85,8 @@ class MuSigStatefulSigningSession {
 
     // Check the number of nonces and existance of keys
     final otherKeys = keys.pubKeys.where((key) => key != ourPublicKey).toSet();
-    if (
-      !otherNonces.keys.toSet().containsAll(otherKeys)
-      || otherKeys.length != otherNonces.length
-    ) {
+    if (!otherNonces.keys.toSet().containsAll(otherKeys) ||
+        otherKeys.length != otherNonces.length) {
       throw ArgumentError.value(
         otherNonces,
         "otherNonces",
@@ -113,10 +109,12 @@ class MuSigStatefulSigningSession {
 
     // Produce partial signature
     _ourPartialSig = secp256k1.muSigPartialSign(
-      _ourSecretNonce, privKey.data, keys._aggCache, _underlyingSession!,
+      _ourSecretNonce,
+      privKey.data,
+      keys._aggCache,
+      _underlyingSession!,
     );
     return MuSigPartialSig._fromUnderlying(_ourPartialSig!);
-
   }
 
   /// Adds the partial signature ([partialSig]) of a participant with the
@@ -132,7 +130,6 @@ class MuSigStatefulSigningSession {
     required MuSigPartialSig partialSig,
     required ECPublicKey participantKey,
   }) {
-
     if (_underlyingSession == null) {
       throw StateError("Need to call sign first");
     }
@@ -166,16 +163,14 @@ class MuSigStatefulSigningSession {
     }
 
     return valid;
-
   }
 
   /// Returns true if a valid partial signature was processed with
   /// [addPartialSignature] for the [participantKey].
   bool havePartialSignature(ECPublicKey participantKey) =>
-    _partialSigs.containsKey(participantKey);
+      _partialSigs.containsKey(participantKey);
 
   MuSigResult finish() {
-
     if (_underlyingSession == null) {
       throw StateError("Need to call sign before finishing");
     }
@@ -190,20 +185,18 @@ class MuSigStatefulSigningSession {
 
     final sig = SchnorrSignature(
       secp256k1.muSigSignatureAggregate(
-        { _ourPartialSig!, ..._partialSigs.values },
+        {_ourPartialSig!, ..._partialSigs.values},
         _underlyingSession!,
       ),
     );
 
     return _isAdaptor
-      ? MuSigResultAdaptor._(
-        SchnorrAdaptorSignature(
-          sig,
-          secp256k1.muSigNonceParity(_underlyingSession!),
-        ),
-      )
-      : MuSigResultComplete._(sig);
-
+        ? MuSigResultAdaptor._(
+            SchnorrAdaptorSignature(
+              sig,
+              secp256k1.muSigNonceParity(_underlyingSession!),
+            ),
+          )
+        : MuSigResultComplete._(sig);
   }
-
 }

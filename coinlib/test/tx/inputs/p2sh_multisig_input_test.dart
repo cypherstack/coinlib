@@ -6,39 +6,34 @@ import '../../vectors/keys.dart';
 import '../../vectors/signatures.dart';
 
 void main() {
-
   group("P2SHMultisigInput", () {
-
     late List<ECPublicKey> pks;
     late List<ECDSAInputSignature> insigs;
     late MultisigProgram multisig;
 
     setUpAll(() async {
-
       await loadCoinlib();
 
       pks = validPubKeys
-        .getRange(0, 4)
-        .map((vec) => ECPublicKey.fromHex(vec.hex))
-        .toList();
+          .getRange(0, 4)
+          .map((vec) => ECPublicKey.fromHex(vec.hex))
+          .toList();
 
       insigs = validDerSigs
-        .getRange(0, 4)
-        .map((der) => ECDSAInputSignature(ECDSASignature.fromDerHex(der)))
-        .toList();
+          .getRange(0, 4)
+          .map((der) => ECDSAInputSignature(ECDSASignature.fromDerHex(der)))
+          .toList();
 
       multisig = MultisigProgram(3, pks);
-
     });
 
     scriptForNumSigs(int numSigs) => Script([
-      ScriptOp.fromNumber(0),
-      ...insigs.sublist(0, numSigs).map((sig) => ScriptPushData(sig.bytes)),
-      ScriptPushData(multisig.script.compiled),
-    ]);
+          ScriptOp.fromNumber(0),
+          ...insigs.sublist(0, numSigs).map((sig) => ScriptPushData(sig.bytes)),
+          ScriptPushData(multisig.script.compiled),
+        ]);
 
     bytesForNumSigs(int numSigs) {
-
       final scriptSig = scriptForNumSigs(numSigs).compiled;
       final measure = MeasureWriter()..writeVarSlice(scriptSig);
       final withVarInt = Uint8List(measure.size);
@@ -47,15 +42,19 @@ void main() {
 
       return Uint8List.fromList([
         ...prevOutHash,
-        0xef, 0xbe, 0xed, 0xfe,
+        0xef,
+        0xbe,
+        0xed,
+        0xfe,
         ...withVarInt,
-        0xfe, 0xff, 0xff, 0xff,
+        0xfe,
+        0xff,
+        0xff,
+        0xff,
       ]);
-
     }
 
     expectP2SHMultisigInput(P2SHMultisigInput input, int numSigs) {
-
       expectInput(input);
 
       expect(input.program.script.match(multisig.script), true);
@@ -74,13 +73,10 @@ void main() {
       final bytes = bytesForNumSigs(numSigs);
       expect(input.size, bytes.length);
       expect(input.toBytes(), bytes);
-
     }
 
     test("valid with varying sigs", () {
-
       for (int i = 0; i < 4; i++) {
-
         expectP2SHMultisigInput(
           P2SHMultisigInput(
             prevOut: prevOut,
@@ -98,9 +94,7 @@ void main() {
         expect(matched, isA<P2SHMultisigInput>());
         expect(matched, isNotNull);
         expectP2SHMultisigInput(matched as P2SHMultisigInput, i);
-
       }
-
     });
 
     test("too many passed sigs", () {
@@ -115,7 +109,6 @@ void main() {
     });
 
     test(".sigs cannot be mutated", () {
-
       final input = P2SHMultisigInput(
         prevOut: prevOut,
         program: multisig,
@@ -124,11 +117,9 @@ void main() {
 
       expect(() => input.sigs[0] = insigs[1], throwsA(anything));
       expect(input.sigs[0].bytes, insigs[0].bytes);
-
     });
 
     test("doesn't match non p2sh-multisig inputs", () {
-
       final redeemAsm = bytesToHex(multisig.script.compiled);
       final sigAsm = bytesToHex(insigs[0].bytes);
 
@@ -152,28 +143,25 @@ void main() {
           null,
         );
       }
-
     });
 
     test("insertSignature", () {
       // Insert signatures out of order and ensure they are ordered
 
       Uint8List getSigHash(SigHashType type) => Uint8List.fromList([
-        ...List.filled(31, 0), type.value,
-      ]);
+            ...List.filled(31, 0),
+            type.value,
+          ]);
 
       final keys = List.generate(4, (i) => ECPrivateKey.generate());
 
-      final sigs = List.generate(
-        4,
-        (i) {
-          final hashType = SigHashType.fromValue(i % 3 + 1);
-          return ECDSAInputSignature(
-            ECDSASignature.sign(keys[i], getSigHash(hashType)),
-            hashType,
-          );
-        }
-      );
+      final sigs = List.generate(4, (i) {
+        final hashType = SigHashType.fromValue(i % 3 + 1);
+        return ECDSAInputSignature(
+          ECDSASignature.sign(keys[i], getSigHash(hashType)),
+          hashType,
+        );
+      });
 
       var input = P2SHMultisigInput(
         prevOut: prevOut,
@@ -181,16 +169,16 @@ void main() {
       );
 
       expectInsertion(int index, List<int> expIndices) {
-
         input = input.insertSignature(
-          sigs[index], keys[index].pubkey, getSigHash,
+          sigs[index],
+          keys[index].pubkey,
+          getSigHash,
         );
 
         expect(
           input.sigs.map((sig) => sig.signature.compact).toList(),
           expIndices.map((i) => sigs[i].signature.compact),
         );
-
       }
 
       // Adds 3 and 1 twice which still goes through
@@ -202,11 +190,9 @@ void main() {
 
       // Adding more signatures than necessary trims from end
       expectInsertion(2, [0, 1, 2]);
-
     });
 
     test("filterSignatures", () {
-
       final input = P2SHMultisigInput(
         prevOut: prevOut,
         program: multisig,
@@ -218,9 +204,6 @@ void main() {
 
       expect(filtered.sigs.length, 1);
       expect(bytesToHex(filtered.sigs.first.signature.der), validDerSigs[1]);
-
     });
-
   });
-
 }

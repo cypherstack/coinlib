@@ -5,7 +5,6 @@ import 'util.dart';
 ///
 /// Runnable in "Developer Command Prompt for VS 2022".
 void main() async {
-
   final workDir = Directory.current.path;
 
   // Clone into tmp directory
@@ -60,5 +59,4 @@ void main() async {
   );
 
   print("Output libsecp256k1.dll successfully");
-
 }

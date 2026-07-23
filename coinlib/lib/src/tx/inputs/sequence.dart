@@ -8,7 +8,6 @@ import 'package:coinlib/src/tx/transaction.dart';
 /// To set BIP68 relative locktimes, use [InputSequence.fromValue]. There is no
 /// high-level abstraction for this yet.
 class InputSequence {
-
   final int value;
 
   const InputSequence._(this.value);
@@ -33,10 +32,9 @@ class InputSequence {
   String toString() => value.toString();
 
   @override
-  bool operator ==(Object other)
-    => (other is InputSequence) && value == other.value;
+  bool operator ==(Object other) =>
+      (other is InputSequence) && value == other.value;
 
   @override
   int get hashCode => value;
-
 }

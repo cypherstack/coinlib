@@ -12,7 +12,6 @@ import 'inputs/sequence.dart';
 /// This restriction is ignored if all the transaction inputs are final with a
 /// [InputSequence.finalWithoutLocktime] sequence.
 sealed class Locktime {
-
   static final int _timeThreshold = 500000000;
 
   static const zero = BlockHeightLocktime._noCheck(0);
@@ -35,15 +34,13 @@ sealed class Locktime {
   /// Given the [medianTime] of the previous 11 blocks and the current
   /// [blockHeight], returns true if the locktime is reached and the transaction
   /// is unlocked.
-  bool isUnlocked(DateTime medianTime, int blockHeight)
-    => this is BlockHeightLocktime
-    ? value <= blockHeight
-    : (this as MedianTimeLocktime).time.compareTo(medianTime) <= 0;
-
+  bool isUnlocked(DateTime medianTime, int blockHeight) =>
+      this is BlockHeightLocktime
+          ? value <= blockHeight
+          : (this as MedianTimeLocktime).time.compareTo(medianTime) <= 0;
 }
 
 class BlockHeightLocktime extends Locktime {
-
   const BlockHeightLocktime._noCheck(super.height) : super._noCheck();
 
   /// Restricts the transaction to block heights greater or equal to [height].
@@ -52,19 +49,21 @@ class BlockHeightLocktime extends Locktime {
   BlockHeightLocktime(int height) : super._(height) {
     if (height >= Locktime._timeThreshold) {
       throw ArgumentError.value(
-        height, "height", "must be less than ${Locktime._timeThreshold}",
+        height,
+        "height",
+        "must be less than ${Locktime._timeThreshold}",
       );
     }
   }
-
 }
 
 class MedianTimeLocktime extends Locktime {
-
   MedianTimeLocktime._(int value) : super._(value) {
     if (value < Locktime._timeThreshold) {
       throw ArgumentError.value(
-        value, "value", "must be more or equal to ${Locktime._timeThreshold}",
+        value,
+        "value",
+        "must be more or equal to ${Locktime._timeThreshold}",
       );
     }
   }
@@ -77,6 +76,5 @@ class MedianTimeLocktime extends Locktime {
     DateTime time,
   ) : this._(time.millisecondsSinceEpoch ~/ 1000);
 
-  DateTime get time => DateTime.fromMillisecondsSinceEpoch(value*1000);
-
+  DateTime get time => DateTime.fromMillisecondsSinceEpoch(value * 1000);
 }

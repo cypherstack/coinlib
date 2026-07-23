@@ -23,7 +23,6 @@ class OperationVector {
 }
 
 final vectors = [
-
   // Basic numbers
   OperationVector(
     inputAsm: "0",
@@ -99,14 +98,17 @@ final vectors = [
     isPush: true,
   ),
   OperationVector(
-    inputAsm: "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a",
-    inputHex: "4b000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a",
+    inputAsm:
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a",
+    inputHex:
+        "4b000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a",
     isPush: true,
   ),
   OperationVector(
-    inputAsm: "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b",
+    inputAsm:
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b",
     inputHex:
-    "4c4c000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b",
+        "4c4c000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b",
     isPush: true,
   ),
   OperationVector(
@@ -279,17 +281,12 @@ final vectors = [
 
   // Unknown op code
   OperationVector(inputHex: "bb", outputAsm: "OP_UNKNOWN", isPush: false),
-
 ];
 
 void main() {
-
   group("ScriptOp", () {
-
     test("valid operations", () {
-
       for (final vec in vectors) {
-
         expectScriptOpVec(ScriptOp op) {
           expectScriptOp(
             op,
@@ -300,20 +297,27 @@ void main() {
           );
         }
 
-        if (vec.inputAsm != null) expectScriptOpVec(ScriptOp.fromAsm(vec.inputAsm!));
-        expectScriptOpVec(ScriptOp.fromReader(BytesReader(hexToBytes(vec.inputHex))));
+        if (vec.inputAsm != null) {
+          expectScriptOpVec(ScriptOp.fromAsm(vec.inputAsm!));
+        }
+        expectScriptOpVec(
+          ScriptOp.fromReader(BytesReader(hexToBytes(vec.inputHex))),
+        );
         if (vec.number != null && !vec.isPush) {
           expectScriptOpVec(ScriptOp.fromNumber(vec.number!));
         }
-
       }
-
     });
 
     test("invalid ASM", () {
-
       for (final invalid in [
-        "", "OP_NOTACODE", "OP_0 OP_1", "op_1", "OP_dup", "invalid", "-2",
+        "",
+        "OP_NOTACODE",
+        "OP_0 OP_1",
+        "op_1",
+        "OP_dup",
+        "invalid",
+        "-2",
         "OP_DUPP",
       ]) {
         expect(
@@ -322,18 +326,16 @@ void main() {
           reason: invalid,
         );
       }
-
     });
 
     test("fromReader() long pushdata", () {
-
       expectLongPush(int length, List<int> compilePrefix) {
-
         final bytes = Uint8List.fromList(List<int>.generate(length, (i) => i));
         final compiled = Uint8List.fromList([...compilePrefix, ...bytes]);
 
         final fromReader = ScriptOp.fromReader(
-          BytesReader(compiled), requireMinimal: true,
+          BytesReader(compiled),
+          requireMinimal: true,
         ) as ScriptPushData;
         final direct = ScriptPushData(bytes);
 
@@ -342,12 +344,10 @@ void main() {
           expect(op.asm, bytesToHex(bytes));
           expect(op.data, bytes);
         }
-
       }
 
       expectLongPush(0x100, [0x4d, 0x00, 0x01]);
       expectLongPush(0x10000, [0x4e, 0x00, 0x00, 0x01, 0x00]);
-
     });
 
     test("invalid number", () {
@@ -355,17 +355,15 @@ void main() {
         expect(() => ScriptOp.fromNumber(invalid), throwsArgumentError);
       }
     });
-
   });
 
   group("ScriptOpCode()", () {
-
     test("match() matches identical op codes", () {
       expect(ScriptOp.fromAsm("0").match(ScriptOp.fromAsm("00")), true);
       expect(ScriptOpCode(0x87).match(ScriptOpCode(0x87)), true);
       expect(
         ScriptOp.fromReader(BytesReader(hexToBytes("52")))
-        .match(ScriptOpCode(0x52)),
+            .match(ScriptOpCode(0x52)),
         true,
       );
     });
@@ -374,11 +372,9 @@ void main() {
       expect(ScriptOpCode(0).match(ScriptPushData(hexToBytes("00"))), false);
       expect(ScriptOpCode(0).match(ScriptOpCode(1)), false);
     });
-
   });
 
   group("ScriptPushData()", () {
-
     setUpAll(loadCoinlib);
 
     test("pushdata compresses to op-code", () {
@@ -387,7 +383,11 @@ void main() {
       expectScriptOp(ScriptPushData(hexToBytes("10")), "10", "60", 16, true);
       // No compression with two bytes
       expectScriptOp(
-        ScriptPushData(hexToBytes("0000")), "0000", "020000", 0, true,
+        ScriptPushData(hexToBytes("0000")),
+        "0000",
+        "020000",
+        0,
+        true,
       );
     });
 
@@ -400,14 +400,19 @@ void main() {
     });
 
     test("require minimal pushdata", () {
-
       for (final ok in [
-        "00", "0111", "60", "4f",
+        "00",
+        "0111",
+        "60",
+        "4f",
         "4b000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a",
         "4c4c000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b",
       ]) {
         expect(
-          ScriptOp.fromReader(BytesReader(hexToBytes(ok)), requireMinimal: true),
+          ScriptOp.fromReader(
+            BytesReader(hexToBytes(ok)),
+            requireMinimal: true,
+          ),
           isA<ScriptOp>(),
         );
       }
@@ -427,12 +432,14 @@ void main() {
         "4e00010000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
       ]) {
         expect(
-          () => ScriptOp.fromReader(BytesReader(hexToBytes(bad)), requireMinimal: true),
+          () => ScriptOp.fromReader(
+            BytesReader(hexToBytes(bad)),
+            requireMinimal: true,
+          ),
           throwsA(isA<PushDataNotMinimal>()),
           reason: bad,
         );
       }
-
     });
 
     final matchHex = "01020304";
@@ -446,8 +453,7 @@ void main() {
 
     test("match() returns false", () {
       expect(
-        ScriptPushData(hexToBytes("0100"))
-        .match(ScriptOp.fromNumber(1)),
+        ScriptPushData(hexToBytes("0100")).match(ScriptOp.fromNumber(1)),
         false,
       );
       expect(matchOp.match(ScriptPushDataMatcher(3)), false);
@@ -457,7 +463,7 @@ void main() {
 
     test("provides ecdsaSig", () {
       final der = hexToBytes(validDerSigs[0]);
-      final bytes = Uint8List.fromList([ ...der, SigHashType.all().value]);
+      final bytes = Uint8List.fromList([...der, SigHashType.all().value]);
       final insig = ScriptPushData(bytes).ecdsaSig;
       expect(insig, isNotNull);
       expect(insig!.signature.der, der);
@@ -478,11 +484,9 @@ void main() {
       expect(pk, isNotNull);
       expect(pk!.hex, pubkeyVec);
     });
-
   });
 
   group("ScriptPushDataMatcher()", () {
-
     final matcher = ScriptPushDataMatcher(3);
 
     test("match() returns true", () {
@@ -532,7 +536,5 @@ void main() {
       expect(() => ScriptPushDataMatcher(0), throwsArgumentError);
       expect(() => ScriptPushDataMatcher(0x100000000), throwsArgumentError);
     });
-
   });
-
 }

@@ -2,13 +2,12 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("P2WSH", () {
-
     setUpAll(loadCoinlib);
 
     final witnessScript = Script.fromAsm("0");
-    final scriptHash = "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d";
+    final scriptHash =
+        "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d";
     final asm = "0 $scriptHash";
     final script = Script.fromAsm(asm);
 
@@ -45,7 +44,10 @@ void main() {
         "0020${scriptHash}00",
         "",
       ]) {
-        expect(() => P2WSH.decompile(hexToBytes(bad)), throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2WSH.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 
@@ -76,7 +78,5 @@ void main() {
         );
       }
     });
-
   });
-
 }

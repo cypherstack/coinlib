@@ -35,7 +35,6 @@ RUN cp build/bin/libsecp256k1-6.dll output/secp256k1.dll
 """;
 
 void main() async {
-
   String cmd = await getDockerCmd();
   print("Using $cmd to run dockerfile");
 
@@ -48,5 +47,4 @@ void main() async {
   )) {
     exit(1);
   }
-
 }

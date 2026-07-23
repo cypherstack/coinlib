@@ -17,3 +17,6 @@ linter:
     - valid_regexps
     - require_trailing_commas
     - comment_references
+
+formatter:
+  trailing_commas: preserve

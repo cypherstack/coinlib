@@ -7,17 +7,13 @@ import '../../vectors/inputs.dart';
 import '../../vectors/tx.dart';
 
 void main() {
-
   group("TaprootKeyInput", () {
-
     setUpAll(loadCoinlib);
 
     getWitness(bool hasSig) => [hasSig ? schnorrInSig.bytes : Uint8List(0)];
 
     test("valid key-path taproot inputs inc. addSignature", () {
-
       expectTaprootKeyInput(TaprootKeyInput input, bool hasSig) {
-
         expectInput(input);
 
         expect(input.complete, hasSig);
@@ -33,7 +29,6 @@ void main() {
         expect(input.witness, getWitness(hasSig));
         expect(input.size, rawWitnessInputBytes.length);
         expect(input.toBytes(), rawWitnessInputBytes);
-
       }
 
       final noSig = TaprootKeyInput(prevOut: prevOut);
@@ -52,18 +47,19 @@ void main() {
         expect(matched, isA<TaprootKeyInput>());
         expectTaprootKeyInput(matched as TaprootKeyInput, hasSig);
       }
-
     });
 
     test("doesn't match non key-spend inputs", () {
-
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
-        TaprootKeyInput.match(
-          RawInput(prevOut: prevOut, scriptSig: Script.fromAsm(asm).compiled),
-          witness,
-        ),
-        null,
-      );
+            TaprootKeyInput.match(
+              RawInput(
+                prevOut: prevOut,
+                scriptSig: Script.fromAsm(asm).compiled,
+              ),
+              witness,
+            ),
+            null,
+          );
 
       expectNoMatch("0", getWitness(true));
       expectNoMatch("", [...getWitness(true), ...getWitness(true)]);
@@ -78,7 +74,6 @@ void main() {
           ]),
         ],
       );
-
     });
 
     test(".filterSignatures()", () {
@@ -104,7 +99,5 @@ void main() {
       );
       expect(signedInput.insig!.hashType.schnorrDefault, true);
     });
-
   });
-
 }

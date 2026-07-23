@@ -2,9 +2,7 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("P2Witness", () {
-
     setUpAll(loadCoinlib);
 
     expectP2Witness(P2Witness p2witness, int version, String program) {
@@ -19,15 +17,16 @@ void main() {
     }
 
     final shortBytes = "0001";
-    final longBytes = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627";
+    final longBytes =
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627";
 
     test("decompile() success", () {
-      expectDecompile(String compiled, int version, String program)
-        => expectP2Witness(
-          P2Witness.decompile(hexToBytes(compiled)),
-          version,
-          program,
-        );
+      expectDecompile(String compiled, int version, String program) =>
+          expectP2Witness(
+            P2Witness.decompile(hexToBytes(compiled)),
+            version,
+            program,
+          );
       expectDecompile("0002$shortBytes", 0, shortBytes);
       expectDecompile("6028$longBytes", 16, longBytes);
     });
@@ -37,14 +36,17 @@ void main() {
         expectP2Witness(P2Witness.fromAsm(asm), version, program);
         expectP2Witness(Program.fromAsm(asm) as P2Witness, version, program);
       }
+
       expectAsm("0 $shortBytes", 0, shortBytes);
       expectAsm("10 $longBytes", 16, longBytes);
     });
 
     test("fromData() success", () {
       expectProgram(int version, String program) => expectP2Witness(
-        P2Witness.fromData(version, hexToBytes(program)), version, program,
-      );
+            P2Witness.fromData(version, hexToBytes(program)),
+            version,
+            program,
+          );
       expectProgram(16, shortBytes);
       expectProgram(16, longBytes);
     });
@@ -91,6 +93,7 @@ void main() {
           throwsArgumentError,
         );
       }
+
       expectFail(-1, shortBytes);
       expectFail(17, shortBytes);
       expectFail(0, "00");
@@ -104,7 +107,5 @@ void main() {
       prog[1] = 0xff;
       expect(bytesToHex(witness.data), "0000");
     });
-
   });
-
 }

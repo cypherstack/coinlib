@@ -1,5 +1,4 @@
 class Network {
-
   final int wifPrefix, p2pkhPrefix, p2shPrefix, privHDPrefix, pubHDPrefix;
   final String bech32Hrp, messagePrefix;
   final BigInt minFee, minOutput, feePerKb;
@@ -42,5 +41,4 @@ class Network {
     minOutput: BigInt.from(10000),
     feePerKb: BigInt.from(10000),
   );
-
 }

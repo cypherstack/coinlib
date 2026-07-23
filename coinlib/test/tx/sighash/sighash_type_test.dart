@@ -2,24 +2,18 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("SigHashType", () {
-
     test("valid values", () {
-
       void expectValid(
         int value,
         SigHashType obj,
         OutputSigHashOption outputs,
         InputSigHashOption inputs,
-        String string,
-        {
-          required bool schnorrDefault,
-          required bool supportsLegacy,
-          required bool requiresApo,
-        }
-      ) {
-
+        String string, {
+        required bool schnorrDefault,
+        required bool supportsLegacy,
+        required bool requiresApo,
+      }) {
         expect(SigHashType.validValue(value), true);
         final fromValue = SigHashType.fromValue(value);
 
@@ -31,29 +25,30 @@ void main() {
           expect(o.value, value);
           expect(o.schnorrDefault, schnorrDefault);
         }
-
       }
 
       void expectValidOpts(
-        int value, OutputSigHashOption outputs, InputSigHashOption inputs,
-        String string,
-        {
-          required bool supportsLegacy,
-          required bool requiresApo,
-        }
-      ) => expectValid(
-        value,
-        SigHashType(outputs: outputs, inputs: inputs),
-        outputs,
-        inputs,
-        string,
-        schnorrDefault: false,
-        supportsLegacy: supportsLegacy,
-        requiresApo: requiresApo,
-      );
+        int value,
+        OutputSigHashOption outputs,
+        InputSigHashOption inputs,
+        String string, {
+        required bool supportsLegacy,
+        required bool requiresApo,
+      }) =>
+          expectValid(
+            value,
+            SigHashType(outputs: outputs, inputs: inputs),
+            outputs,
+            inputs,
+            string,
+            schnorrDefault: false,
+            supportsLegacy: supportsLegacy,
+            requiresApo: requiresApo,
+          );
 
       expectValid(
-        0, SigHashType.schnorrDefault(),
+        0,
+        SigHashType.schnorrDefault(),
         OutputSigHashOption.all,
         InputSigHashOption.all,
         "DEFAULT",
@@ -63,7 +58,8 @@ void main() {
       );
 
       expectValid(
-        1, SigHashType.all(),
+        1,
+        SigHashType.all(),
         OutputSigHashOption.all,
         InputSigHashOption.all,
         "ALL",
@@ -73,7 +69,8 @@ void main() {
       );
 
       expectValid(
-        2, SigHashType.none(),
+        2,
+        SigHashType.none(),
         OutputSigHashOption.none,
         InputSigHashOption.all,
         "NONE",
@@ -83,7 +80,8 @@ void main() {
       );
 
       expectValid(
-        0x43, SigHashType.single(inputs: InputSigHashOption.anyPrevOut),
+        0x43,
+        SigHashType.single(inputs: InputSigHashOption.anyPrevOut),
         OutputSigHashOption.single,
         InputSigHashOption.anyPrevOut,
         "SINGLE|ANYPREVOUT",
@@ -93,83 +91,104 @@ void main() {
       );
 
       expectValidOpts(
-        1, OutputSigHashOption.all, InputSigHashOption.all,
+        1,
+        OutputSigHashOption.all,
+        InputSigHashOption.all,
         "ALL",
         supportsLegacy: true,
         requiresApo: false,
       );
       expectValidOpts(
-        2, OutputSigHashOption.none, InputSigHashOption.all,
+        2,
+        OutputSigHashOption.none,
+        InputSigHashOption.all,
         "NONE",
         supportsLegacy: true,
         requiresApo: false,
       );
       expectValidOpts(
-        3, OutputSigHashOption.single, InputSigHashOption.all,
+        3,
+        OutputSigHashOption.single,
+        InputSigHashOption.all,
         "SINGLE",
         supportsLegacy: true,
         requiresApo: false,
       );
 
       expectValidOpts(
-        0x81, OutputSigHashOption.all, InputSigHashOption.anyOneCanPay,
+        0x81,
+        OutputSigHashOption.all,
+        InputSigHashOption.anyOneCanPay,
         "ALL|ANYONECANPAY",
         supportsLegacy: true,
         requiresApo: false,
       );
       expectValidOpts(
-        0x82, OutputSigHashOption.none, InputSigHashOption.anyOneCanPay,
+        0x82,
+        OutputSigHashOption.none,
+        InputSigHashOption.anyOneCanPay,
         "NONE|ANYONECANPAY",
         supportsLegacy: true,
         requiresApo: false,
       );
       expectValidOpts(
-        0x83, OutputSigHashOption.single, InputSigHashOption.anyOneCanPay,
+        0x83,
+        OutputSigHashOption.single,
+        InputSigHashOption.anyOneCanPay,
         "SINGLE|ANYONECANPAY",
         supportsLegacy: true,
         requiresApo: false,
       );
 
       expectValidOpts(
-        0x41, OutputSigHashOption.all, InputSigHashOption.anyPrevOut,
+        0x41,
+        OutputSigHashOption.all,
+        InputSigHashOption.anyPrevOut,
         "ALL|ANYPREVOUT",
         supportsLegacy: false,
         requiresApo: true,
       );
       expectValidOpts(
-        0x42, OutputSigHashOption.none, InputSigHashOption.anyPrevOut,
+        0x42,
+        OutputSigHashOption.none,
+        InputSigHashOption.anyPrevOut,
         "NONE|ANYPREVOUT",
         supportsLegacy: false,
         requiresApo: true,
       );
       expectValidOpts(
-        0x43, OutputSigHashOption.single, InputSigHashOption.anyPrevOut,
+        0x43,
+        OutputSigHashOption.single,
+        InputSigHashOption.anyPrevOut,
         "SINGLE|ANYPREVOUT",
         supportsLegacy: false,
         requiresApo: true,
       );
 
       expectValidOpts(
-        0xc1, OutputSigHashOption.all, InputSigHashOption.anyPrevOutAnyScript,
+        0xc1,
+        OutputSigHashOption.all,
+        InputSigHashOption.anyPrevOutAnyScript,
         "ALL|ANYPREVOUTANYSCRIPT",
         supportsLegacy: false,
         requiresApo: true,
       );
       expectValidOpts(
-        0xc2, OutputSigHashOption.none,
+        0xc2,
+        OutputSigHashOption.none,
         InputSigHashOption.anyPrevOutAnyScript,
         "NONE|ANYPREVOUTANYSCRIPT",
         supportsLegacy: false,
         requiresApo: true,
       );
       expectValidOpts(
-        0xc3, OutputSigHashOption.single,
+        0xc3,
+        OutputSigHashOption.single,
         InputSigHashOption.anyPrevOutAnyScript,
         "SINGLE|ANYPREVOUTANYSCRIPT",
         supportsLegacy: false,
         requiresApo: true,
       );
-
     });
 
     test("invalid values", () {
@@ -179,7 +198,5 @@ void main() {
         expect(() => SigHashType.fromValue(invalid), throwsArgumentError);
       }
     });
-
   });
-
 }

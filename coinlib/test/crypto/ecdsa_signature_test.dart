@@ -4,22 +4,18 @@ import 'package:test/test.dart';
 import '../vectors/signatures.dart';
 
 void main() {
-
   group("ECDSASignature", () {
-
     setUpAll(loadCoinlib);
 
     final validSig = validSignatures[0];
 
     test("requires 64-bytes", () {
-
       for (final failing in [validSig.substring(2), "${validSig}00"]) {
         expect(
           () => ECDSASignature.fromCompactHex(failing),
           throwsArgumentError,
         );
       }
-
     });
 
     test("accepts valid signatures", () {
@@ -97,9 +93,7 @@ void main() {
       expect(bytesToHex(sig.compact), validSig);
     });
 
-
     group(".sign()", () {
-
       late ECPrivateKey key, keyMutated1, keyMutated2;
       late Uint8List msgHash, msgMutated1, msgMutated2;
 
@@ -135,6 +129,7 @@ void main() {
             expect(sig.verify(key.pubkey, msgHash), true);
           }
         }
+
         expectWithR(
           false,
           "a951b0cf98bd51c614c802a65a418fa42482dc5c45c9394e39c0d98773c51cd530104fdc36d91582b5757e1de73d982e803cc14d75e82c65daf924e38d27d834",
@@ -143,11 +138,9 @@ void main() {
           true,
           "0eda3be316b7d47901bc6a2bfc1b95cf6c408129a564d6b75963451e16fa155025077334a5bf937fcf3242cec81506deea34e26e65892bda896533c4e50e9360",
         );
-
       });
 
       test("slight change in hash gives different signatures", () {
-
         final sig1 = ECDSASignature.sign(key, msgHash).compact;
         final sig2 = ECDSASignature.sign(key, msgMutated1).compact;
         final sig3 = ECDSASignature.sign(key, msgMutated2).compact;
@@ -155,11 +148,9 @@ void main() {
         expect(sig1, isNot(equals(sig2)));
         expect(sig1, isNot(equals(sig3)));
         expect(sig2, isNot(equals(sig3)));
-
       });
 
       test("slight change in private key gives different signatures", () {
-
         final sig1 = ECDSASignature.sign(key, msgHash).compact;
         final sig2 = ECDSASignature.sign(keyMutated1, msgHash).compact;
         final sig3 = ECDSASignature.sign(keyMutated2, msgHash).compact;
@@ -167,13 +158,10 @@ void main() {
         expect(sig1, isNot(equals(sig2)));
         expect(sig1, isNot(equals(sig3)));
         expect(sig2, isNot(equals(sig3)));
-
       });
-
     });
 
     group(".verify", () {
-
       late Uint8List msgHash;
       late ECPublicKey pubKey;
 
@@ -188,9 +176,9 @@ void main() {
       });
 
       expectSig(String sigHex, bool valid) => expect(
-        ECDSASignature.fromCompactHex(sigHex).verify(pubKey, msgHash),
-        valid,
-      );
+            ECDSASignature.fromCompactHex(sigHex).verify(pubKey, msgHash),
+            valid,
+          );
 
       test("verifies low s-value signature", () {
         expectSig(
@@ -218,8 +206,6 @@ void main() {
           false,
         );
       });
-
     });
   });
-
 }

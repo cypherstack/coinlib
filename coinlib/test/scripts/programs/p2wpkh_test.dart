@@ -3,9 +3,7 @@ import 'package:test/test.dart';
 import '../../vectors/keys.dart';
 
 void main() {
-
   group("P2WPKH", () {
-
     setUpAll(loadCoinlib);
 
     final asm = "0 $pubkeyhashVec";
@@ -43,9 +41,13 @@ void main() {
         "0014${pubkeyhashVec}00",
         "0013000102030405060708090a0b0c0d0e0f101112",
         "0015${pubkeyhashVec}14",
-        "00", "",
+        "00",
+        "",
       ]) {
-        expect(() => P2WPKH.decompile(hexToBytes(bad)), throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2WPKH.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 
@@ -73,7 +75,5 @@ void main() {
         );
       }
     });
-
   });
-
 }

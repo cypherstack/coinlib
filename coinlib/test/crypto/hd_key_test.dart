@@ -17,14 +17,11 @@ void expectPriv(HDKey key) => expect(key, isA<HDPrivateKey>());
 void expectPub(HDKey key) => expect(key, isA<HDPublicKey>());
 
 void main() {
-
   group("HDKey", () {
-
     setUpAll(loadCoinlib);
 
     test("base58 decode/encode", () {
       forEachHDVector((parent, vec) {
-
         final priv = HDKey.decode(vec.privEncoded);
         final pub = HDKey.decode(vec.pubEncoded);
 
@@ -58,7 +55,6 @@ void main() {
         expectPub(HDPublicKey.decode(vec.pubEncoded, pubPrefix));
         expectPriv(HDPrivateKey.decode(vec.privEncoded));
         expectPub(HDPublicKey.decode(vec.pubEncoded));
-
       });
     });
 
@@ -162,24 +158,27 @@ void main() {
 
     test("fromSeed() invalid seed size", () {
       for (final size in [15, 65]) {
-        expect(() => HDPrivateKey.fromSeed(Uint8List(size)), throwsArgumentError);
+        expect(
+          () => HDPrivateKey.fromSeed(Uint8List(size)),
+          throwsArgumentError,
+        );
       }
     });
 
     test("derive()", () {
       forEachHDVector((parent, vec) {
         if (parent != null) {
-
-          final derivedPriv = HDPrivateKey.decode(parent.privEncoded).derive(vec.index);
+          final derivedPriv =
+              HDPrivateKey.decode(parent.privEncoded).derive(vec.index);
           expectPriv(derivedPriv);
           vec.expectHDPrivateKey(derivedPriv);
 
           if (!vec.hardened) {
-            final derivedPub = HDKey.decode(parent.pubEncoded).derive(vec.index);
+            final derivedPub =
+                HDKey.decode(parent.pubEncoded).derive(vec.index);
             expectPub(derivedPub);
             vec.expectHDKey(derivedPub);
           }
-
         }
       });
     });
@@ -188,7 +187,7 @@ void main() {
       forEachHDVector((parent, vec) {
         if (parent != null && vec.hardened) {
           final derivedHardened = HDKey.decode(parent.privEncoded)
-            .deriveHardened(vec.index - 0x80000000);
+              .deriveHardened(vec.index - 0x80000000);
           expectPriv(derivedHardened);
           vec.expectHDPrivateKey(derivedHardened);
         }
@@ -196,21 +195,21 @@ void main() {
     });
 
     test("derivePath()", () {
-
       final derived = masterHDKey.derivePath("m/0'/1/2'/2/1000000000");
       expectPriv(derived);
       hdVectors[0][5].expectHDPrivateKey(derived);
 
-      final pubDerived = HDPublicKey.decode(hdVectors[0][3].pubEncoded, pubPrefix)
-        .derivePath("2/1000000000");
+      final pubDerived =
+          HDPublicKey.decode(hdVectors[0][3].pubEncoded, pubPrefix)
+              .derivePath("2/1000000000");
       expectPub(pubDerived);
       hdVectors[0][5].expectHDKey(pubDerived);
 
       final pubMasterDerived =
-        HDPublicKey.decode(hdVectors[1][0].pubEncoded, pubPrefix).derivePath("m/0");
+          HDPublicKey.decode(hdVectors[1][0].pubEncoded, pubPrefix)
+              .derivePath("m/0");
       expectPub(pubMasterDerived);
       hdVectors[1][1].expectHDKey(pubMasterDerived);
-
     });
 
     test("invalid paths", () {
@@ -268,7 +267,8 @@ void main() {
         // For all master keys
         final vec = paths[0];
         final key = HDPrivateKey.fromKeyAndChainCode(
-          ECPrivateKey.fromHex(vec.privHex), hexToBytes(vec.chaincodeHex),
+          ECPrivateKey.fromHex(vec.privHex),
+          hexToBytes(vec.chaincodeHex),
         );
         vec.expectHDKey(key);
       }
@@ -278,7 +278,8 @@ void main() {
       for (final invalid in [31, 33]) {
         expect(
           () => HDPrivateKey.fromKeyAndChainCode(
-            masterHDKey.privateKey, Uint8List(invalid),
+            masterHDKey.privateKey,
+            Uint8List(invalid),
           ),
           throwsArgumentError,
         );
@@ -294,13 +295,12 @@ void main() {
     test(".chaincode is copied and cannot be mutated", () {
       final cc = Uint8List(32);
       final hdKey = HDPrivateKey.fromKeyAndChainCode(
-        ECPrivateKey.fromHex(masterVector.privHex), cc,
+        ECPrivateKey.fromHex(masterVector.privHex),
+        cc,
       );
       hdKey.chaincode[0] = 0xff;
       cc[1] = 0xff;
       expect(hdKey.chaincode, Uint8List(32));
     });
-
   });
-
 }

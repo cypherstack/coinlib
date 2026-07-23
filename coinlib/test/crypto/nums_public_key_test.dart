@@ -3,13 +3,11 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("NUMSPublicKey", () {
-
     setUpAll(loadCoinlib);
 
-    final exampleTweakHex
-      = "2bae58ab6d9fd575bdc3a624e4825dd2b375d64ac033fbc46ea79dbab4f69a3e";
+    final exampleTweakHex =
+        "2bae58ab6d9fd575bdc3a624e4825dd2b375d64ac033fbc46ea79dbab4f69a3e";
 
     test("generated key can be reconstructed from rTweak", () {
       final nums = NUMSPublicKey.generate();
@@ -26,7 +24,8 @@ void main() {
 
     test("require 32-byte tweak scalar", () {
       expect(
-        () => NUMSPublicKey.fromRTweak(Uint8List(31)), throwsArgumentError,
+        () => NUMSPublicKey.fromRTweak(Uint8List(31)),
+        throwsArgumentError,
       );
     });
 
@@ -37,7 +36,5 @@ void main() {
       nums.rTweak[1] = 0xff;
       expect(bytesToHex(nums.rTweak), exampleTweakHex);
     });
-
   });
-
 }

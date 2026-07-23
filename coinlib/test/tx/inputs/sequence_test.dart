@@ -2,9 +2,7 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("InputSequence", () {
-
     test("requires uint32 sequence", () {
       for (final n in [-1, 0x100000000]) {
         expect(
@@ -29,7 +27,5 @@ void main() {
         isNot(InputSequence.finalWithoutLocktime),
       );
     });
-
   });
-
 }
