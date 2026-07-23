@@ -6,15 +6,17 @@ import 'util.dart';
 ///
 /// Runnable in any terminal with CMake and MinGW in PATH.
 void main() async {
-
   final workDir = Directory.current.path;
 
   final tmpDir = await cloneForWindowsInTmpDir();
 
   await execWithStdioWin("cmake", [
-    "-G", "MinGW Makefiles",
-    "-S", ".",
-    "-B", "build",
+    "-G",
+    "MinGW Makefiles",
+    "-S",
+    ".",
+    "-B",
+    "build",
     "-DSECP256K1_ENABLE_MODULE_RECOVERY=ON",
     "-DSECP256K1_BUILD_TESTS=OFF",
     "-DSECP256K1_BUILD_EXHAUSTIVE_TESTS=OFF",
@@ -25,8 +27,10 @@ void main() async {
   ]);
 
   await execWithStdioWin("cmake", [
-    "--build", "build",
-    "--config", "Release",
+    "--build",
+    "build",
+    "--config",
+    "Release",
   ]);
 
   Directory("$workDir${Platform.pathSeparator}build").createSync();
@@ -45,5 +49,4 @@ void main() async {
   );
 
   print("Output libsecp256k1.dll successfully");
-
 }

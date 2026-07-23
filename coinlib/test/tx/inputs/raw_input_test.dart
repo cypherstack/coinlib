@@ -3,16 +3,13 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("RawInput", () {
-
     final hashBytes = Uint8List.fromList(List<int>.generate(32, (i) => i));
 
     test("can be read and written and is always complete", () {
-
       final bytes = Uint8List.fromList([
         ...hashBytes, // Hash
-        1,2,3,4, // n
+        1, 2, 3, 4, // n
         1, 0, // OP_0
         0xa4, 0xa3, 0xa2, 0xa1, // Sequence
       ]);
@@ -39,19 +36,17 @@ void main() {
       final matched = Input.match(raw);
       expect(matched, isA<RawInput>());
       expectRaw(matched as RawInput);
-
     });
 
     test("non-script scriptSig", () {
-
       final bytes = Uint8List.fromList([
         ...hashBytes, // Hash
-        1,2,3,4, // n
+        1, 2, 3, 4, // n
         4, 1, 2, 3, 4, // Not a valid script
         0xff, 0xff, 0xff, 0xff, // Sequence
       ]);
 
-      final scriptSig = Uint8List.fromList([1,2,3,4]);
+      final scriptSig = Uint8List.fromList([1, 2, 3, 4]);
 
       expectNullScript(RawInput raw) {
         expect(raw.script, null);
@@ -67,7 +62,6 @@ void main() {
           sequence: InputSequence.finalWithoutLocktime,
         ),
       );
-
     });
 
     test("default sequence enforces locktime", () {
@@ -79,7 +73,5 @@ void main() {
         InputSequence.enforceLocktime,
       );
     });
-
   });
-
 }

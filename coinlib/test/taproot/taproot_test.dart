@@ -4,9 +4,7 @@ import 'package:test/test.dart';
 import '../vectors/taproot.dart';
 
 void main() {
-
   group("Taproot", () {
-
     late ECPublicKey exampleKey;
     setUpAll(() async {
       await loadCoinlib();
@@ -18,7 +16,6 @@ void main() {
     final otherLeaf = leafFromHex("0401020304");
 
     test("valid tweaked key derivation", () {
-
       for (final vec in taprootVectors) {
         expect(bytesToHex(vec.object.tweakScalar), vec.tweakScalarHex);
         expect(bytesToHex(vec.object.tweakedKey.x), vec.xTweakedKeyHex);
@@ -34,37 +31,39 @@ void main() {
           vec.controlBlocks,
         );
       }
-
     });
 
     test("duplicate leaves not allowed", () {
       expectNoDuplicates(TapBranch mast) => expect(
-        () => Taproot(internalKey: exampleKey, mast: mast),
-        throwsArgumentError,
-      );
+            () => Taproot(internalKey: exampleKey, mast: mast),
+            throwsArgumentError,
+          );
       expectNoDuplicates(TapBranch(exampleLeaf, exampleLeaf));
       expectNoDuplicates(TapBranch(exampleLeaf, identicalLeaf));
     });
 
     test("controlBlockForLeaf()", () {
-
       final noMast = Taproot(internalKey: exampleKey);
       final withMast = Taproot(internalKey: exampleKey, mast: exampleLeaf);
 
       // Require MAST
-      expect(() => noMast.controlBlockForLeaf(exampleLeaf), throwsArgumentError);
+      expect(
+        () => noMast.controlBlockForLeaf(exampleLeaf),
+        throwsArgumentError,
+      );
 
       // Require identical leaf
-      expect(() => withMast.controlBlockForLeaf(otherLeaf), throwsArgumentError);
+      expect(
+        () => withMast.controlBlockForLeaf(otherLeaf),
+        throwsArgumentError,
+      );
       expect(withMast.controlBlockForLeaf(exampleLeaf), isA<Uint8List>());
       expect(withMast.controlBlockForLeaf(identicalLeaf), isA<Uint8List>());
-
     });
 
     test(".tweakPrivateKey()", () {
-
-      final expTweaked
-        = "2405b971772ad26915c8dcdf10f238753a9b837e5f8e6a86fd7c0cce5b7296d9";
+      final expTweaked =
+          "2405b971772ad26915c8dcdf10f238753a9b837e5f8e6a86fd7c0cce5b7296d9";
 
       expectTweak(String internalPrivHex) {
         final internalPriv = ECPrivateKey.fromHex(internalPrivHex);
@@ -83,7 +82,6 @@ void main() {
       expectTweak(
         "9468c2777c70d8c99129e36529c9899bb652288fccc56a7ab5ef57752229d597",
       );
-
     });
 
     test(".leaves cannot be mutated", () {
@@ -93,9 +91,6 @@ void main() {
       );
       expect(() => taproot.leaves[0] = identicalLeaf, throwsA(anything));
       expect(() => taproot.leaves.add(identicalLeaf), throwsA(anything));
-
     });
-
   });
-
 }

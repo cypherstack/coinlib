@@ -9,7 +9,6 @@ import 'witness_input.dart';
 
 /// Represents v0 witness program inputs
 abstract class LegacyWitnessInput extends WitnessInput {
-
   LegacyWitnessInput({
     required super.prevOut,
     required super.witness,
@@ -29,9 +28,9 @@ abstract class LegacyWitnessInput extends WitnessInput {
   ECDSAInputSignature createInputSignature({
     required LegacyWitnessSignDetailsWithScript details,
     required ECPrivateKey key,
-  }) => ECDSAInputSignature(
-    ECDSASignature.sign(key, WitnessSignatureHasher(details).hash),
-    details.hashType,
-  );
-
+  }) =>
+      ECDSAInputSignature(
+        ECDSASignature.sign(key, WitnessSignatureHasher(details).hash),
+        details.hashType,
+      );
 }

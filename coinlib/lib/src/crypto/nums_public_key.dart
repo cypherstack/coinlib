@@ -9,7 +9,6 @@ import 'package:coinlib/src/crypto/random.dart';
 /// others to verify this. These keys can be used as Taproot internal keys where
 /// no key-path spending is desired.
 class NUMSPublicKey extends ECPublicKey {
-
   /// To prove that this point does not have an associated private key, the
   /// x-coordinate is the sha256 hash of the uncompressed secp256k1 generator
   /// point bytes. This can be reproduced and verified using the script
@@ -21,7 +20,8 @@ class NUMSPublicKey extends ECPublicKey {
   final Uint8List _rTweak;
 
   NUMSPublicKey._(Uint8List rTweak, super.data)
-    : _rTweak = Uint8List.fromList(rTweak), super();
+      : _rTweak = Uint8List.fromList(rTweak),
+        super();
 
   /// Constructs a NUMS key from a given [rTweak].
   /// Throws [ArgumentError] if [rTweak] cannot produce a valid public key.
@@ -34,10 +34,9 @@ class NUMSPublicKey extends ECPublicKey {
   }
 
   /// Generates a new NUMS key with a random [rTweak].
-  factory NUMSPublicKey.generate()
-    => NUMSPublicKey.fromRTweak(generateRandomBytes(32));
+  factory NUMSPublicKey.generate() =>
+      NUMSPublicKey.fromRTweak(generateRandomBytes(32));
 
   /// The scalar tweak for this key which may be shared for verification.
   Uint8List get rTweak => Uint8List.fromList(_rTweak);
-
 }

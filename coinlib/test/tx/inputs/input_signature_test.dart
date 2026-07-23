@@ -4,15 +4,12 @@ import 'package:test/test.dart';
 import '../../vectors/signatures.dart';
 
 void main() {
-
   group("ECDSAInputSignature", () {
-
     setUpAll(loadCoinlib);
 
     final der = hexToBytes(validDerSigs[0]);
 
     test("valid input signature", () {
-
       final hashType = SigHashType.all(inputs: InputSigHashOption.anyOneCanPay);
       final bytes = Uint8List.fromList([...der, 0x81]);
 
@@ -24,7 +21,6 @@ void main() {
 
       expectSig(ECDSAInputSignature(ECDSASignature.fromDer(der), hashType));
       expectSig(ECDSAInputSignature.fromBytes(bytes));
-
     });
 
     test("invalid bytes", () {
@@ -45,17 +41,14 @@ void main() {
         );
       }
     });
-
   });
 
   group("SchnorrInputSignature", () {
-
     setUpAll(loadCoinlib);
 
     final sig = hexToBytes(validSchnorrSig);
 
     test("valid input signatures", () {
-
       expectSig(SigHashType hashType, Uint8List bytes) {
         final insig = SchnorrInputSignature.fromBytes(bytes);
         expect(insig.bytes, bytes);
@@ -73,7 +66,6 @@ void main() {
       );
       expectSig(SigHashType.all(), Uint8List.fromList([...sig, 1]));
       expectSig(SigHashType.schnorrDefault(), Uint8List.fromList([...sig]));
-
     });
 
     test(
@@ -96,7 +88,5 @@ void main() {
         );
       }
     });
-
   });
-
 }

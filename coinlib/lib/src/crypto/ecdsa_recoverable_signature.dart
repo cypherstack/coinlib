@@ -13,25 +13,27 @@ class InvalidECDSARecoverableSignature implements Exception {}
 /// allows for the public key to be recovered from the message hash and
 /// signature.
 class ECDSARecoverableSignature {
-
   static const compactLength = 65;
 
   /// A compact 64-byte signaure
   final Uint8List _signature;
+
   /// The recovery ID needed to recover the public key
   final int recid;
+
   /// Whether the recovered public key should be in compressed format or not
   final bool compressed;
 
   ECDSARecoverableSignature._(
-    this._signature, this.recid, this.compressed,
+    this._signature,
+    this.recid,
+    this.compressed,
   );
 
   /// Takes a 65-byte compact recoverable signature representation.
   /// [InvalidECDSARecoverableSignature] will be thrown if the signature is not
   /// valid.
   factory ECDSARecoverableSignature.fromCompact(Uint8List compact) {
-
     checkBytes(compact, compactLength, name: "Compact recoverable signature");
 
     // Extract recid and public key compression from first byte
@@ -45,7 +47,6 @@ class ECDSARecoverableSignature {
     }
 
     return ECDSARecoverableSignature._(signature, recid, compressed);
-
   }
 
   /// Creates a recoverable signature using a private key ([privkey]) for a
@@ -55,7 +56,9 @@ class ECDSARecoverableSignature {
 
     final sigAndId = secp256k1.ecdsaSignRecoverable(hash, privkey.data);
     final recSig = ECDSARecoverableSignature._(
-      sigAndId.signature, sigAndId.recid, privkey.compressed,
+      sigAndId.signature,
+      sigAndId.recid,
+      privkey.compressed,
     );
 
     // Verify signature to protect against computation errors. Cosmic rays etc.
@@ -64,13 +67,12 @@ class ECDSARecoverableSignature {
     }
 
     return recSig;
-
   }
 
   /// Takes a HEX encoded 65-byte compact recoverable signature representation.
   /// See [ECDSARecoverableSignature.fromCompact].
-  factory ECDSARecoverableSignature.fromCompactHex(String hex)
-    => ECDSARecoverableSignature.fromCompact(hexToBytes(hex));
+  factory ECDSARecoverableSignature.fromCompactHex(String hex) =>
+      ECDSARecoverableSignature.fromCompact(hexToBytes(hex));
 
   /// Given a 32-byte [hash], returns a public key recovered from the signature
   /// and hash. This can be compared against the expected public key or public
@@ -79,15 +81,18 @@ class ECDSARecoverableSignature {
   ECPublicKey? recover(Uint8List hash) {
     checkBytes(hash, 32);
     final pkBytes = secp256k1.ecdaSignatureRecoverPubKey(
-      _signature, recid, hash, compressed,
+      _signature,
+      recid,
+      hash,
+      compressed,
     );
     return pkBytes != null ? ECPublicKey(pkBytes) : null;
   }
 
   Uint8List get compact => Uint8List.fromList([
-    27 + recid + (compressed ? 4 : 0), ..._signature,
-  ]);
+        27 + recid + (compressed ? 4 : 0),
+        ..._signature,
+      ]);
 
   ECDSASignature get signature => ECDSASignature.fromCompact(_signature);
-
 }

@@ -1,15 +1,16 @@
 class InvalidOutputSigHashValue extends ArgumentError {
   InvalidOutputSigHashValue(int value)
-    : super.value(value, "value", "not a valid output sighash value");
+      : super.value(value, "value", "not a valid output sighash value");
 }
 
 /// Signature hash options that control what outputs are included.
 enum OutputSigHashOption {
-
   /// Sign all outputs
   all(1, "ALL"),
+
   /// Sign no outputs
   none(2, "NONE"),
+
   /// Sign the output at the same index as the input
   single(3, "SINGLE");
 
@@ -25,35 +26,36 @@ enum OutputSigHashOption {
 
   /// Determines if the value specifies a valid output option, ignoring the
   /// input part.
-  static bool validValue(int value)
-    => _valuesToOption.containsKey(value & ~0xf0);
+  static bool validValue(int value) =>
+      _valuesToOption.containsKey(value & ~0xf0);
 
   /// Creates an option from the sighash value, ignoring the input part.
-  factory OutputSigHashOption.fromValue(int value)
-    => _valuesToOption[value & ~0xf0]
-    ?? (throw InvalidOutputSigHashValue(value));
+  factory OutputSigHashOption.fromValue(int value) =>
+      _valuesToOption[value & ~0xf0] ??
+      (throw InvalidOutputSigHashValue(value));
 
   @override
   String toString() => string;
-
 }
 
 class InvalidInputSigHashValue extends ArgumentError {
   InvalidInputSigHashValue(int value)
-    : super.value(value, "value", "not a valid input sighash value");
+      : super.value(value, "value", "not a valid input sighash value");
 }
 
 /// Signature hash options that control what input data is included.
 enum InputSigHashOption {
-
   /// Include all inputs
   all(0, ""),
+
   /// Sign only the current input
   anyOneCanPay(0x80, "|ANYONECANPAY"),
+
   /// Sign only the current input and do not include the output point, allowing
   /// the signature to be reused to reference other outputs with the same output
   /// script and amount.
   anyPrevOut(0x40, "|ANYPREVOUT"),
+
   /// Sign only the current input and do not include the output point, amount or
   /// script. This allows the signature to be reused for other outputs that
   /// require a signature with the same key but can have arbitrary amounts and
@@ -73,17 +75,15 @@ enum InputSigHashOption {
 
   /// Determines if the value specifies a valid input option, ignoring the
   /// output part.
-  static bool validValue(int value)
-    => _valuesToOption.containsKey(value & ~0x0f);
+  static bool validValue(int value) =>
+      _valuesToOption.containsKey(value & ~0x0f);
 
   /// Creates an option from the sighash value, ignoring the output part.
-  factory InputSigHashOption.fromValue(int value)
-    => _valuesToOption[value & ~0x0f]
-    ?? (throw InvalidInputSigHashValue(value));
+  factory InputSigHashOption.fromValue(int value) =>
+      _valuesToOption[value & ~0x0f] ?? (throw InvalidInputSigHashValue(value));
 
   @override
   String toString() => string;
-
 }
 
 /// Encapsulates the signature hash type to be used for an input signature.
@@ -92,18 +92,18 @@ enum InputSigHashOption {
 /// constructor should be used for Taproot transactions or the [all()]
 /// constructor for other transactions.
 class SigHashType {
-
   final OutputSigHashOption outputs;
   final InputSigHashOption inputs;
+
   /// If true, this is the default value for Schnorr signatures that uses the
   /// behaviour of [all()] (SIGHASH_ALL) but provides distinct signatures.
   final bool schnorrDefault;
 
   /// Returns true if the sighash type value is valid.
-  static bool validValue(int value) => value == 0 || (
-    OutputSigHashOption.validValue(value)
-    && InputSigHashOption.validValue(value)
-  );
+  static bool validValue(int value) =>
+      value == 0 ||
+      (OutputSigHashOption.validValue(value) &&
+          InputSigHashOption.validValue(value));
 
   /// Checks if the sighash value is valid and returns an [ArgumentError] if
   /// not.
@@ -115,14 +115,14 @@ class SigHashType {
 
   /// Constructs from the byte representation of the sighash type.
   SigHashType.fromValue(int value)
-  : outputs = value == 0
-      // SIGHASH_ALL behaviour when default schnorr value of 0
-      ? OutputSigHashOption.all
-      : OutputSigHashOption.fromValue(value),
-    inputs = InputSigHashOption.fromValue(value),
-    schnorrDefault = value == 0 {
-      checkValue(value);
-    }
+      : outputs = value == 0
+            // SIGHASH_ALL behaviour when default schnorr value of 0
+            ? OutputSigHashOption.all
+            : OutputSigHashOption.fromValue(value),
+        inputs = InputSigHashOption.fromValue(value),
+        schnorrDefault = value == 0 {
+    checkValue(value);
+  }
 
   /// [outputs] must specify if ALL, SINGLE, or NONE is to be used.
   /// [inputs] may restrict inputs to sign to ANYONECANPAY, ANYPREVOUT
@@ -135,9 +135,9 @@ class SigHashType {
   /// Functions like [all()] with the same options but produces distinct
   /// signatures and is only acceptable for Taproot Schnorr signatures.
   const SigHashType.schnorrDefault()
-    : outputs = OutputSigHashOption.all,
-    inputs = InputSigHashOption.all,
-    schnorrDefault = true;
+      : outputs = OutputSigHashOption.all,
+        inputs = InputSigHashOption.all,
+        schnorrDefault = true;
 
   /// Signs all outputs as ALL which is used for typical transactions.
   /// May include restriction on [inputs] to be signed.
@@ -161,28 +161,35 @@ class SigHashType {
   int get value => schnorrDefault ? 0 : (outputs.value | inputs.value);
 
   @override
-  bool operator==(Object other) => other is SigHashType && value == other.value;
+  bool operator ==(Object other) =>
+      other is SigHashType && value == other.value;
 
   @override
   int get hashCode => value;
 
   /// All outputs shall be signed
   bool get all => outputs == OutputSigHashOption.all;
+
   /// No outputs shall be signed
   bool get none => outputs == OutputSigHashOption.none;
+
   /// Only the output with the same index as the input shall be signed
   bool get single => outputs == OutputSigHashOption.single;
 
   /// All inputs shall be signed
   bool get allInputs => inputs == InputSigHashOption.all;
+
   /// Only the input receiving the signature shall be signed
   bool get anyOneCanPay => inputs == InputSigHashOption.anyOneCanPay;
+
   /// Only the input receiving the signature shall be signed without the output
   /// point.
   bool get anyPrevOut => inputs == InputSigHashOption.anyPrevOut;
+
   /// Only the input receiving the signature shall be signed without the output
   /// point, amount or output script.
-  bool get anyPrevOutAnyScript => inputs == InputSigHashOption.anyPrevOutAnyScript;
+  bool get anyPrevOutAnyScript =>
+      inputs == InputSigHashOption.anyPrevOutAnyScript;
 
   /// True if the sighash type is supported for legacy transactions outside of
   /// Taproot
@@ -193,5 +200,4 @@ class SigHashType {
 
   @override
   String toString() => schnorrDefault ? "DEFAULT" : "$outputs$inputs";
-
 }

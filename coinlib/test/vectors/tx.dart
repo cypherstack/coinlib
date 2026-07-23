@@ -27,11 +27,12 @@ class TxVector {
     required this.hex,
     required this.locktimeIsEnforced,
     this.legacyHex,
-  }): txidHex = txidHex ?? hashHex;
+  }) : txidHex = txidHex ?? hashHex;
 }
 
 final examplePrevOut = OutPoint.fromHex(
-  "fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef1", 0,
+  "fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef1",
+  0,
 );
 final exampleAltPrevOut = OutPoint(examplePrevOut.hash, 1);
 final examplePubkey = ECPublicKey.fromHex(
@@ -52,23 +53,19 @@ final exampleInsig = ECDSAInputSignature.fromBytes(
   ),
 );
 
-final exampleMultisig = MultisigProgram(
-  2,
-  [
-    ECPublicKey.fromHex(
-      "03df7940ee7cddd2f97763f67e1fb13488da3fbdd7f9c68ec5ef0864074745a289",
-    ),
-    ECPublicKey.fromHex(
-      "03e05ce435e462ec503143305feb6c00e06a3ad52fbf939e85c65f3a765bb7baac",
-    ),
-    ECPublicKey.fromHex(
-      "03aea0dfd576151cb399347aa6732f8fdf027b9ea3ea2e65fb754803f776e0a509",
-    ),
-  ]
-);
+final exampleMultisig = MultisigProgram(2, [
+  ECPublicKey.fromHex(
+    "03df7940ee7cddd2f97763f67e1fb13488da3fbdd7f9c68ec5ef0864074745a289",
+  ),
+  ECPublicKey.fromHex(
+    "03e05ce435e462ec503143305feb6c00e06a3ad52fbf939e85c65f3a765bb7baac",
+  ),
+  ECPublicKey.fromHex(
+    "03aea0dfd576151cb399347aa6732f8fdf027b9ea3ea2e65fb754803f776e0a509",
+  ),
+]);
 
 final validTxVecs = [
-
   // P2PKH with 1 input and 1 output
   TxVector(
     obj: Transaction(
@@ -91,7 +88,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 192,
     inputTypes: [P2PKHInput],
-    hex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // Transaction with 2 P2PKH inputs. Only one enforces locktime (by default)
@@ -121,7 +119,8 @@ final validTxVecs = [
     locktimeIsEnforced: true,
     size: 340,
     inputTypes: [P2PKHInput, P2PKHInput],
-    hex: "0300000002f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798feffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "0300000002f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798feffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // Transaction with 2 inputs and 2 outputs
@@ -185,7 +184,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 439,
     inputTypes: [P2PKHInput, P2PKHInput],
-    hex: "0300000002e7b73e229790c1e79a02f0c871813b3cf26a4156c5b8d942e88b38fe8d3f43a0000000008c493046022100fd3d8fef44fb0962ba3f07bee1d4cafb84e60e38e6c7d9274504b3638a8d2f520221009fce009044e615b6883d4bf62e04c48f9fe236e19d644b082b2f0ae5c98e045c014104aa592c859fd00ed2a02609aad3a1bf72e0b42de67713e632c70a33cc488c15598a0fb419370a54d1c275b44380e8777fc01b6dc3cd43a416c6bab0e30dc1e19fffffffff7bfc005f3880a606027c7cd7dd02a0f6a6572eeb84a91aa158311be13695a7ea010000008b483045022100e2e61c40f26e2510b76dc72ea2f568ec514fce185c719e18bca9caaef2b20e9e02207f1100fc79eb0584e970c7f18fb226f178951d481767b4092d50d13c50ccba8b014104aa592c859fd00ed2a02609aad3a1bf72e0b42de67713e632c70a33cc488c15598a0fb419370a54d1c275b44380e8777fc01b6dc3cd43a416c6bab0e30dc1e19fffffffff0240d52303000000001976a914167c3e1f10cc3b691c73afbdb211e156e3e3f25c88ac15462e00000000001976a914290f7d617b75993e770e5606335fa0999a28d71388ac00000000",
+    hex:
+        "0300000002e7b73e229790c1e79a02f0c871813b3cf26a4156c5b8d942e88b38fe8d3f43a0000000008c493046022100fd3d8fef44fb0962ba3f07bee1d4cafb84e60e38e6c7d9274504b3638a8d2f520221009fce009044e615b6883d4bf62e04c48f9fe236e19d644b082b2f0ae5c98e045c014104aa592c859fd00ed2a02609aad3a1bf72e0b42de67713e632c70a33cc488c15598a0fb419370a54d1c275b44380e8777fc01b6dc3cd43a416c6bab0e30dc1e19fffffffff7bfc005f3880a606027c7cd7dd02a0f6a6572eeb84a91aa158311be13695a7ea010000008b483045022100e2e61c40f26e2510b76dc72ea2f568ec514fce185c719e18bca9caaef2b20e9e02207f1100fc79eb0584e970c7f18fb226f178951d481767b4092d50d13c50ccba8b014104aa592c859fd00ed2a02609aad3a1bf72e0b42de67713e632c70a33cc488c15598a0fb419370a54d1c275b44380e8777fc01b6dc3cd43a416c6bab0e30dc1e19fffffffff0240d52303000000001976a914167c3e1f10cc3b691c73afbdb211e156e3e3f25c88ac15462e00000000001976a914290f7d617b75993e770e5606335fa0999a28d71388ac00000000",
   ),
 
   // Transaction with P2PKH input missing signature
@@ -209,7 +209,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 119,
     inputTypes: [P2PKHInput],
-    hex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000022210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000022210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // Transaction with P2PKH input missing output
@@ -235,7 +236,7 @@ final validTxVecs = [
     size: 158,
     inputTypes: [P2PKHInput],
     hex:
-    "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff0000000000",
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff0000000000",
   ),
 
   // Transaction with complete P2SH 2-of-3 multisig
@@ -271,7 +272,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 337,
     inputTypes: [P2SHMultisigInput],
-    hex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000fc0047304402200773352a6c70b5ddfe8f6af883d9ea7b9abf7a96fdabe4d3b4a7a590f142c84402206fbf9b634221f206b7c99b3d9bc9dbdc5fec16536d7fd1eac352bbb4feff2a6f0147304402207567ea17703e2df7993ce70ead3f9f051e3bf7b8dfcdc6e9edc7547c0c0c4ef302204332066de953f267db9c31ca934052f1cfabd4281fd2649f928a66b1deb604e7014c69522103df7940ee7cddd2f97763f67e1fb13488da3fbdd7f9c68ec5ef0864074745a2892103e05ce435e462ec503143305feb6c00e06a3ad52fbf939e85c65f3a765bb7baac2103aea0dfd576151cb399347aa6732f8fdf027b9ea3ea2e65fb754803f776e0a50953aeffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000fc0047304402200773352a6c70b5ddfe8f6af883d9ea7b9abf7a96fdabe4d3b4a7a590f142c84402206fbf9b634221f206b7c99b3d9bc9dbdc5fec16536d7fd1eac352bbb4feff2a6f0147304402207567ea17703e2df7993ce70ead3f9f051e3bf7b8dfcdc6e9edc7547c0c0c4ef302204332066de953f267db9c31ca934052f1cfabd4281fd2649f928a66b1deb604e7014c69522103df7940ee7cddd2f97763f67e1fb13488da3fbdd7f9c68ec5ef0864074745a2892103e05ce435e462ec503143305feb6c00e06a3ad52fbf939e85c65f3a765bb7baac2103aea0dfd576151cb399347aa6732f8fdf027b9ea3ea2e65fb754803f776e0a50953aeffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // Transaction with P2SH 2-of-3 multisig and only 1 signature
@@ -302,7 +304,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 265,
     inputTypes: [P2SHMultisigInput],
-    hex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000b40047304402207567ea17703e2df7993ce70ead3f9f051e3bf7b8dfcdc6e9edc7547c0c0c4ef302204332066de953f267db9c31ca934052f1cfabd4281fd2649f928a66b1deb604e7014c69522103df7940ee7cddd2f97763f67e1fb13488da3fbdd7f9c68ec5ef0864074745a2892103e05ce435e462ec503143305feb6c00e06a3ad52fbf939e85c65f3a765bb7baac2103aea0dfd576151cb399347aa6732f8fdf027b9ea3ea2e65fb754803f776e0a50953aeffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000b40047304402207567ea17703e2df7993ce70ead3f9f051e3bf7b8dfcdc6e9edc7547c0c0c4ef302204332066de953f267db9c31ca934052f1cfabd4281fd2649f928a66b1deb604e7014c69522103df7940ee7cddd2f97763f67e1fb13488da3fbdd7f9c68ec5ef0864074745a2892103e05ce435e462ec503143305feb6c00e06a3ad52fbf939e85c65f3a765bb7baac2103aea0dfd576151cb399347aa6732f8fdf027b9ea3ea2e65fb754803f776e0a50953aeffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // Transaction with no inputs, one output and alternative locktime
@@ -323,7 +326,7 @@ final validTxVecs = [
     size: 44,
     inputTypes: [],
     hex:
-    "030000000001a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac04030201",
+        "030000000001a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac04030201",
   ),
 
   // Transaction with no inputs or outputs
@@ -341,8 +344,7 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 10,
     inputTypes: [],
-    hex:
-    "03000000000000000000",
+    hex: "03000000000000000000",
   ),
 
   // Bad output scripts
@@ -385,7 +387,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 249,
     inputTypes: [P2PKHInput],
-    hex: "03000000019ac03d5ae6a875d970128ef9086cef276a1919684a6988023cc7254691d97e6d010000006b4830450221009d41dc793ba24e65f571473d40b299b6459087cea1509f0d381740b1ac863cb6022039c425906fcaf51b2b84d8092569fb3213de43abaff2180e2a799d4fcb4dd0aa012102d5ede09a8ae667d0f855ef90325e27f6ce35bbe60a1e6e87af7f5b3c652140fdffffffff080100000000000000010101000000000000000202010100000000000000014c0100000000000000034c02010100000000000000014d0100000000000000044dffff010100000000000000014e0100000000000000064effffffff0100000000",
+    hex:
+        "03000000019ac03d5ae6a875d970128ef9086cef276a1919684a6988023cc7254691d97e6d010000006b4830450221009d41dc793ba24e65f571473d40b299b6459087cea1509f0d381740b1ac863cb6022039c425906fcaf51b2b84d8092569fb3213de43abaff2180e2a799d4fcb4dd0aa012102d5ede09a8ae667d0f855ef90325e27f6ce35bbe60a1e6e87af7f5b3c652140fdffffffff080100000000000000010101000000000000000202010100000000000000014c0100000000000000034c02010100000000000000014d0100000000000000044dffff010100000000000000014e0100000000000000064effffffff0100000000",
   ),
 
   // Coinbase
@@ -419,7 +422,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 126,
     inputTypes: [RawInput],
-    hex: "03000000010000000000000000000000000000000000000000000000000000000000000000ffffffff29032832051c4d696e656420627920416e74506f6f6c20626a343a45ef0454c5de8d5e5300004e2c0000ffffffff01414f1995000000001976a914b05793fe86a9f51a5f5ae3a6f07fd31932128a3f88ac00000000",
+    hex:
+        "03000000010000000000000000000000000000000000000000000000000000000000000000ffffffff29032832051c4d696e656420627920416e74506f6f6c20626a343a45ef0454c5de8d5e5300004e2c0000ffffffff01414f1995000000001976a914b05793fe86a9f51a5f5ae3a6f07fd31932128a3f88ac00000000",
   ),
 
   // Coinstake
@@ -447,7 +451,8 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 201,
     inputTypes: [P2PKHInput],
-    hex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff02000000000000000000a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff02000000000000000000a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // P2WPKH witness missing signature
@@ -472,8 +477,10 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 122,
     inputTypes: [P2WPKHInput],
-    hex: "03000000000101f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179800000000",
-    legacyHex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "03000000000101f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179800000000",
+    legacyHex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // P2WPKH witness with signature and non-final input sequence
@@ -499,8 +506,10 @@ final validTxVecs = [
     locktimeIsEnforced: true,
     size: 195,
     inputTypes: [P2WPKHInput],
-    hex: "03000000000101f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000000403020101a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac024830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179800000000",
-    legacyHex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000000403020101a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "03000000000101f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000000403020101a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac024830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179800000000",
+    legacyHex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000000403020101a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
 
   // Unknown witness
@@ -510,7 +519,10 @@ final validTxVecs = [
       inputs: [
         WitnessInput(
           prevOut: examplePrevOut,
-          witness: [Uint8List(0), Uint8List.fromList([0xff, 1, 2, 3])],
+          witness: [
+            Uint8List(0),
+            Uint8List.fromList([0xff, 1, 2, 3]),
+          ],
           sequence: InputSequence.finalWithoutLocktime,
         ),
       ],
@@ -525,14 +537,16 @@ final validTxVecs = [
     locktimeIsEnforced: false,
     size: 94,
     inputTypes: [WitnessInput],
-    hex: "03000000000101f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac020004ff01020300000000",
-    legacyHex: "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+    hex:
+        "03000000000101f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac020004ff01020300000000",
+    legacyHex:
+        "0300000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
   ),
-
 ];
 
 // Should deserialize as both legacy and witness transactions
-final ambiguousHex = "03000000000101000000000000002d00000000000000000000000000000000000000000000000000000000005151510b01010203040506070800010000000000";
+final ambiguousHex =
+    "03000000000101000000000000002d00000000000000000000000000000000000000000000000000000000005151510b01010203040506070800010000000000";
 
 final ambiguousLegacy = TxVector(
   obj: Transaction(
@@ -564,7 +578,8 @@ final ambiguousWitness = TxVector(
     inputs: [
       TaprootKeyInput(
         prevOut: OutPoint.fromHex(
-          "0000000000000000000000000000000000000000000000002d00000000000000", 0,
+          "0000000000000000000000000000000000000000000000002d00000000000000",
+          0,
         ),
         sequence: InputSequence.fromValue(189878609),
       ),
@@ -603,18 +618,19 @@ class SigHashVector {
   });
 }
 
-final sigHashTxHex = "010000000200000000000000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000ffffffff01e8030000000000000000000000";
+final sigHashTxHex =
+    "010000000200000000000000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000ffffffff01e8030000000000000000000000";
 final witnessValue = BigInt.from(0x0102030405);
 
 final sighashVectors = [
-
   // SIGHASH_ALL
   SigHashVector(
     inputN: 0,
     scriptCodeAsm: "0 03",
     type: SigHashType.all(),
     hash: "c2360721e97635761cd6d94d9528de894448709ed7d40f59fc68f573320a7d9f",
-    witnessHash: "3314821edf3f58f15b3763fbbd65353e6414c3494a4dd25e85345dbb4c0a9ac0",
+    witnessHash:
+        "3314821edf3f58f15b3763fbbd65353e6414c3494a4dd25e85345dbb4c0a9ac0",
   ),
 
   // SIGHASH_ALL with CODESEPARATOR
@@ -623,7 +639,8 @@ final sighashVectors = [
     scriptCodeAsm: "0 OP_CODESEPARATOR 03",
     type: SigHashType.all(),
     hash: "c2360721e97635761cd6d94d9528de894448709ed7d40f59fc68f573320a7d9f",
-    witnessHash: "afb2d290a938c235743deadd0a77a616811c243dfd17b01dd8b1babc2d85e2ed",
+    witnessHash:
+        "afb2d290a938c235743deadd0a77a616811c243dfd17b01dd8b1babc2d85e2ed",
   ),
 
   // SIGHASH_SINGLE
@@ -632,7 +649,8 @@ final sighashVectors = [
     scriptCodeAsm: "0",
     type: SigHashType.single(),
     hash: "43597296fa4f2bd356a21aec9dc66b4206f7d696a2d5468b840838be84d12987",
-    witnessHash: "83ea6b964428e0f83ed692b87ce9138ef208d80bf013c47978cc15be1645773c",
+    witnessHash:
+        "83ea6b964428e0f83ed692b87ce9138ef208d80bf013c47978cc15be1645773c",
   ),
 
   // No matching output for SIGHASH_SINGLE
@@ -641,7 +659,8 @@ final sighashVectors = [
     scriptCodeAsm: "0",
     type: SigHashType.single(),
     hash: "0000000000000000000000000000000000000000000000000000000000000001",
-    witnessHash: "3c8876a85da2d81408d438b67d24df9bc9414be9b3e43654ba3ece7e24f87787",
+    witnessHash:
+        "3c8876a85da2d81408d438b67d24df9bc9414be9b3e43654ba3ece7e24f87787",
   ),
 
   // SIGHASH_NONE
@@ -650,7 +669,8 @@ final sighashVectors = [
     scriptCodeAsm: "0",
     type: SigHashType.none(),
     hash: "539456df7e47a886a3e03323fab19881fcc195198bebac3f60d3108e86c0dbc0",
-    witnessHash: "9741f66ec361eb3f8067fce5e43f22c0cbb4a7fbcb69d1e248dbd40b01fcf0b7",
+    witnessHash:
+        "9741f66ec361eb3f8067fce5e43f22c0cbb4a7fbcb69d1e248dbd40b01fcf0b7",
   ),
 
   // ANYONECANPAY
@@ -659,14 +679,15 @@ final sighashVectors = [
     scriptCodeAsm: "0",
     type: SigHashType.all(inputs: InputSigHashOption.anyOneCanPay),
     hash: "6f432eb5ce9f1a48693bab90f84adc0080e87a4d03abe761d261ca8adffb3002",
-    witnessHash: "9d39499db354af5517b52ea135091b237d47e5006ad322623e6d5634fabe17a9",
+    witnessHash:
+        "9d39499db354af5517b52ea135091b237d47e5006ad322623e6d5634fabe17a9",
   ),
   SigHashVector(
     inputN: 1,
     scriptCodeAsm: "0",
     type: SigHashType.all(inputs: InputSigHashOption.anyOneCanPay),
     hash: "6f432eb5ce9f1a48693bab90f84adc0080e87a4d03abe761d261ca8adffb3002",
-    witnessHash: "9d39499db354af5517b52ea135091b237d47e5006ad322623e6d5634fabe17a9",
+    witnessHash:
+        "9d39499db354af5517b52ea135091b237d47e5006ad322623e6d5634fabe17a9",
   ),
-
 ];

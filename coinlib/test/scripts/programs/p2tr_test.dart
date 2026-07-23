@@ -4,12 +4,11 @@ import 'package:test/test.dart';
 import '../../vectors/taproot.dart';
 
 void main() {
-
   group("P2TR", () {
-
     setUpAll(loadCoinlib);
 
-    final tweakedKey = "53a1f6e454df1aa2776a2814a721372d6258050de330b3c6d10ee8f4e0dda343";
+    final tweakedKey =
+        "53a1f6e454df1aa2776a2814a721372d6258050de330b3c6d10ee8f4e0dda343";
     final asm = "1 $tweakedKey";
     final script = Script.fromAsm(asm);
 
@@ -54,7 +53,10 @@ void main() {
         "5120${tweakedKey}00",
         "",
       ]) {
-        expect(() => P2TR.decompile(hexToBytes(bad)), throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2TR.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 
@@ -72,7 +74,5 @@ void main() {
         );
       }
     });
-
   });
-
 }

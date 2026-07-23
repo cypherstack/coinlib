@@ -14,7 +14,6 @@ import 'witness_input.dart';
 /// The base class for all inputs, providing the [Input.match] factory
 /// constructor to determine the appropriate subclass from a [RawInput]
 abstract class Input with Writable {
-
   OutPoint get prevOut;
   Uint8List get scriptSig;
   InputSequence get sequence;

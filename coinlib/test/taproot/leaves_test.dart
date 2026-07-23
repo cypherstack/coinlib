@@ -5,13 +5,10 @@ import '../vectors/keys.dart';
 final pubkey = keyPairVectors.first.publicObj;
 
 void main() {
-
   group("TapLeafChecksig", () {
-
     setUpAll(loadCoinlib);
 
     test("valid keys", () {
-
       void expectLeaf(TapLeafChecksig leaf, String asm, bool isApo) {
         expect(leaf.script.asm, asm);
         expect(leaf.isApo, isApo);
@@ -34,11 +31,9 @@ void main() {
         "01${bytesToHex(pubkey.x)} OP_CHECKSIG",
         true,
       );
-
     });
 
     test(".match() valid", () {
-
       void expectMatch(String asm, bool isApo) {
         final leaf = TapLeafChecksig.match(Script.fromAsm(asm));
         expect(leaf, isNotNull);
@@ -49,11 +44,9 @@ void main() {
       expectMatch("01 OP_CHECKSIG", true);
       expectMatch("${bytesToHex(pubkey.x)} OP_CHECKSIG", false);
       expectMatch("01${bytesToHex(pubkey.x)} OP_CHECKSIG", true);
-
     });
 
     test(".match() invalid", () {
-
       for (final invalid in [
         "",
         "02 OP_CHECKSIG",
@@ -66,9 +59,6 @@ void main() {
       ]) {
         expect(TapLeafChecksig.match(Script.fromAsm(invalid)), isNull);
       }
-
     });
-
   });
-
 }

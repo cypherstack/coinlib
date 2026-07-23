@@ -6,7 +6,6 @@ import '../vectors/keys.dart';
 final hash = Uint8List(32);
 
 void main() {
-
   late final List<MuSigPrivate> privs;
   late final ECPublicKey aggregate;
 
@@ -17,14 +16,13 @@ void main() {
   });
 
   MuSigStatefulSigningSession getSession(int i) => MuSigStatefulSigningSession(
-    keys: privs[i].public,
-    ourPublicKey: privs[i].privateKey.pubkey,
-  );
+        keys: privs[i].public,
+        ourPublicKey: privs[i].privateKey.pubkey,
+      );
 
   Uint8List getNonceBytes() => getSession(0).ourPublicNonce.bytes;
 
   group("MuSigPublicNonce", () {
-
     test("invalid public nonces", () {
       final bytes = getNonceBytes();
       for (final invalid in [
@@ -42,43 +40,44 @@ void main() {
       final bytes = getNonceBytes();
       expect(bytes, MuSigPublicNonce.fromBytes(bytes).bytes);
     });
-
   });
 
   group("MuSigPartialSig", () {
-
-    test("invalid public signature", () => expect(
-      () => MuSigPartialSig.fromBytes(
-        Uint8List.fromList(List.filled(32, 0xff)),
+    test(
+      "invalid public signature",
+      () => expect(
+        () => MuSigPartialSig.fromBytes(
+          Uint8List.fromList(List.filled(32, 0xff)),
+        ),
+        throwsA(isA<InvalidMuSigPartialSig>()),
       ),
-      throwsA(isA<InvalidMuSigPartialSig>()),
-    ),);
+    );
 
     test("can read/write partial signatures", () {
       final bytes = Uint8List(32)..last = 1;
       final bytes2 = MuSigPartialSig.fromBytes(bytes).bytes;
       expect(bytes, bytes2);
     });
-
   });
 
   group("MuSigStatefulSigningSession", () {
-
     test(
       "creates unique public nonces",
       () => expect(getNonceBytes(), isNot(getNonceBytes())),
     );
 
-    test("ourPublicKey must be in keys", () => expect(
-      () => MuSigStatefulSigningSession(
-        keys: privs.first.public,
-        ourPublicKey: getPubKey(3),
+    test(
+      "ourPublicKey must be in keys",
+      () => expect(
+        () => MuSigStatefulSigningSession(
+          keys: privs.first.public,
+          ourPublicKey: getPubKey(3),
+        ),
+        throwsArgumentError,
       ),
-      throwsArgumentError,
-    ),);
+    );
 
     group("given sessions", () {
-
       late List<MuSigStatefulSigningSession> sessions;
       late List<KeyToNonceMap> otherNoncesMaps;
       setUp(() {
@@ -94,11 +93,11 @@ void main() {
 
       late List<MuSigPartialSig> partialSigs;
 
-      bool addPartialSig(int who, int from, [ int? keyI ])
-        => sessions[who].addPartialSignature(
-          partialSig: partialSigs[from],
-          participantKey: getPubKey(keyI ?? from),
-        );
+      bool addPartialSig(int who, int from, [int? keyI]) =>
+          sessions[who].addPartialSignature(
+            partialSig: partialSigs[from],
+            participantKey: getPubKey(keyI ?? from),
+          );
 
       void addAllPartialSigs() {
         for (int who = 0; who < 3; who++) {
@@ -122,21 +121,19 @@ void main() {
       }
 
       test("sign failure", () {
-
         void expectInvalid(
-          KeyToNonceMap otherNonces,
-          [
-            int hashLen = 32,
-            int key = 0,
-          ]
-        ) => expect(
-          () => sessions.first.sign(
-            otherNonces: otherNonces,
-            hash: Uint8List(hashLen),
-            privKey: privs[key].privateKey,
-          ),
-          throwsArgumentError,
-        );
+          KeyToNonceMap otherNonces, [
+          int hashLen = 32,
+          int key = 0,
+        ]) =>
+            expect(
+              () => sessions.first.sign(
+                otherNonces: otherNonces,
+                hash: Uint8List(hashLen),
+                privKey: privs[key].privateKey,
+              ),
+              throwsArgumentError,
+            );
 
         // Wrong key
         expectInvalid(otherNoncesMaps.first, 32, 1);
@@ -147,30 +144,31 @@ void main() {
         }
 
         // Too few nonces
-        expectInvalid({ getPubKey(1): sessions[1].ourPublicNonce });
+        expectInvalid({getPubKey(1): sessions[1].ourPublicNonce});
 
         // Wrong nonces
         expectInvalid(otherNoncesMaps.last);
-
       });
 
-      test("cannot add partial sig before sign", () => expect(
-        () => sessions.first.addPartialSignature(
-          partialSig: MuSigPartialSig.fromBytes(Uint8List(32)..last = 1),
-          participantKey: getPubKey(1),
+      test(
+        "cannot add partial sig before sign",
+        () => expect(
+          () => sessions.first.addPartialSignature(
+            partialSig: MuSigPartialSig.fromBytes(Uint8List(32)..last = 1),
+            participantKey: getPubKey(1),
+          ),
+          throwsStateError,
         ),
-        throwsStateError,
-      ),);
+      );
 
       void expectCannotFinish() => expect(
-        () => sessions.first.finish(),
-        throwsStateError,
-      );
+            () => sessions.first.finish(),
+            throwsStateError,
+          );
 
       test("cannot finish before sign", expectCannotFinish);
 
       group("given partial signatures", () {
-
         setUp(() {
           partialSigs = List.generate(
             3,
@@ -182,36 +180,43 @@ void main() {
           );
         });
 
-        test("cannot sign twice", () => expect(
-          () => sessions.first.sign(
-            otherNonces: otherNoncesMaps.first,
-            hash: hash,
-            privKey: privs.first.privateKey,
+        test(
+          "cannot sign twice",
+          () => expect(
+            () => sessions.first.sign(
+              otherNonces: otherNoncesMaps.first,
+              hash: hash,
+              privKey: privs.first.privateKey,
+            ),
+            throwsStateError,
           ),
-          throwsStateError,
-        ),);
+        );
 
-        test("cannot add own partial sig", () => expect(
-          () => addPartialSig(0, 0),
-          throwsArgumentError,
-        ),);
+        test(
+          "cannot add own partial sig",
+          () => expect(
+            () => addPartialSig(0, 0),
+            throwsArgumentError,
+          ),
+        );
 
-        test("invalid partial sig", () => expect(
-          addPartialSig(0, 0, 1),
-          false,
-        ),);
+        test(
+          "invalid partial sig",
+          () => expect(
+            addPartialSig(0, 0, 1),
+            false,
+          ),
+        );
 
         test("can add partial sigs", () {
-
-          void expectHave(int i, bool have)
-            => expect(sessions.first.havePartialSignature(getPubKey(i)), have);
+          void expectHave(int i, bool have) =>
+              expect(sessions.first.havePartialSignature(getPubKey(i)), have);
 
           for (int i = 1; i < 3; i++) {
             expectHave(i, false);
             expect(addPartialSig(0, i), true);
             expectHave(i, true);
           }
-
         });
 
         test("cannot finish before all partial sigs", () {
@@ -221,30 +226,30 @@ void main() {
         });
 
         group("given added all partial sigs", () {
-
           setUp(() => addAllPartialSigs());
 
-          test("cannot add partial sig more than once", () => expect(
-            () => addPartialSig(0, 1),
-            throwsStateError,
-          ),);
+          test(
+            "cannot add partial sig more than once",
+            () => expect(
+              () => addPartialSig(0, 1),
+              throwsStateError,
+            ),
+          );
 
           test("finish gives identical and valid signatures", () {
-
-            final sigs = sessions.map(
-              (session) => (session.finish() as MuSigResultComplete).signature,
-            ).toList();
+            final sigs = sessions
+                .map(
+                  (session) =>
+                      (session.finish() as MuSigResultComplete).signature,
+                )
+                .toList();
 
             expectIdenticalValidSigs(sigs);
-
           });
-
         });
-
       });
 
       test("can sign with adaptor", () {
-
         final adaptorScalar = getPrivKey(0);
         partialSigs = List.generate(
           3,
@@ -257,11 +262,12 @@ void main() {
         );
         addAllPartialSigs();
 
-        final adaptorSigs = sessions.map(
-          (session) => (
-            session.finish() as MuSigResultAdaptor
-          ).adaptorSignature,
-        ).toList();
+        final adaptorSigs = sessions
+            .map(
+              (session) =>
+                  (session.finish() as MuSigResultAdaptor).adaptorSignature,
+            )
+            .toList();
 
         expect(
           adaptorSigs.map((sig) => sig.preSig.verify(aggregate, hash)),
@@ -276,11 +282,7 @@ void main() {
           adaptorSigs.map((sig) => sig.extract(completeSigs.first).pubkey),
           everyElement(adaptorScalar.pubkey),
         );
-
       });
-
     });
-
   });
-
 }

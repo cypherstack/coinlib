@@ -13,15 +13,11 @@ final witness = [script.compiled, controlBlock];
 final stack = [hexToBytes("0102030405"), hexToBytes("01020304")];
 
 void main() {
-
   group("TaprootScriptInput", () {
-
     setUpAll(loadCoinlib);
 
     test("valid script-path taproot inputs", () {
-
       expectTaprootScriptInput(TaprootScriptInput input, bool withStack) {
-
         expectInput(input);
 
         expect(input.complete, true);
@@ -34,7 +30,6 @@ void main() {
         expect(input.witness, [if (withStack) ...stack, ...witness]);
         expect(input.size, rawWitnessInputBytes.length);
         expect(input.toBytes(), rawWitnessInputBytes);
-
       }
 
       for (final withStack in [false, true]) {
@@ -64,7 +59,6 @@ void main() {
           withStack,
         );
       }
-
     });
 
     test("control blocks up-to 128 hashes accepted", () {
@@ -72,7 +66,7 @@ void main() {
         TaprootScriptInput(
           prevOut: prevOut,
           controlBlock: Uint8List.fromList(
-            [...controlBlock, ...Uint8List(32*128)],
+            [...controlBlock, ...Uint8List(32 * 128)],
           ),
           tapscript: script,
         ),
@@ -81,14 +75,16 @@ void main() {
     });
 
     test("doesn't match non script-spend inputs", () {
-
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
-        TaprootScriptInput.match(
-          RawInput(prevOut: prevOut, scriptSig: Script.fromAsm(asm).compiled),
-          witness,
-        ),
-        null,
-      );
+            TaprootScriptInput.match(
+              RawInput(
+                prevOut: prevOut,
+                scriptSig: Script.fromAsm(asm).compiled,
+              ),
+              witness,
+            ),
+            null,
+          );
 
       expectNoMatch("0", witness);
       // Requires script
@@ -102,14 +98,16 @@ void main() {
         "",
         [
           script.compiled,
-          controlBlock.sublist(0, controlBlock.length-1),
+          controlBlock.sublist(0, controlBlock.length - 1),
         ],
       );
       expectNoMatch(
         "",
         [
           script.compiled,
-          Uint8List.fromList([...controlBlock.take(33), ...Uint8List(32*129)]),
+          Uint8List.fromList(
+            [...controlBlock.take(33), ...Uint8List(32 * 129)],
+          ),
         ],
       );
       // Control block must have valid tapscript version.
@@ -124,7 +122,5 @@ void main() {
       expectNoMatch("", [hexToBytes("0201"), controlBlock]);
       expectNoMatch("", [hexToBytes("0101"), controlBlock]);
     });
-
   });
-
 }

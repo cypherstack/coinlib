@@ -14,10 +14,9 @@ Future<bool> cmdAvailable(String cmd) async {
 Future<int> execWithStdio(
   String executable,
   List<String> arguments, {
-    String? workingDir,
-    String? stdin,
-  }
-) async {
+  String? workingDir,
+  String? stdin,
+}) async {
   final process = await Process.start(
     executable,
     arguments,
@@ -63,7 +62,6 @@ String createTmpDir() =>
     Directory.systemTemp.createTempSync("coinlibBuild").path;
 
 Future<String> cloneForWindowsInTmpDir() async {
-
   final tmpDir = createTmpDir();
 
   // Clone bitcoin-core/secp256k1.
@@ -83,5 +81,4 @@ Future<String> cloneForWindowsInTmpDir() async {
   Directory("build").createSync();
 
   return tmpDir;
-
 }

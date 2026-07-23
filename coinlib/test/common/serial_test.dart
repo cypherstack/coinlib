@@ -16,17 +16,19 @@ final outScript = hexToBytes(
 );
 final outValue = BigInt.from(60000);
 final witness = [
-  hexToBytes("304502210097c3006f0b390982eb47f762b2853773c6cedf83668a22d710f4c13c4fd6b15502205e26ef16a81fc818a37f3a34fc6d0700e61100ea6c6773907c9c046042c4403401"),
-  hexToBytes("038de63cf582d058a399a176825c045672d5ff8ea25b64d28d4375dcdb14c02b2b"),
+  hexToBytes(
+    "304502210097c3006f0b390982eb47f762b2853773c6cedf83668a22d710f4c13c4fd6b15502205e26ef16a81fc818a37f3a34fc6d0700e61100ea6c6773907c9c046042c4403401",
+  ),
+  hexToBytes(
+    "038de63cf582d058a399a176825c045672d5ff8ea25b64d28d4375dcdb14c02b2b",
+  ),
 ];
 
 class WritableTestTx with Writable {
-
   bool addExtra = false;
 
   @override
   void write(Writer writer) {
-
     // Version and flag
     writer.writeInt32(1);
     writer.writeUInt16(0x0100);
@@ -53,18 +55,12 @@ class WritableTestTx with Writable {
     writer.writeUInt32(0);
 
     if (addExtra) writer.writeUInt8(1);
-
   }
-
 }
 
 void main() {
-
-
   group("BytesReader", () {
-
     test("can read tx", () {
-
       final reader = BytesReader(txData, 3);
 
       expect(reader.atEnd, false);
@@ -93,11 +89,9 @@ void main() {
       expect(reader.readUInt32(), 0);
 
       expect(reader.atEnd, true);
-
     });
 
     test("provides error if insufficient data", () {
-
       expectOutOfData(String hex, void Function(BytesReader) f) {
         final reader = BytesReader(hexToBytes(hex));
         expect(() => f(reader), throwsA(isA<OutOfData>()));
@@ -111,7 +105,6 @@ void main() {
       expectOutOfData("fd01", (r) => r.readVarInt());
       expectOutOfData("030102", (r) => r.readVarSlice());
       expectOutOfData("030102020102", (r) => r.readVector());
-
     });
 
     expectBigInt(String hex, BigInt Function(BytesReader) f, String intHex) {
@@ -129,24 +122,19 @@ void main() {
     });
 
     test("can read varints", () {
-
-      expectVarInt(String hex, String intHex)
-        => expectBigInt(hex, (r) => r.readVarInt(), intHex);
+      expectVarInt(String hex, String intHex) =>
+          expectBigInt(hex, (r) => r.readVarInt(), intHex);
 
       expectVarInt("fc", "fc");
       expectVarInt("fd0102", "0201");
       expectVarInt("fe01020304", "04030201");
       expectVarInt("ff0102030405060708", "0807060504030201");
-
     });
-
   });
 
   group("BytesWriter", () {
-
     test("can write tx", () {
-
-      final data = Uint8List(195+3);
+      final data = Uint8List(195 + 3);
       data[0] = 1;
       data[1] = 2;
       data[2] = 3;
@@ -157,7 +145,6 @@ void main() {
       expect(writer.atEnd, true);
 
       expect(data, txData);
-
     });
 
     expectWrite(int length, void Function(BytesWriter) f, String expected) {
@@ -168,7 +155,6 @@ void main() {
     }
 
     test("provides error if writing past boundary", () {
-
       expectOutOfData(int length, void Function(BytesWriter) f) {
         final writer = BytesWriter(Uint8List(length));
         expect(() => f(writer), throwsA(isA<OutOfData>()));
@@ -178,17 +164,17 @@ void main() {
       expectOutOfData(1, (w) => w.writeUInt16(0));
       expectOutOfData(3, (w) => w.writeUInt32(0));
       expectOutOfData(3, (w) => w.writeInt32(0));
-      expectOutOfData(3, (w) => w.writeSlice(Uint8List.fromList([0,0,0,0])));
+      expectOutOfData(3, (w) => w.writeSlice(Uint8List.fromList([0, 0, 0, 0])));
       expectOutOfData(2, (w) => w.writeVarInt(BigInt.from(0xfd)));
-      expectOutOfData(3, (w) => w.writeVarSlice(Uint8List.fromList([0,0,0])));
+      expectOutOfData(3, (w) => w.writeVarSlice(Uint8List.fromList([0, 0, 0])));
       expectOutOfData(
-        8, (w) => w.writeVector([
-          Uint8List.fromList([0,1]),
+        8,
+        (w) => w.writeVector([
+          Uint8List.fromList([0, 1]),
           Uint8List.fromList([0]),
-          Uint8List.fromList([0,1]),
+          Uint8List.fromList([0, 1]),
         ]),
       );
-
     });
 
     test("can write large uint64", () {
@@ -200,22 +186,19 @@ void main() {
     });
 
     test("can write varints", () {
-
       expectWriteVarInt(String intHex, String expected) => expectWrite(
-        expected.length ~/ 2,
-        (r) => r.writeVarInt(BigInt.parse(intHex, radix: 16)),
-        expected,
-      );
+            expected.length ~/ 2,
+            (r) => r.writeVarInt(BigInt.parse(intHex, radix: 16)),
+            expected,
+          );
 
       expectWriteVarInt("fc", "fc");
       expectWriteVarInt("0201", "fd0102");
       expectWriteVarInt("04030201", "fe01020304");
       expectWriteVarInt("0807060504030201", "ff0102030405060708");
-
     });
 
     test("throws error on wrong input", () {
-
       final data = Uint8List(8);
       final writer = BytesWriter(data);
 
@@ -238,13 +221,10 @@ void main() {
         ),
         throwsArgumentError,
       );
-
     });
-
   });
 
   group("MeasureWriter", () {
-
     test("can measure tx", () {
       final measure = MeasureWriter();
       expect(measure.size, 0);
@@ -253,7 +233,6 @@ void main() {
     });
 
     test("can measure varints", () {
-
       expectVarIntMeasure(String intHex, int length) {
         final measure = MeasureWriter();
         measure.writeVarInt(BigInt.parse(intHex, radix: 16));
@@ -264,17 +243,13 @@ void main() {
       expectVarIntMeasure("0201", 3);
       expectVarIntMeasure("04030201", 5);
       expectVarIntMeasure("0807060504030201", 9);
-
     });
-
   });
 
   group("Writable", () {
-
     test("toBytes(), toHex() and .size", () {
-
       final expData = txData.sublist(3);
-      final expSize = txData.length-3;
+      final expSize = txData.length - 3;
 
       // Should work OK twice
       final obj = WritableTestTx();
@@ -293,9 +268,6 @@ void main() {
       // Changes to the object do not change the cache
       obj2.addExtra = true;
       expect(obj2.size, expSize);
-
     });
-
   });
-
 }
