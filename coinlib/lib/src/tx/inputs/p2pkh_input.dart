@@ -16,7 +16,6 @@ import 'sequence.dart';
 /// corresponding [ECPrivateKey] or a signature can be added without checks
 /// using [addSignature].
 class P2PKHInput extends LegacyInput with PKHInput {
-
   @override
   final ECPublicKey publicKey;
   @override
@@ -30,17 +29,16 @@ class P2PKHInput extends LegacyInput with PKHInput {
     this.insig,
     super.sequence = InputSequence.enforceLocktime,
   }) : super(
-    scriptSig: Script([
-      if (insig != null) ScriptPushData(insig.bytes),
-      ScriptPushData(publicKey.data),
-    ]).compiled,
-  );
+          scriptSig: Script([
+            if (insig != null) ScriptPushData(insig.bytes),
+            ScriptPushData(publicKey.data),
+          ]).compiled,
+        );
 
   /// Checks if the [RawInput] matches the expected format for a [P2PKHInput],
   /// with or without a signature. If it does it returns a [P2PKHInput] for the
   /// input or else it returns null.
   static P2PKHInput? match(RawInput raw) {
-
     final script = raw.script;
     if (script == null) return null;
     final ops = script.ops;
@@ -58,40 +56,42 @@ class P2PKHInput extends LegacyInput with PKHInput {
       insig: insig,
       sequence: raw.sequence,
     );
-
   }
 
   @override
   P2PKHInput sign({
     required LegacySignDetails details,
     required ECPrivateKey key,
-  }) => addSignature(
-    createInputSignature(
-      key: checkKey(key),
-      details: details.addScript(scriptCode),
-    ),
-  );
+  }) =>
+      addSignature(
+        createInputSignature(
+          key: checkKey(key),
+          details: details.addScript(scriptCode),
+        ),
+      );
 
   @override
+
   /// Returns a new [P2PKHInput] with the [ECDSAInputSignature] added. Any
   /// existing signature is replaced.
   P2PKHInput addSignature(ECDSAInputSignature insig) => P2PKHInput(
-    prevOut: prevOut,
-    publicKey: publicKey,
-    insig: insig,
-    sequence: sequence,
-  );
+        prevOut: prevOut,
+        publicKey: publicKey,
+        insig: insig,
+        sequence: sequence,
+      );
 
   @override
-  P2PKHInput filterSignatures(bool Function(InputSignature insig) predicate)
-    => insig == null || predicate(insig!) ? this : P2PKHInput(
-      prevOut: prevOut,
-      publicKey: publicKey,
-      insig: null,
-      sequence: sequence,
-    );
+  P2PKHInput filterSignatures(bool Function(InputSignature insig) predicate) =>
+      insig == null || predicate(insig!)
+          ? this
+          : P2PKHInput(
+              prevOut: prevOut,
+              publicKey: publicKey,
+              insig: null,
+              sequence: sequence,
+            );
 
   @override
   Script get script => super.script!;
-
 }

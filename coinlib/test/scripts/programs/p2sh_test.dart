@@ -2,9 +2,7 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("P2SH", () {
-
     setUpAll(loadCoinlib);
 
     final redeemScript = Script.fromAsm("0");
@@ -42,7 +40,8 @@ void main() {
         "a914${scriptHash}8700",
         "",
       ]) {
-        expect(() => P2SH.decompile(hexToBytes(bad)), throwsA(isA<NoProgramMatch>()));
+        expect(() => P2SH.decompile(hexToBytes(bad)),
+            throwsA(isA<NoProgramMatch>()));
       }
     });
 
@@ -79,7 +78,5 @@ void main() {
       hash[1] = 0xff;
       expect(bytesToHex(p2sh.scriptHash), hex);
     });
-
   });
-
 }

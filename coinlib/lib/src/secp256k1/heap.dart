@@ -12,6 +12,7 @@ abstract interface class HeapBytes<Ptr> extends Heap<Ptr> {
   /// Obtain a copy of the bytes that is safe to store even if the underlying
   /// list changes
   Uint8List get copy;
+
   /// Obtain a copy of the first [n] bytes.
   Uint8List copyNBytes(int n);
   void load(Uint8List data);

@@ -6,9 +6,7 @@ import '../vectors/tx.dart';
 import '../vectors/keys.dart';
 
 void main() {
-
   group("Transaction", () {
-
     setUpAll(loadCoinlib);
 
     final keyVec = keyPairVectors[0];
@@ -42,16 +40,17 @@ void main() {
     }
 
     expectInputSignedSize(Input input) => expect(
-      input.size, lessThanOrEqualTo(input.signedSize!),
-    );
+          input.size,
+          lessThanOrEqualTo(input.signedSize!),
+        );
 
     test("valid txs", () {
       for (final vec in validTxVecs) {
-
         expectVectorWithoutObj(vec.obj, vec);
         expectFullVector(Transaction.fromHex(vec.hex), vec);
         expectFullVector(
-          Transaction.fromHex(vec.hex, expectWitness: vec.isWitness), vec,
+          Transaction.fromHex(vec.hex, expectWitness: vec.isWitness),
+          vec,
         );
         expect(vec.obj == vec.obj.legacy, !vec.isWitness);
 
@@ -60,10 +59,9 @@ void main() {
           expect(legacy.isWitness, false);
           expect(legacy.inputs, everyElement(isA<RawInput>()));
           expect(legacy.toHex(), vec.legacyHex);
-          expect(legacy.size, vec.legacyHex!.length/2);
+          expect(legacy.size, vec.legacyHex!.length / 2);
           expect(legacy.hashHex, vec.txidHex);
         }
-
       }
     });
 
@@ -82,66 +80,84 @@ void main() {
     });
 
     test("tx too large", () {
+      final nonScriptSize = 4 // Version
+          +
+          1 // nIn
+          +
+          36 // Prevout
+          +
+          5 // Script varint
+          +
+          4 // Sequence
+          +
+          1 // nOut
+          +
+          4; // Locktime
 
-      final nonScriptSize
-        = 4 // Version
-        + 1 // nIn
-        + 36 // Prevout
-        + 5 // Script varint
-        + 4 // Sequence
-        + 1 // nOut
-        + 4; // Locktime
-
-      final witnessNonScriptSize
-        = 4 // Version
-        + 2 // Marker and flag
-        + 1 // nIn
-        + 36 // Prevout
-        + 1 // Empty script
-        + 4 // Sequence
-        + 1 // nOut
-        + 6 // Witness varints
-        + 4; // Locktime
+      final witnessNonScriptSize = 4 // Version
+          +
+          2 // Marker and flag
+          +
+          1 // nIn
+          +
+          36 // Prevout
+          +
+          1 // Empty script
+          +
+          4 // Sequence
+          +
+          1 // nOut
+          +
+          6 // Witness varints
+          +
+          4; // Locktime
 
       Uint8List dataOfSize(int size) {
-
         final scriptSize = size - nonScriptSize;
         final varBytes = Uint8List(5);
         BytesWriter(varBytes).writeVarInt(BigInt.from(scriptSize));
 
         return Uint8List.fromList([
-          3, 0, 0, 0,
+          3,
+          0,
+          0,
+          0,
           1,
-          ...hexToBytes("f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000"),
+          ...hexToBytes(
+              "f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000"),
           ...varBytes,
           ...Iterable.generate(scriptSize),
-          0xff, 0xff, 0xff, 0xff,
+          0xff,
+          0xff,
+          0xff,
+          0xff,
           0,
-          0,0,0,0,
+          0,
+          0,
+          0,
+          0,
         ]);
-
       }
 
       Transaction txOfSize(int size) => Transaction(
-        inputs: [
-          RawInput(
-            prevOut: examplePrevOut,
-            scriptSig: Uint8List(size-nonScriptSize),
-          ),
-        ],
-        outputs: [],
-      );
+            inputs: [
+              RawInput(
+                prevOut: examplePrevOut,
+                scriptSig: Uint8List(size - nonScriptSize),
+              ),
+            ],
+            outputs: [],
+          );
 
       Transaction witnessTxOfSize(int size) => Transaction(
-        inputs: [
-          WitnessInput(
-            prevOut: examplePrevOut,
-            witness: [Uint8List(size-witnessNonScriptSize)],
-          ),
-        ],
-        outputs: [],
-      );
-
+            inputs: [
+              WitnessInput(
+                prevOut: examplePrevOut,
+                witness: [Uint8List(size - witnessNonScriptSize)],
+              ),
+            ],
+            outputs: [],
+          );
 
       expect(Transaction.fromBytes(dataOfSize(1000000)).size, 1000000);
       expect(txOfSize(1000000).size, 1000000);
@@ -156,11 +172,9 @@ void main() {
         () => witnessTxOfSize(1000001),
         throwsA(isA<TransactionTooLarge>()),
       );
-
     });
 
     test("ambiguous tx", () {
-
       expectFullVector(
         Transaction.fromHex(ambiguousHex, expectWitness: false),
         ambiguousLegacy,
@@ -173,15 +187,14 @@ void main() {
 
       // Witness assumed by default
       expectFullVector(Transaction.fromHex(ambiguousHex), ambiguousWitness);
-
     });
 
     void expectCannotSign(void Function() doSign) => expect(
-      doSign, throwsA(isA<CannotSignInput>()),
-    );
+          doSign,
+          throwsA(isA<CannotSignInput>()),
+        );
 
     test("sign failures", () {
-
       final privkey = ECPrivateKey.generate();
       final pubkey = privkey.pubkey;
       final wrongkey = ECPrivateKey.generate();
@@ -203,7 +216,9 @@ void main() {
       // SIGHASH_NONE OK with no outputs
       expect(
         txNoOutput.signLegacy(
-          inputN: 1, key: privkey, hashType: SigHashType.none(),
+          inputN: 1,
+          key: privkey,
+          hashType: SigHashType.none(),
         ),
         isA<Transaction>(),
       );
@@ -311,7 +326,10 @@ void main() {
         );
         expectCannotSign(
           () => tx.signLegacyWitness(
-            inputN: 0, key: privkey, value: value, hashType: apoType,
+            inputN: 0,
+            key: privkey,
+            value: value,
+            hashType: apoType,
           ),
         );
         expectCannotSign(
@@ -323,7 +341,6 @@ void main() {
           ),
         );
       }
-
     });
 
     test("immutable inputs/outputs", () {
@@ -339,15 +356,14 @@ void main() {
     });
 
     test("sign P2PKH", () {
-
       expectP2PKH({
         required List<String> prevTxIds,
         required SigHashType hashType,
         required String hex,
       }) {
-
         final tx = Transaction(
-          inputs: prevTxIds.map((txid) => P2PKHInput(
+          inputs: prevTxIds.map(
+            (txid) => P2PKHInput(
               prevOut: OutPoint.fromHex(txid, 1),
               publicKey: keyVec.publicObj,
               sequence: InputSequence.finalWithoutLocktime,
@@ -369,34 +385,42 @@ void main() {
         expect(tx.complete, false);
         expect(signed.complete, true);
         expect(signed.toHex(), hex);
-
       }
 
       // SIGHASH_ALL
       // Sent on testnet: c52154f5b3cec84dc651d9102950914d259477a9d013efcece769ad07643df5d
       // Sent 10tppc via 6003525edfd29b63767e465bdf3d61aa60105e4368366c46a62d0f1fb0c6b34b
       expectP2PKH(
-        prevTxIds: ["6003525edfd29b63767e465bdf3d61aa60105e4368366c46a62d0f1fb0c6b34b"],
+        prevTxIds: [
+          "6003525edfd29b63767e465bdf3d61aa60105e4368366c46a62d0f1fb0c6b34b"
+        ],
         hashType: SigHashType.all(),
-        hex: "03000000014bb3c6b01f0f2da6466c3668435e1060aa613ddf5b467e76639bd2df5e520360010000006a4730440220103774421b86d889dcf0b68052431f7d78c19acb470922aff6f93c6648d29c50022008cf92d373035b8b3ad6e8a8f061c30ad16967e98eeb04a34fd2bab7aa67d92b01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+        hex:
+            "03000000014bb3c6b01f0f2da6466c3668435e1060aa613ddf5b467e76639bd2df5e520360010000006a4730440220103774421b86d889dcf0b68052431f7d78c19acb470922aff6f93c6648d29c50022008cf92d373035b8b3ad6e8a8f061c30ad16967e98eeb04a34fd2bab7aa67d92b01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
       );
 
       // SIGHASH_NONE
       // Sent on testnet: a67a6e12d93a51fb3f3fffd0a5827e312227f5824ccd1bb2ef3b941d2dfa47ca
       // Sent 2tppc via 5ce897c22438be2ab7fac85c7fdea596c81b0b515a1163969d0c9805e97ff561
       expectP2PKH(
-        prevTxIds: ["5ce897c22438be2ab7fac85c7fdea596c81b0b515a1163969d0c9805e97ff561"],
+        prevTxIds: [
+          "5ce897c22438be2ab7fac85c7fdea596c81b0b515a1163969d0c9805e97ff561"
+        ],
         hashType: SigHashType.none(),
-        hex: "030000000161f57fe905980c9d9663115a510b1bc896a5de7f5cc8fab72abe3824c297e85c010000006a47304402201d570d9d1823badb6247a1f1f71eca517fdd1ef93cde819a94caa3fb2d0530cf02204f0cf2517c363dd2e1c46c3f37f1a3c36c869e9013b6741ed2736ba5e73baf9f02210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+        hex:
+            "030000000161f57fe905980c9d9663115a510b1bc896a5de7f5cc8fab72abe3824c297e85c010000006a47304402201d570d9d1823badb6247a1f1f71eca517fdd1ef93cde819a94caa3fb2d0530cf02204f0cf2517c363dd2e1c46c3f37f1a3c36c869e9013b6741ed2736ba5e73baf9f02210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
       );
 
       // SIGHASH_SINGLE | ANYONECANPAY
       // Sent on testnet: c75d5e7c2323160240de255d188d8c4b125425a7da744b5ba371ddc43dda96a6
       // Sent 6tppc via f47fe6ce6a79734f252ceac7a0468a077b3d27e5289c5c0fb5294e0c7c07a51a
       expectP2PKH(
-        prevTxIds: ["f47fe6ce6a79734f252ceac7a0468a077b3d27e5289c5c0fb5294e0c7c07a51a"],
+        prevTxIds: [
+          "f47fe6ce6a79734f252ceac7a0468a077b3d27e5289c5c0fb5294e0c7c07a51a"
+        ],
         hashType: SigHashType.single(inputs: InputSigHashOption.anyOneCanPay),
-        hex: "03000000011aa5077c0c4e29b50f5c9c28e5273d7b078a46a0c7ea2c254f73796acee67ff4010000006a47304402206716517f2f9ee8d4fbcbc186f2e31e366e54821b2cbf4d1f9df480be300a4657022016572e39f86552958e043252390f4a17cd08caf1667a08e342b93b9b3ac020ab83210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+        hex:
+            "03000000011aa5077c0c4e29b50f5c9c28e5273d7b078a46a0c7ea2c254f73796acee67ff4010000006a47304402206716517f2f9ee8d4fbcbc186f2e31e366e54821b2cbf4d1f9df480be300a4657022016572e39f86552958e043252390f4a17cd08caf1667a08e342b93b9b3ac020ab83210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
       );
 
       // SIGHASH_ALL with 2x inputs
@@ -409,22 +433,23 @@ void main() {
           "22eb14eef7eb88d7b653943aac5f38016fa4ee0aaf51462f8737f788e11b3d78",
         ],
         hashType: SigHashType.all(),
-        hex: "0300000002b87bf355a67eb231f84742af0ecc99eedce81a18e5709ab1f259087eafee2484010000006a4730440220251b28722dd16982c91a2f1aefbfd2d35ff4ce55785e8a7030decfe970c63ad302207e98ac50fa45aad1039bea2e2a18051b693e25efbc7eb83580596cee0d587acf01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff783d1be188f737872f4651af0aeea46f01385fac3a9453b6d788ebf7ee14eb22010000006a473044022021142171ef3e40b89ed1083ab57a612cbbf5f039a20e1e02fc25c3f57e01a16b0220087c7f087edcb0014f981b0def6623bebee254c9290d1f7fe9a1a1276ab3d29601210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+        hex:
+            "0300000002b87bf355a67eb231f84742af0ecc99eedce81a18e5709ab1f259087eafee2484010000006a4730440220251b28722dd16982c91a2f1aefbfd2d35ff4ce55785e8a7030decfe970c63ad302207e98ac50fa45aad1039bea2e2a18051b693e25efbc7eb83580596cee0d587acf01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff783d1be188f737872f4651af0aeea46f01385fac3a9453b6d788ebf7ee14eb22010000006a473044022021142171ef3e40b89ed1083ab57a612cbbf5f039a20e1e02fc25c3f57e01a16b0220087c7f087edcb0014f981b0def6623bebee254c9290d1f7fe9a1a1276ab3d29601210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
       );
 
       // SIGHASH_ALL | ANYONECANPAY with 2x inputs
       // Sent on testnet: a56f9b2c69fe61638e3b5d05205007728faada21a551ac499a5f097eecfab786
       // Sent 3tppc via c8d7587c66e8d803a2a802658d51e2accb6ede1e472ecd1e55b6202a47447e7f
-      // Sent 7tppc via ead28731d0bf3d5d2ac014edb5b4edfa862d9ea6a67ae1147e32b5c4c6cfebab 
+      // Sent 7tppc via ead28731d0bf3d5d2ac014edb5b4edfa862d9ea6a67ae1147e32b5c4c6cfebab
       expectP2PKH(
         prevTxIds: [
           "c8d7587c66e8d803a2a802658d51e2accb6ede1e472ecd1e55b6202a47447e7f",
           "ead28731d0bf3d5d2ac014edb5b4edfa862d9ea6a67ae1147e32b5c4c6cfebab",
         ],
         hashType: SigHashType.all(inputs: InputSigHashOption.anyOneCanPay),
-        hex: "03000000027f7e44472a20b6551ecd2e471ede6ecbace2518d6502a8a203d8e8667c58d7c8010000006a47304402201117e6fb5b1cb0fd893c506051f60b1a7b0cf7bd404a1793a6a02c3fca6b0d5b0220761bef6978d8820694707de4569cd8ece2226ad8f67b6d97b5156cfc17697c3081210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffffabebcfc6c4b5327e14e17aa6a69e2d86faedb4b5ed14c02a5d3dbfd03187d2ea010000006a47304402202afa1ec80ed42799869da5698b5ee0341a25bcdf3a4eafd142be5b4f90f4a03e022019bb83ad4b12a7ea7c65d8bdc4f112825ba2327f502377fa18f0395854bfa77581210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
+        hex:
+            "03000000027f7e44472a20b6551ecd2e471ede6ecbace2518d6502a8a203d8e8667c58d7c8010000006a47304402201117e6fb5b1cb0fd893c506051f60b1a7b0cf7bd404a1793a6a02c3fca6b0d5b0220761bef6978d8820694707de4569cd8ece2226ad8f67b6d97b5156cfc17697c3081210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffffabebcfc6c4b5327e14e17aa6a69e2d86faedb4b5ed14c02a5d3dbfd03187d2ea010000006a47304402202afa1ec80ed42799869da5698b5ee0341a25bcdf3a4eafd142be5b4f90f4a03e022019bb83ad4b12a7ea7c65d8bdc4f112825ba2327f502377fa18f0395854bfa77581210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000",
       );
-
     });
 
     test("sign P2WPKH input", () {
@@ -434,8 +459,8 @@ void main() {
       // Includes 5ppc and 3ppc inputs
       //    via 6ef0ccd045d0f29b4b52ac4804ac0378ef10b0dc68cfb3283e744a056238799f
 
-      final prevHashHex
-        = "6ef0ccd045d0f29b4b52ac4804ac0378ef10b0dc68cfb3283e744a056238799f";
+      final prevHashHex =
+          "6ef0ccd045d0f29b4b52ac4804ac0378ef10b0dc68cfb3283e744a056238799f";
 
       final tx = Transaction(
         inputs: [
@@ -458,7 +483,9 @@ void main() {
       expect(partSigned.complete, false);
 
       final signed = partSigned.signLegacyWitness(
-        inputN: 1, key: keyVec.privateObj, value: BigInt.from(3000000),
+        inputN: 1,
+        key: keyVec.privateObj,
+        value: BigInt.from(3000000),
       );
       expect(signed.complete, true);
       expectInputSignedSize(signed.inputs[1]);
@@ -467,7 +494,6 @@ void main() {
         signed.toHex(),
         "030000000001029f793862054a743e28b3cf68dcb010ef7803ac0448ac524b9bf2d045d0ccf06e0100000069463043022042a3d36745bd1beaa6f7f81dcddae8f7a0986af10488f31d50037cc4d55b6b6d021f0f3872b51900d058afea10a0f8a80a69a1547379fa87c7e127c345c11723ac01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff9f793862054a743e28b3cf68dcb010ef7803ac0448ac524b9bf2d045d0ccf06e0200000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac000247304402202bc4a1b3d7ac22b2311fc1f113ce191768ee56ee8d4b20c9d528dae70f6af009022022babf3c47f99a2772da1a1a68dc1739c938b8518e7abe0bef856e8651cb5d4b01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179800000000",
       );
-
     });
 
     test("sign key-path P2TR input", () {
@@ -505,16 +531,18 @@ void main() {
       ];
       final tweakedPriv = taproot.tweakPrivateKey(keyVec.privateObj);
 
-      final signed = tx.signTaproot(
-        inputN: 0,
-        key: tweakedPriv,
-        prevOuts: prevOuts,
-      ).signTaproot(
-        inputN: 1,
-        key: tweakedPriv,
-        prevOuts: [prevOuts[1]],
-        hashType: sigHashAOCP,
-      );
+      final signed = tx
+          .signTaproot(
+            inputN: 0,
+            key: tweakedPriv,
+            prevOuts: prevOuts,
+          )
+          .signTaproot(
+            inputN: 1,
+            key: tweakedPriv,
+            prevOuts: [prevOuts[1]],
+            hashType: sigHashAOCP,
+          );
 
       expect(signed.complete, true);
       for (final input in signed.inputs) {
@@ -533,7 +561,6 @@ void main() {
       expect((newTx.inputs[0] as TaprootKeyInput).insig, null);
       // Should be same object as there is no change
       expect(newTx.inputs[1], signed.inputs[1]);
-
     });
 
     test("sign script-path P2TR input with NUMS key", () {
@@ -543,8 +570,8 @@ void main() {
       //  63ea0ecff27d9bffd00b09b92b682900e6093a2729f9f0a36746be32dbdeb074
 
       TapLeaf checkSigLeafForVector(KeyTestVector vec) => TapLeaf(
-        Script([ScriptPushData(vec.publicObj.x), ScriptOpCode.checksig]),
-      );
+            Script([ScriptPushData(vec.publicObj.x), ScriptOpCode.checksig]),
+          );
 
       final rTweak = hexToBytes(
         "b8bbb28a422ab2f235f27b7e40f0189bd1c581bf44342fb6e8f3b6e772b29627",
@@ -591,21 +618,24 @@ void main() {
       );
 
       final solvedInput = inputToSign.updateStack([
-        inputToSign.createScriptSignature(
-          details: TaprootScriptSignDetails(
-            tx: tx,
-            inputN: 0,
-            prevOuts: [prevOut],
-          ),
-          key: keyPairVectors[2].privateObj,
-        ).bytes,
+        inputToSign
+            .createScriptSignature(
+              details: TaprootScriptSignDetails(
+                tx: tx,
+                inputN: 0,
+                prevOuts: [prevOut],
+              ),
+              key: keyPairVectors[2].privateObj,
+            )
+            .bytes,
       ]);
       final solvedTx = tx.replaceInput(solvedInput, 0);
 
       // Should've created a default schnorr siganture
       expect(
         SchnorrInputSignature.fromBytes(solvedInput.witness.first)
-        .hashType.schnorrDefault,
+            .hashType
+            .schnorrDefault,
         true,
       );
 
@@ -613,7 +643,6 @@ void main() {
         solvedTx.toHex(),
         "0300000000010174b0dedb32be4667a3f0f929273a09e60029682bb9090bd0ff9b7df2cf0eea630100000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac0340e41ed624484087c25a210f34ade142ad706dded5fbca1787092531bb47a4251b8187e789ee1f1d41f9f22431eb43c979f009afe00e25aaaedf68a5db606c08b32220b80011a883a0fd621ad46dfc405df1e74bf075cbaf700fd4aebef6e96f848340ac61c1b33ff3fab0fd16daef5f4916bfbd83244bf3b9f446eb0f1b7b5b1f97a9e99065763e9da064b9dc0471fb0f3c8fa2c84b4b84d2ca992497c12d2274386795aa8ef91bcc8ea862a20c20ecb36adc4a8c29ca24475f9685d07e76e19379328e847e00000000",
       );
-
     });
 
     test("sign P2SH multisig and add inputs/outputs", () {
@@ -624,15 +653,16 @@ void main() {
       //   both via 90024b0b92707fa505b4183951ac755d45ecab5e6855ea78370063b365e0687b
 
       final privkeys = List<ECPrivateKey>.generate(
-        4, (i) => ECPrivateKey(
-          Uint8List.fromList([...List<int>.filled(31, 0), i+1]),
+        4,
+        (i) => ECPrivateKey(
+          Uint8List.fromList([...List<int>.filled(31, 0), i + 1]),
         ),
       );
       final pubkeys = privkeys.map((k) => k.pubkey).toList();
       final multisig = MultisigProgram(3, pubkeys);
 
-      final prevHashHex
-        = "90024b0b92707fa505b4183951ac755d45ecab5e6855ea78370063b365e0687b";
+      final prevHashHex =
+          "90024b0b92707fa505b4183951ac755d45ecab5e6855ea78370063b365e0687b";
 
       final tx = Transaction(
         inputs: [
@@ -691,7 +721,8 @@ void main() {
       expectInputSignedSize(signed.inputs[1]);
       expect(signed.inputs[1].signedSize, signedSizeFromUnsigned);
       expectMultisigSigs(
-        signed, [SigHashType.single(), SigHashType.none(), sigHashAOCP],
+        signed,
+        [SigHashType.single(), SigHashType.none(), sigHashAOCP],
       );
       expect(
         signed.toHex(),
@@ -711,11 +742,9 @@ void main() {
         signed.addOutput(exampleOutput),
         [SigHashType.single(), SigHashType.none()],
       );
-
     });
 
     test("invalid SIGHASH_SINGLE when adding corresponding output", () {
-
       final privkey = ECPrivateKey.generate();
       final pubkey = privkey.pubkey;
 
@@ -743,11 +772,9 @@ void main() {
       // Added output for second input which is therefore invalidated
       expect((tx.inputs[0] as P2PKHInput).insig, isNotNull);
       expect((tx.inputs[1] as P2PKHInput).insig, isNull);
-
     });
 
     test("replaceInput", () {
-
       // Create tx with 4 legacy (the 2nd to be replaced), 3 witness and 3
       // taproot inputs to test invalidation when an input is replaced
 
@@ -798,49 +825,49 @@ void main() {
         ],
         outputs: [exampleOutput],
       )
-      // Sign legacy
-      .signLegacy(inputN: 0, key: keyVec.privateObj)
-      .signLegacy(
-        inputN: 2,
-        key: keyVec.privateObj,
-        hashType: sigHashAOCP,
-      )
-      .signLegacy(
-        inputN: 3,
-        key: keyVec.privateObj,
-        hashType: SigHashType.single(),
-      )
-      // Sign witness
-      .signLegacyWitness(inputN: 4, key: keyVec.privateObj, value: value)
-      .signLegacyWitness(
-        inputN: 5,
-        key: keyVec.privateObj,
-        hashType: sigHashAOCP,
-        value: value,
-      )
-      .signLegacyWitness(
-        inputN: 6,
-        key: keyVec.privateObj,
-        hashType: SigHashType.none(),
-        value: value,
-      )
-      // Sign taproot
-      .signTaproot(inputN: 7, key: keyVec.privateObj, prevOuts: taprootPrevOuts)
-      .signTaproot(
+          // Sign legacy
+          .signLegacy(inputN: 0, key: keyVec.privateObj)
+          .signLegacy(
+            inputN: 2,
+            key: keyVec.privateObj,
+            hashType: sigHashAOCP,
+          )
+          .signLegacy(
+            inputN: 3,
+            key: keyVec.privateObj,
+            hashType: SigHashType.single(),
+          )
+          // Sign witness
+          .signLegacyWitness(inputN: 4, key: keyVec.privateObj, value: value)
+          .signLegacyWitness(
+            inputN: 5,
+            key: keyVec.privateObj,
+            hashType: sigHashAOCP,
+            value: value,
+          )
+          .signLegacyWitness(
+            inputN: 6,
+            key: keyVec.privateObj,
+            hashType: SigHashType.none(),
+            value: value,
+          )
+          // Sign taproot
+          .signTaproot(
+              inputN: 7, key: keyVec.privateObj, prevOuts: taprootPrevOuts)
+          .signTaproot(
         inputN: 8,
         key: keyVec.privateObj,
         hashType: sigHashAOCP,
         prevOuts: [taprootPrevOuts[8]],
-      )
-      .signTaproot(
+      ).signTaproot(
         inputN: 9,
         key: keyVec.privateObj,
         hashType: SigHashType.none(),
         prevOuts: taprootPrevOuts,
       );
 
-      void expectComplete(Transaction tx, Iterable<bool> completes)
-        => expect(tx.inputs.map((i) => i.complete), completes);
+      void expectComplete(Transaction tx, Iterable<bool> completes) =>
+          expect(tx.inputs.map((i) => i.complete), completes);
 
       // All but the 2nd input is complete
       expectComplete(tx, Iterable.generate(10, (i) => i != 1));
@@ -875,7 +902,6 @@ void main() {
         ],
       );
 
-
       // Only keep ANYONECANPAY when prevout changes
       expectComplete(
         tx.replaceInput(
@@ -908,7 +934,6 @@ void main() {
         signedTx.toHex(),
         "0300000000010af1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006a473044022079f777b6059975ce333332bb3ecde653be038dcbddefc7920072124b1ffe43fc022030926798d6440ea69aab4e28a3ebf84fa46f3f31ae2c1c38b04c73120abea2cf01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006a47304402201e8ab341d37d9cdd8563d649e710eee973ae601fe61b57da6e1d7ae10ba21a7a022023a9d5b20a43df3c60697c876ba2030d754dda0e07804a699222616ffce3cf3801210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006a47304402202c2f712bbef221026214ae9e54e817eb73df6c73aca4d35b5190caf28c454cd102207dc3750935a86b4431e55476a1e049d3d8ee7cf13162f264ce9964afa4b09c7181210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006a47304402205a0d9a76a926bce5a74db8fa127d8c8779d868de26c1422f4b8acd3f8735ba580220381287903eeb349023c8d6a0d77ddcdf9fcbc01ce968627183f124ecd5e860c203210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000fffffffff1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000024730440220487c6b12556adc75a199a8b390d38b928bd4efbb831f2010250389995fee821302204dfa74a4e7711a8b96249a6ec7836e4cc374d6dbf3864fdd142a25a67663ebfe01210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817980247304402206e47c35235a3f5dab7420ad3e2ecdc395cb402b9fc29e8ada89ff6e380ac4df3022010812c5beacf5ef47ac380511989d204804b33a664ffe9019ea8be23ccf56f2981210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817980247304402202b4600fe4e9823210f36074f9e3d1fa442d940e00970b707014630f2a2f695b402203e2468c4c2501959a92fafe6475cff1ba1497b5e50c77701188923399654d1d602210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817980140622c919fec9e9eeb8e7561bb768c6b7559e9aae170d2269c06f74b57cca6ce447dc9dc3789cd96d304faa7b759a6cfcc9287d965f34a911960c29f0eac9a79ad0141af1a113a9cd6f83655cb1444e8f8e3bf07751381a942a3a35b40bac08f61c56a8736a49d8998380305e488e156ecd0516b40474db401ba359ef46cd49d96743d810141f2edfd966b88a16e30c840bf8a93e05bd2bc2bed954a01712bc0ff2fbfcdff654f6262054ba965b09c08e03c8e29c2bd19fd6a2294e5464fa45f58908fab0c8e0200000000",
       );
-
     });
 
     test("signTaprootSingleScriptSig()", () {
@@ -970,59 +995,68 @@ void main() {
       final coin = CoinUnit.coin.toSats("1");
 
       // Sign regular
-      final signedTx = tx.signTaprootSingleScriptSig(
-        inputN: 0,
-        key: key1,
-        prevOuts: [Output.fromProgram(coin, P2TR.fromTaproot(taprootRegular))],
-        hashType: sigHashAOCP,
-      // Sign ANYPREVOUT
-      ).signTaprootSingleScriptSig(
-        inputN: 1,
-        key: key2,
-        prevOuts: [Output.fromProgram(coin, P2TR.fromTaproot(taprootApo))],
-        hashType: sigHashAPO,
-      // Sign ANYPREVOUTANYSCRIPT
-      ).signTaprootSingleScriptSig(
-        inputN: 2,
-        key: key2,
-        prevOuts: [],
-        hashType: sigHashAPOAS,
-      // Sign ANYPREVOUT with internal key
-      ).signTaprootSingleScriptSig(
-        inputN: 3,
-        key: taprootApoInternal.tweakPrivateKey(internalKey),
-        prevOuts: [
-          Output.fromProgram(coin, P2TR.fromTaproot(taprootApoInternal)),
-        ],
-        hashType: sigHashAPO,
-      );
+      final signedTx = tx
+          .signTaprootSingleScriptSig(
+            inputN: 0,
+            key: key1,
+            prevOuts: [
+              Output.fromProgram(coin, P2TR.fromTaproot(taprootRegular))
+            ],
+            hashType: sigHashAOCP,
+            // Sign ANYPREVOUT
+          )
+          .signTaprootSingleScriptSig(
+            inputN: 1,
+            key: key2,
+            prevOuts: [Output.fromProgram(coin, P2TR.fromTaproot(taprootApo))],
+            hashType: sigHashAPO,
+            // Sign ANYPREVOUTANYSCRIPT
+          )
+          .signTaprootSingleScriptSig(
+            inputN: 2,
+            key: key2,
+            prevOuts: [],
+            hashType: sigHashAPOAS,
+            // Sign ANYPREVOUT with internal key
+          )
+          .signTaprootSingleScriptSig(
+            inputN: 3,
+            key: taprootApoInternal.tweakPrivateKey(internalKey),
+            prevOuts: [
+              Output.fromProgram(coin, P2TR.fromTaproot(taprootApoInternal)),
+            ],
+            hashType: sigHashAPO,
+          );
 
       // Update inputs with out points
-      final completeTx = signedTx.replaceInput(
-        (signedTx.inputs[1] as TaprootSingleScriptSigInput).addPrevOut(
-          OutPoint.fromHex(
-            "779abcfad41140c265ec235f0288deacd3a5f75a93f78577a572e28add4ce3cf",
+      final completeTx = signedTx
+          .replaceInput(
+            (signedTx.inputs[1] as TaprootSingleScriptSigInput).addPrevOut(
+              OutPoint.fromHex(
+                "779abcfad41140c265ec235f0288deacd3a5f75a93f78577a572e28add4ce3cf",
+                1,
+              ),
+            ),
             1,
-          ),
-        ),
-        1,
-      ).replaceInput(
-        (signedTx.inputs[2] as TaprootSingleScriptSigInput).addPrevOut(
-          OutPoint.fromHex(
-            "1bc7c900192ff96e2fbda841f102cf0e924f8614545b16ccf9a89b573d0258f5",
-            1,
-          ),
-        ),
-        2,
-      ).replaceInput(
-        (signedTx.inputs[3] as TaprootSingleScriptSigInput).addPrevOut(
-          OutPoint.fromHex(
-            "f51c753cac9d803e0e9610f94cca59a052e4ad9ac3a0ccc4683295faf9345cca",
-            1,
-          ),
-        ),
-        3,
-      );
+          )
+          .replaceInput(
+            (signedTx.inputs[2] as TaprootSingleScriptSigInput).addPrevOut(
+              OutPoint.fromHex(
+                "1bc7c900192ff96e2fbda841f102cf0e924f8614545b16ccf9a89b573d0258f5",
+                1,
+              ),
+            ),
+            2,
+          )
+          .replaceInput(
+            (signedTx.inputs[3] as TaprootSingleScriptSigInput).addPrevOut(
+              OutPoint.fromHex(
+                "f51c753cac9d803e0e9610f94cca59a052e4ad9ac3a0ccc4683295faf9345cca",
+                1,
+              ),
+            ),
+            3,
+          );
 
       expect(
         completeTx.inputs.map((i) => i.complete),
@@ -1053,24 +1087,21 @@ void main() {
         completeTx.replaceInput(newIn, 0),
         [false, true, true, true],
       );
-
     });
 
     test(".isUnlocked", () {
-
       final now = DateTime.now();
       final past = now.subtract(Duration(seconds: 1));
 
       void expectIsUnlocked(bool enforced, DateTime time, bool unlocked) {
-
         final tx = Transaction(
           inputs: [
             P2PKHInput(
               prevOut: examplePrevOut,
               publicKey: examplePubkey,
               sequence: enforced
-              ? InputSequence.enforceLocktime
-              : InputSequence.finalWithoutLocktime,
+                  ? InputSequence.enforceLocktime
+                  : InputSequence.finalWithoutLocktime,
             ),
           ],
           outputs: [exampleOutput],
@@ -1078,16 +1109,12 @@ void main() {
         );
 
         expect(tx.isUnlocked(medianTime: time, blockHeight: 0), unlocked);
-
       }
 
       expectIsUnlocked(true, now, true);
       expectIsUnlocked(true, past, false);
       expectIsUnlocked(false, now, true);
       expectIsUnlocked(false, past, true);
-
     });
-
   });
-
 }

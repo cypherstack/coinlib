@@ -43,9 +43,10 @@ void expectBech32Equal(Bech32Address addr, Bech32Address expected) {
 }
 
 void expectValidAddress<T extends Address>(
-  String encoded, Network network, T expected,
+  String encoded,
+  Network network,
+  T expected,
 ) {
-
   final baseDecoded = Address.fromString(encoded, network);
   expect(baseDecoded, isA<T>());
 
@@ -78,13 +79,10 @@ void expectValidAddress<T extends Address>(
     expectBech32Equal(b32Base, expected);
     expectBech32Equal(b32Sub, expected);
   }
-
 }
 
 void main() {
-
   group("Address", () {
-
     late ECPublicKey pubkey;
     setUpAll(() async {
       await loadCoinlib();
@@ -94,7 +92,6 @@ void main() {
     });
 
     test("valid P2PKH addresses", () {
-
       expectValidAddress(
         "P8bB9yPr3vVByqfmM5KXftyGckAtAdu6f8",
         Network.mainnet,
@@ -108,14 +105,13 @@ void main() {
         "PGkLtYrKeMDbBCaFy4yMRhN9ZTjJp2y8Pb",
         Network.mainnet,
         P2PKHAddress.fromPublicKey(
-          pubkey, version: Network.mainnet.p2pkhPrefix,
+          pubkey,
+          version: Network.mainnet.p2pkhPrefix,
         ),
       );
-
     });
 
     test("valid P2SH addresses", () {
-
       expectValidAddress(
         "pUtBBpAznHgPW9TDtWJcDo7qGXQJqnf1W9",
         Network.mainnet,
@@ -133,11 +129,9 @@ void main() {
           version: Network.mainnet.p2shPrefix,
         ),
       );
-
     });
 
     test("valid P2WPKH addresses", () {
-
       expectValidAddress(
         "pc1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqmtd2rq",
         Network.mainnet,
@@ -151,14 +145,13 @@ void main() {
         "pc1qt97wqg464zrhnx23upykca5annqvwkwuvqmpk5",
         Network.mainnet,
         P2WPKHAddress.fromPublicKey(
-          pubkey, hrp: Network.mainnet.bech32Hrp,
+          pubkey,
+          hrp: Network.mainnet.bech32Hrp,
         ),
       );
-
     });
 
     test("valid P2WSH addresses", () {
-
       expectValidAddress(
         "pc1qlllllllllllllllllllllllllllllllllllllllllllllllllllsm5knxw",
         Network.mainnet,
@@ -178,11 +171,9 @@ void main() {
           hrp: Network.mainnet.bech32Hrp,
         ),
       );
-
     });
 
     test("valid P2TR addresses", () {
-
       expectValidAddress(
         "pc1punvppl2stp38f7kwv2u2spltjuvuaayuqsthe34hd2dyy5w4g58qj5f0v2",
         Network.mainnet,
@@ -213,11 +204,9 @@ void main() {
           hrp: Network.mainnet.bech32Hrp,
         ),
       );
-
     });
 
     test("valid unknown witness addresses", () {
-
       // 40 program bytes
       expectValidAddress(
         "pc1sqqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0jqgfzyvjz2f38pj2w3g",
@@ -239,11 +228,9 @@ void main() {
           hrp: Network.mainnet.bech32Hrp,
         ),
       );
-
     });
 
     test("invalid addresses", () {
-
       for (final invalid in [
         // Neither valid bech32 or base58
         "",
@@ -276,13 +263,13 @@ void main() {
           reason: invalid,
         );
       }
-
     });
 
     test("invalid checksums", () {
       expect(
         () => Address.fromString(
-          "P8bB9yPr3vVByqfmM5KXftyGckAtAdu6f9", Network.mainnet,
+          "P8bB9yPr3vVByqfmM5KXftyGckAtAdu6f9",
+          Network.mainnet,
         ),
         throwsA(isA<InvalidBase58Checksum>()),
       );
@@ -305,7 +292,6 @@ void main() {
     });
 
     test("invalid version, program and hrp arguments", () {
-
       // Too small program
       expect(
         () => UnknownWitnessAddress.fromHex(
@@ -331,7 +317,7 @@ void main() {
         () => UnknownWitnessAddress.fromHex(
           "0001",
           version: 16,
-          hrp: "\x7f""1axkwrx",
+          hrp: "\x7f" "1axkwrx",
         ),
         throwsArgumentError,
       );
@@ -353,38 +339,40 @@ void main() {
         ),
         throwsArgumentError,
       );
-
     });
 
     final longHrp =
-      "thishrpis78byteslongleadingthetotalsizetobe90characterswitheverythingincluded1";
+        "thishrpis78byteslongleadingthetotalsizetobe90characterswitheverythingincluded1";
 
     test("arguments correct size", () {
-
-      final addr = UnknownWitnessAddress.fromHex("0001", version: 16, hrp: longHrp);
+      final addr =
+          UnknownWitnessAddress.fromHex("0001", version: 16, hrp: longHrp);
 
       expectValidAddress(
         "${longHrp}1sqqqs3t97ut",
         Network(
-          wifPrefix: 0, p2shPrefix: 0, p2pkhPrefix: 0,
-          privHDPrefix: 0, pubHDPrefix: 0,
-          bech32Hrp: longHrp, messagePrefix: "",
+          wifPrefix: 0,
+          p2shPrefix: 0,
+          p2pkhPrefix: 0,
+          privHDPrefix: 0,
+          pubHDPrefix: 0,
+          bech32Hrp: longHrp,
+          messagePrefix: "",
           feePerKb: BigInt.from(10000),
           minFee: BigInt.from(1000),
           minOutput: BigInt.from(10000),
         ),
         addr,
       );
-
     });
 
     test("arguments too long", () {
       expect(
-        () => UnknownWitnessAddress.fromHex("0001", version: 16, hrp: "${longHrp}1"),
+        () => UnknownWitnessAddress.fromHex("0001",
+            version: 16, hrp: "${longHrp}1"),
         throwsArgumentError,
       );
     });
-
   });
 
   group("Base58Address", () {
@@ -406,5 +394,4 @@ void main() {
       expect(addr.data, Uint8List(20));
     });
   });
-
 }

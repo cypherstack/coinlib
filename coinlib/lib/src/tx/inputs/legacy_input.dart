@@ -10,7 +10,6 @@ import 'sequence.dart';
 
 /// Inputs that are not witness inputs: [P2PKHInput] and [P2SHMultisigInput].
 abstract class LegacyInput extends RawInput {
-
   LegacyInput({
     required super.prevOut,
     required super.scriptSig,
@@ -29,9 +28,9 @@ abstract class LegacyInput extends RawInput {
   ECDSAInputSignature createInputSignature({
     required LegacySignDetailsWithScript details,
     required ECPrivateKey key,
-  }) => ECDSAInputSignature(
-    ECDSASignature.sign(key, LegacySignatureHasher(details).hash),
-    details.hashType,
-  );
-
+  }) =>
+      ECDSAInputSignature(
+        ECDSASignature.sign(key, LegacySignatureHasher(details).hash),
+        details.hashType,
+      );
 }

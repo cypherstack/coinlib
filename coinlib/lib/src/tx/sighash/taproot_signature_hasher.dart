@@ -8,7 +8,6 @@ import 'signature_hasher.dart';
 
 /// Produces signature hashes for taproot inputs
 final class TaprootSignatureHasher extends SignatureHasher with Writable {
-
   static final tapSigHash = getTaggedHasher("TapSighash");
 
   @override
@@ -18,22 +17,19 @@ final class TaprootSignatureHasher extends SignatureHasher with Writable {
 
   /// Produces the hash for a Taproot input signature.
   TaprootSignatureHasher(this.details)
-  : txHashes = TransactionSignatureHashes(details.tx),
-  prevOutHashes = details.hashType.allInputs
-      ? PrevOutSignatureHashes(details.prevOuts)
-      : null {
-    if (
-      details.isScript
-      && details.leafHash == null
-      && !hashType.anyPrevOutAnyScript
-    ) {
+      : txHashes = TransactionSignatureHashes(details.tx),
+        prevOutHashes = details.hashType.allInputs
+            ? PrevOutSignatureHashes(details.prevOuts)
+            : null {
+    if (details.isScript &&
+        details.leafHash == null &&
+        !hashType.anyPrevOutAnyScript) {
       throw CannotSignInput("Missing leaf hash for tapscript sign details");
     }
   }
 
   @override
   void write(Writer writer) {
-
     final leafHash = details.leafHash;
     final extFlag = details.isScript ? 1 : 0;
 
@@ -61,7 +57,6 @@ final class TaprootSignatureHasher extends SignatureHasher with Writable {
     if (hashType.allInputs) {
       writer.writeUInt32(inputN);
     } else {
-
       // ANYONECANPAY commits to the prevout point
       if (hashType.anyOneCanPay) {
         thisInput.prevOut.write(writer);
@@ -74,7 +69,6 @@ final class TaprootSignatureHasher extends SignatureHasher with Writable {
 
       // Always include sequence
       writer.writeUInt32(thisInput.sequence.value);
-
     }
 
     // Data specific to matched output
@@ -93,10 +87,8 @@ final class TaprootSignatureHasher extends SignatureHasher with Writable {
       writer.writeUInt8(keyVersion);
       writer.writeUInt32(details.codeSeperatorPos);
     }
-
   }
 
   @override
   Uint8List get hash => tapSigHash(toBytes());
-
 }

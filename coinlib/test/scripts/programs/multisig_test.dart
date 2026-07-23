@@ -7,7 +7,7 @@ class MultisigVector {
   final String? hex;
   final List<String>? pubkeys;
   final int? threshold;
-  MultisigVector({ required this.asm, this.hex, this.pubkeys, this.threshold });
+  MultisigVector({required this.asm, this.hex, this.pubkeys, this.threshold});
 }
 
 final correctVectors = [
@@ -65,9 +65,8 @@ final invalidVectors = [
   MultisigVector(asm: "01 $pubkeyVec OP_DUP OP_CHECKMULTISIG"),
   // Wrong public key length
   MultisigVector(
-    asm:
-      "01 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817"
-      " 01 OP_CHECKMULTISIG",
+    asm: "01 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817"
+        " 01 OP_CHECKMULTISIG",
   ),
   // Not push data for public key
   MultisigVector(asm: "01 01 01 OP_CHECKMULTISIG"),
@@ -76,9 +75,7 @@ final invalidVectors = [
 ];
 
 void main() {
-
   group("MultisigProgram", () {
-
     setUpAll(loadCoinlib);
 
     expectMultisig(MultisigVector vec, MultisigProgram multisig) {
@@ -88,7 +85,6 @@ void main() {
     }
 
     test("correct vectors", () {
-
       for (final vec in correctVectors) {
         expectMultisig(vec, MultisigProgram.fromAsm(vec.asm));
         expectMultisig(vec, MultisigProgram.decompile(hexToBytes(vec.hex!)));
@@ -103,23 +99,22 @@ void main() {
         expect(program, isA<MultisigProgram>());
         expectMultisig(vec, program as MultisigProgram);
       }
-
     });
 
     test("MultisigProgram.sorted()", () {
-
-      final pkA
-        = "024289801366bcee6172b771cf5a7f13aaecd237a0b9a1ff9d769cabc2e6b70a34";
-      final pkB
-        = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
-      final pkC
-        = "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
-      final pkD
-        = "0479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8";
+      final pkA =
+          "024289801366bcee6172b771cf5a7f13aaecd237a0b9a1ff9d769cabc2e6b70a34";
+      final pkB =
+          "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
+      final pkC =
+          "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
+      final pkD =
+          "0479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8";
 
       // Public keys given out of order
       final multisig = MultisigProgram.sorted(
-        3, [pkC, pkB, pkD, pkA].map((hex) => ECPublicKey.fromHex(hex)),
+        3,
+        [pkC, pkB, pkD, pkA].map((hex) => ECPublicKey.fromHex(hex)),
       );
 
       // Public keys should be in the correct order
@@ -132,7 +127,6 @@ void main() {
         ),
         multisig,
       );
-
     });
 
     test("invalid vectors", () {
@@ -163,11 +157,11 @@ void main() {
     });
 
     test("invalid arguments", () {
-
       final pk = ECPublicKey.fromHex(pubkeyVec);
       expect(() => MultisigProgram(1, []), throwsArgumentError);
       expect(
-        () => MultisigProgram(1, List.filled(21, pk)), throwsArgumentError,
+        () => MultisigProgram(1, List.filled(21, pk)),
+        throwsArgumentError,
       );
       expect(() => MultisigProgram(0, [pk]), throwsArgumentError);
       expect(() => MultisigProgram(-1, [pk]), throwsArgumentError);
@@ -176,7 +170,6 @@ void main() {
         () => MultisigProgram(21, List.filled(20, pk)),
         throwsArgumentError,
       );
-
     });
 
     test(".pubkeys cannot be mutated", () {
@@ -187,7 +180,5 @@ void main() {
       );
       expect(multisig.pubkeys[0], ECPublicKey.fromHex(pubkeyVec));
     });
-
   });
-
 }

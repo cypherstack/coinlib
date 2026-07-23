@@ -4,7 +4,6 @@ import 'package:ffi/ffi.dart';
 import 'heap.dart';
 
 class HeapFfi<T extends SizedNativeType> implements Heap<Pointer<T>> {
-
   static final Finalizer<Pointer> _finalizer = Finalizer(
     (ptr) => malloc.free(ptr),
   );
@@ -15,13 +14,10 @@ class HeapFfi<T extends SizedNativeType> implements Heap<Pointer<T>> {
   HeapFfi(this.ptr) {
     _finalizer.attach(this, ptr);
   }
-
 }
 
-class HeapBytesFfi
-extends HeapFfi<UnsignedChar>
-implements HeapBytes<Pointer<UnsignedChar>> {
-
+class HeapBytesFfi extends HeapFfi<UnsignedChar>
+    implements HeapBytes<Pointer<UnsignedChar>> {
   final int size;
 
   HeapBytesFfi(this.size) : super(malloc.allocate(size));
@@ -36,7 +32,6 @@ implements HeapBytes<Pointer<UnsignedChar>> {
 
   @override
   load(Uint8List data) => _view.setAll(0, data);
-
 }
 
 // I couldn't find a way to abstract the implementation of HeapInt that wouldn't
@@ -44,7 +39,6 @@ implements HeapBytes<Pointer<UnsignedChar>> {
 // duplicated code.
 
 class HeapIntFfi extends HeapFfi<Int> implements HeapInt<Pointer<Int>> {
-
   HeapIntFfi() : super(malloc());
 
   @override
@@ -52,11 +46,9 @@ class HeapIntFfi extends HeapFfi<Int> implements HeapInt<Pointer<Int>> {
 
   @override
   int get value => ptr.value;
-
 }
 
 class HeapSizeFfi extends HeapFfi<Size> implements HeapInt<Pointer<Size>> {
-
   HeapSizeFfi() : super(malloc());
 
   @override
@@ -64,13 +56,10 @@ class HeapSizeFfi extends HeapFfi<Size> implements HeapInt<Pointer<Size>> {
 
   @override
   int get value => ptr.value;
-
 }
 
-class HeapPointerArrayFfi<T extends SizedNativeType>
-extends HeapFfi<Pointer<T>>
-implements HeapPointerArray<Pointer<Pointer<T>>, Pointer<T>> {
-
+class HeapPointerArrayFfi<T extends SizedNativeType> extends HeapFfi<Pointer<T>>
+    implements HeapPointerArray<Pointer<Pointer<T>>, Pointer<T>> {
   // Keep objects referenced by this object so they are not freed whilst this
   // object is alive.
   final List<HeapFfi<T>> _objs;
@@ -89,11 +78,10 @@ implements HeapPointerArray<Pointer<Pointer<T>>, Pointer<T>> {
     int length,
     Pointer<T> Function() alloc,
   ) : this.assign(
-    ptr,
-    List.generate(length, (_) => HeapFfi(alloc())),
-  );
+          ptr,
+          List.generate(length, (_) => HeapFfi(alloc())),
+        );
 
   @override
   List<Pointer<T>> get list => List.generate(_objs.length, (i) => ptr[i]);
-
 }

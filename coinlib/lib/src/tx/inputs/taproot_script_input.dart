@@ -19,7 +19,6 @@ import 'sequence.dart';
 /// be done manually via [updateStack]. These signatures must be handled by the
 /// consumer and will not be filtered upon a transaction update.
 class TaprootScriptInput extends TaprootInput {
-
   /// The tapscript embedded in the witness data, not to be confused with the
   /// empty [script].
   final Script tapscript;
@@ -31,8 +30,12 @@ class TaprootScriptInput extends TaprootInput {
     List<Uint8List>? stack,
     super.sequence = InputSequence.enforceLocktime,
   }) : super(
-    witness: [if (stack != null) ...stack, tapscript.compiled, controlBlock],
-  );
+          witness: [
+            if (stack != null) ...stack,
+            tapscript.compiled,
+            controlBlock
+          ],
+        );
 
   TaprootScriptInput.fromTaprootLeaf({
     required OutPoint prevOut,
@@ -41,12 +44,12 @@ class TaprootScriptInput extends TaprootInput {
     List<Uint8List>? stack,
     InputSequence sequence = InputSequence.enforceLocktime,
   }) : this(
-    prevOut: prevOut,
-    controlBlock: taproot.controlBlockForLeaf(leaf),
-    tapscript: leaf.script,
-    stack: stack,
-    sequence: sequence,
-  );
+          prevOut: prevOut,
+          controlBlock: taproot.controlBlockForLeaf(leaf),
+          tapscript: leaf.script,
+          stack: stack,
+          sequence: sequence,
+        );
 
   /// Checks if the [raw] input and [witness] data match the expected format for
   /// a [TaprootScriptInput] with the control block and script. If it matches
@@ -55,49 +58,43 @@ class TaprootScriptInput extends TaprootInput {
   /// the correct size and contain the correct 0xc0 tapscript version but the
   /// internal key and parity bit is not validated.
   static TaprootScriptInput? match(RawInput raw, List<Uint8List> witness) {
-
     if (raw.scriptSig.isNotEmpty) return null;
     if (witness.length < 2) return null;
 
     final controlBlock = witness.last;
     final lengthAfterKey = controlBlock.length - 33;
 
-    if (
-      controlBlock.length < 33
-      || lengthAfterKey % 32 != 0
-      || lengthAfterKey / 32 > 128
-      || controlBlock[0] & 0xfe != TapLeaf.tapscriptVersion
-    ) {
+    if (controlBlock.length < 33 ||
+        lengthAfterKey % 32 != 0 ||
+        lengthAfterKey / 32 > 128 ||
+        controlBlock[0] & 0xfe != TapLeaf.tapscriptVersion) {
       return null;
     }
 
     try {
-
       return TaprootScriptInput(
         prevOut: raw.prevOut,
         controlBlock: controlBlock,
-        tapscript: Script.decompile(witness[witness.length-2]),
-        stack: witness.sublist(0, witness.length-2),
+        tapscript: Script.decompile(witness[witness.length - 2]),
+        stack: witness.sublist(0, witness.length - 2),
         sequence: raw.sequence,
       );
-
     } on OutOfData {
       return null;
     } on PushDataNotMinimal {
       return null;
     }
-
   }
 
   /// Replaces the stack to update the data required to spend the input
-  TaprootScriptInput updateStack(List<Uint8List> newStack)
-    => TaprootScriptInput(
-      prevOut: prevOut,
-      controlBlock: controlBlock,
-      tapscript: tapscript,
-      stack: newStack,
-      sequence: sequence,
-    );
+  TaprootScriptInput updateStack(List<Uint8List> newStack) =>
+      TaprootScriptInput(
+        prevOut: prevOut,
+        controlBlock: controlBlock,
+        tapscript: tapscript,
+        stack: newStack,
+        sequence: sequence,
+      );
 
   /// Creates a [SchnorrInputSignature] to be used for the input's script data.
   /// The leaf hash of the [tapscript] is added to the details.
@@ -109,11 +106,11 @@ class TaprootScriptInput extends TaprootInput {
   SchnorrInputSignature createScriptSignature({
     required TaprootScriptSignDetails details,
     required ECPrivateKey key,
-  }) => createInputSignature(
-    details: details.addLeafHash(TapLeaf(tapscript).hash),
-    key: key,
-  );
+  }) =>
+      createInputSignature(
+        details: details.addLeafHash(TapLeaf(tapscript).hash),
+        key: key,
+      );
 
   Uint8List get controlBlock => witness.last;
-
 }

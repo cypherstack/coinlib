@@ -4,7 +4,6 @@ import 'util.dart';
 /// Build a universal macOS framework for secp256k1 directly on a mac machine
 
 void main() async {
-
   // Clone secp256k1 to temporary directory to keep source clean
 
   final tmpDir = createTmpDir();
@@ -13,7 +12,8 @@ void main() async {
 
   exitOnCode(
     await execWithStdio(
-      "git", ["clone", "https://github.com/peercoin/secp256k1-coinlib", libDir],
+      "git",
+      ["clone", "https://github.com/peercoin/secp256k1-coinlib", libDir],
     ),
     "Could not clone secp256k1-coinlib to temporary build directory",
   );
@@ -21,7 +21,8 @@ void main() async {
   // Checkout to 0.7.0 commit
   exitOnCode(
     await execWithStdio(
-      "git", ["checkout", "69018e5b939d8d540ca6b237945100f4ecb5681e"],
+      "git",
+      ["checkout", "69018e5b939d8d540ca6b237945100f4ecb5681e"],
       workingDir: libDir,
     ),
     "Could not checkout to v0.7.0 commit",
@@ -72,5 +73,4 @@ void main() async {
   final libFile = File("$libDir/build/lib/libsecp256k1.6.dylib");
   await libFile.copy("$buildDir/libsecp256k1.dylib");
   print("Created dylib in build directory");
-
 }

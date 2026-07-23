@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:coinlib/coinlib.dart';
 
 void main() async {
-
   await loadCoinlib();
 
   // Point as in https://www.secg.org/sec2-v2.pdf
@@ -29,13 +28,12 @@ void main() async {
   final numsXHex = bytesToHex(numsX);
 
   // Check against expected from BIP0341
-  final expectedXHex
-    = "50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0";
+  final expectedXHex =
+      "50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0";
 
   if (numsXHex == expectedXHex) {
     print("NUMS Point X-Coordinate HEX: $numsXHex");
   } else {
     print("NUMS point isn't as expected");
   }
-
 }
