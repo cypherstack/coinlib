@@ -5,12 +5,11 @@ export 'package:coinlib/coinlib.dart';
 /// A widget that ensures the coinlib library is loaded before use. This is
 /// currently only necessary on web but it is good practice to use in any case.
 class CoinlibLoader extends StatefulWidget {
+
   /// The widget to show whilst coinlib is loading
   final Widget loadChild;
-
   /// The builder for a library load error
   final Widget Function(BuildContext context, Object? error) errorBuilder;
-
   /// The builder called once the library has loaded
   final WidgetBuilder builder;
 
@@ -27,9 +26,11 @@ class CoinlibLoader extends StatefulWidget {
 
   @override
   State<CoinlibLoader> createState() => _CoinlibLoaderState();
+
 }
 
 class _CoinlibLoaderState extends State<CoinlibLoader> {
+
   late Future<void> loadResult;
 
   @override
@@ -41,6 +42,7 @@ class _CoinlibLoaderState extends State<CoinlibLoader> {
   @override
   Widget build(BuildContext context) => FutureBuilder<void>(
     builder: (context, snapshot) {
+
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.hasError) {
           return widget.errorBuilder(context, snapshot.error);
@@ -49,7 +51,9 @@ class _CoinlibLoaderState extends State<CoinlibLoader> {
       }
 
       return widget.loadChild;
+
     },
     future: loadResult,
   );
+
 }
