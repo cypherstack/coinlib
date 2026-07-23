@@ -1061,7 +1061,8 @@ abstract class Secp256k1Base<
   /// secp256k1_musig_pubnonce pointers and then set the heap objects in [objs]
   /// as pointers in this array.
   HeapPointerArray<MuSigPubNoncePtrPtr, MuSigPubNoncePtr> setMuSigPubNonceArray(
-      Iterable<Heap<MuSigPubNoncePtr>> objs);
+    Iterable<Heap<MuSigPubNoncePtr>> objs,
+  );
 
   /// Specialised sub-classes should override to allocate an array to
   /// secp256k1_musig_partial_sig pointers and then set the heap objects in

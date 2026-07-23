@@ -80,7 +80,12 @@ void main() {
       expectScriptOp(script.ops[1], "0", "00", 0, false);
       expectScriptOp(script.ops[2], "-1", "4f", -1, false);
       expectScriptOp(
-          script.ops[3], "OP_CHECKLOCKTIMEVERIFY", "b1", null, false);
+        script.ops[3],
+        "OP_CHECKLOCKTIMEVERIFY",
+        "b1",
+        null,
+        false,
+      );
       expectScriptOp(script.ops[4], "0102030405", "050102030405", null, true);
       expectScriptOp(script.ops[5], "57c74942", "0457c74942", 0x4249c757, true);
 
@@ -134,7 +139,7 @@ void main() {
         [hexToBytes("0102030405"), 5],
         [
           hexToBytes("0102030405"),
-          [0, 0, 0]
+          [0, 0, 0],
         ],
         Uint8List(0),
       ]) {

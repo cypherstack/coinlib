@@ -33,7 +33,7 @@ class TaprootScriptInput extends TaprootInput {
           witness: [
             if (stack != null) ...stack,
             tapscript.compiled,
-            controlBlock
+            controlBlock,
           ],
         );
 

@@ -521,7 +521,7 @@ final validTxVecs = [
           prevOut: examplePrevOut,
           witness: [
             Uint8List(0),
-            Uint8List.fromList([0xff, 1, 2, 3])
+            Uint8List.fromList([0xff, 1, 2, 3]),
           ],
           sequence: InputSequence.finalWithoutLocktime,
         ),

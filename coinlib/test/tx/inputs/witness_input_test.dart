@@ -8,7 +8,7 @@ void main() {
   group("WitnessInput", () {
     final raw = RawInput.fromReader(BytesReader(rawWitnessInputBytes));
     final witness = [
-      Uint8List.fromList([0, 1, 0xff])
+      Uint8List.fromList([0, 1, 0xff]),
     ];
 
     test("matches witness inputs", () {

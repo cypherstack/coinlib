@@ -78,7 +78,9 @@ void main() {
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
             TaprootScriptInput.match(
               RawInput(
-                  prevOut: prevOut, scriptSig: Script.fromAsm(asm).compiled),
+                prevOut: prevOut,
+                scriptSig: Script.fromAsm(asm).compiled,
+              ),
               witness,
             ),
             null,
@@ -104,7 +106,8 @@ void main() {
         [
           script.compiled,
           Uint8List.fromList(
-              [...controlBlock.take(33), ...Uint8List(32 * 129)]),
+            [...controlBlock.take(33), ...Uint8List(32 * 129)],
+          ),
         ],
       );
       // Control block must have valid tapscript version.

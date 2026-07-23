@@ -48,11 +48,15 @@ void main() {
 
       // Require MAST
       expect(
-          () => noMast.controlBlockForLeaf(exampleLeaf), throwsArgumentError);
+        () => noMast.controlBlockForLeaf(exampleLeaf),
+        throwsArgumentError,
+      );
 
       // Require identical leaf
       expect(
-          () => withMast.controlBlockForLeaf(otherLeaf), throwsArgumentError);
+        () => withMast.controlBlockForLeaf(otherLeaf),
+        throwsArgumentError,
+      );
       expect(withMast.controlBlockForLeaf(exampleLeaf), isA<Uint8List>());
       expect(withMast.controlBlockForLeaf(identicalLeaf), isA<Uint8List>());
     });

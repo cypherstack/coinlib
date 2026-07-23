@@ -44,8 +44,10 @@ void main() {
         "00",
         "",
       ]) {
-        expect(() => P2WPKH.decompile(hexToBytes(bad)),
-            throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2WPKH.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 

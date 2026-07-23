@@ -124,7 +124,8 @@ void main() {
           0,
           1,
           ...hexToBytes(
-              "f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000"),
+            "f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe00000000",
+          ),
           ...varBytes,
           ...Iterable.generate(scriptSize),
           0xff,
@@ -392,7 +393,7 @@ void main() {
       // Sent 10tppc via 6003525edfd29b63767e465bdf3d61aa60105e4368366c46a62d0f1fb0c6b34b
       expectP2PKH(
         prevTxIds: [
-          "6003525edfd29b63767e465bdf3d61aa60105e4368366c46a62d0f1fb0c6b34b"
+          "6003525edfd29b63767e465bdf3d61aa60105e4368366c46a62d0f1fb0c6b34b",
         ],
         hashType: SigHashType.all(),
         hex:
@@ -404,7 +405,7 @@ void main() {
       // Sent 2tppc via 5ce897c22438be2ab7fac85c7fdea596c81b0b515a1163969d0c9805e97ff561
       expectP2PKH(
         prevTxIds: [
-          "5ce897c22438be2ab7fac85c7fdea596c81b0b515a1163969d0c9805e97ff561"
+          "5ce897c22438be2ab7fac85c7fdea596c81b0b515a1163969d0c9805e97ff561",
         ],
         hashType: SigHashType.none(),
         hex:
@@ -416,7 +417,7 @@ void main() {
       // Sent 6tppc via f47fe6ce6a79734f252ceac7a0468a077b3d27e5289c5c0fb5294e0c7c07a51a
       expectP2PKH(
         prevTxIds: [
-          "f47fe6ce6a79734f252ceac7a0468a077b3d27e5289c5c0fb5294e0c7c07a51a"
+          "f47fe6ce6a79734f252ceac7a0468a077b3d27e5289c5c0fb5294e0c7c07a51a",
         ],
         hashType: SigHashType.single(inputs: InputSigHashOption.anyOneCanPay),
         hex:
@@ -853,7 +854,10 @@ void main() {
           )
           // Sign taproot
           .signTaproot(
-              inputN: 7, key: keyVec.privateObj, prevOuts: taprootPrevOuts)
+            inputN: 7,
+            key: keyVec.privateObj,
+            prevOuts: taprootPrevOuts,
+          )
           .signTaproot(
         inputN: 8,
         key: keyVec.privateObj,
@@ -1000,7 +1004,7 @@ void main() {
             inputN: 0,
             key: key1,
             prevOuts: [
-              Output.fromProgram(coin, P2TR.fromTaproot(taprootRegular))
+              Output.fromProgram(coin, P2TR.fromTaproot(taprootRegular)),
             ],
             hashType: sigHashAOCP,
             // Sign ANYPREVOUT

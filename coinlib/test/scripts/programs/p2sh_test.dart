@@ -40,8 +40,10 @@ void main() {
         "a914${scriptHash}8700",
         "",
       ]) {
-        expect(() => P2SH.decompile(hexToBytes(bad)),
-            throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2SH.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 

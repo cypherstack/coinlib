@@ -39,8 +39,10 @@ void main() {
         "77a914${pubkeyhashVec}88ac",
         "",
       ]) {
-        expect(() => P2PKH.decompile(hexToBytes(bad)),
-            throwsA(isA<NoProgramMatch>()));
+        expect(
+          () => P2PKH.decompile(hexToBytes(bad)),
+          throwsA(isA<NoProgramMatch>()),
+        );
       }
     });
 

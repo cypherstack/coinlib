@@ -43,7 +43,11 @@ void main() {
 
     test("tweak() produces correct key and keeps compression flag", () {
       expectTweak(
-          String keyHex, String tweakHex, String resultHex, bool compressed) {
+        String keyHex,
+        String tweakHex,
+        String resultHex,
+        bool compressed,
+      ) {
         final key = ECPrivateKey.fromHex(keyHex, compressed: compressed);
         final tweak = hexToBytes(tweakHex);
         final result = ECPrivateKey.fromHex(resultHex, compressed: compressed);

@@ -53,7 +53,9 @@ void main() {
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
             TaprootKeyInput.match(
               RawInput(
-                  prevOut: prevOut, scriptSig: Script.fromAsm(asm).compiled),
+                prevOut: prevOut,
+                scriptSig: Script.fromAsm(asm).compiled,
+              ),
               witness,
             ),
             null,

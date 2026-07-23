@@ -57,7 +57,8 @@ Future<bool> dockerRun(
   }
 
   print(
-      "Execution of $tag succeeded. It may be removed from the image store if desired");
+    "Execution of $tag succeeded. It may be removed from the image store if desired",
+  );
 
   return true;
 }
