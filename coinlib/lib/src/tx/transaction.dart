@@ -74,19 +74,17 @@ class Transaction with Writable {
     return n.toInt();
   }
 
-  static Transaction? _tryRead(BytesReader reader) {
+  static Transaction? _tryRead(BytesReader reader, bool witness) {
     final version = reader.readInt32();
-    bool hasMweb = false;
     bool hasWitness = false;
+    bool hasMweb = false;
 
-    if (reader.readUInt8() == 0x00) {
+    if (witness) {
+      final marker = reader.readUInt8();
       final flag = reader.readUInt8();
+      if (marker != 0 || flag == 0) return null;
       hasWitness = (flag & 1) != 0;
       hasMweb = (flag & 8) != 0;
-    } else {
-      hasWitness = false;
-      hasMweb = false;
-      reader.offset -= 2;
     }
 
     final rawInputs = List.generate(
@@ -127,25 +125,46 @@ class Transaction with Writable {
   /// Reads a transaction from a [BytesReader], which may throw
   /// [TransactionTooLarge] or [InvalidTransaction] if the data doesn't
   /// represent a complete transaction within [maxSize] (1MB).
-  factory Transaction.fromReader(BytesReader reader) {
-    try {
-      final tx = _tryRead(reader);
-      if (tx != null) return tx;
-    } on TransactionTooLarge {
-      rethrow;
-    } on Exception catch (_) {}
+  ///
+  /// If [expectWitness] is true, only witness parsing is attempted. If false,
+  /// only non-witness. If null (default), witness is tried first and falls back
+  /// to non-witness if it fails.
+  factory Transaction.fromReader(BytesReader reader, {bool? expectWitness}) {
+    bool tooLarge = false;
+    final start = reader.offset;
 
-    throw InvalidTransaction();
+    Transaction? tryRead(bool witness) {
+      try {
+        return _tryRead(reader, witness);
+      } on TransactionTooLarge {
+        tooLarge = true;
+      } on Exception catch (_) {}
+      return null;
+    }
+
+    if (expectWitness != false) {
+      final tx = tryRead(true);
+      if (tx != null) return tx;
+    }
+
+    reader.offset = start;
+
+    if (expectWitness != true) {
+      final tx = tryRead(false);
+      if (tx != null) return tx;
+    }
+
+    throw tooLarge ? TransactionTooLarge() : InvalidTransaction();
   }
 
   /// Constructs a transaction from serialised bytes. See [fromReader()].
-  factory Transaction.fromBytes(Uint8List bytes) =>
-      Transaction.fromReader(BytesReader(bytes));
+  factory Transaction.fromBytes(Uint8List bytes, {bool? expectWitness}) =>
+      Transaction.fromReader(BytesReader(bytes), expectWitness: expectWitness);
 
   /// Constructs a transaction from the serialised data encoded as hex. See
   /// [fromReader()].
   factory Transaction.fromHex(String hex, {bool? expectWitness}) =>
-      Transaction.fromBytes(hexToBytes(hex));
+      Transaction.fromBytes(hexToBytes(hex), expectWitness: expectWitness);
 
   @override
   void write(Writer writer) {
