@@ -9,7 +9,7 @@ environment:
   sdk: '>=3.10.0 <4.0.0'
 
 dev_dependencies:
-  ffigen: ^12.0.0
+  ffigen: ^20.0.0
   lints: ^4.0.0
   test: ^1.21.0
 
@@ -22,13 +22,13 @@ dependencies:
   hex: ^0.2.0
   hooks: ^2.0.0
   native_toolchain_c: ^0.19.0
-  path: ^1.8.0
   pointycastle: ^3.7.3
   wasm_interop: ^2.0.1
 
 ffigen:
   name: NativeSecp256k1
   description: Raw generated bindings to secp256k1
+  ffi-native:
   output: 'lib/src/secp256k1/secp256k1.ffi.g.dart'
   headers:
     entry-points:
