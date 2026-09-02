@@ -1,3 +1,12 @@
+## Unreleased
+
+The secp256k1 library is now compiled from vendored secp256k1-coinlib sources
+by a build hook using [native assets](https://dart.dev/tools/hooks), replacing
+the Docker, CMake and MinGW build scripts. Loading a self-provided library,
+whether from `build/`, a system location or `LD_LIBRARY_PATH`, is no longer
+supported: the hook-built library is always used. This requires Dart 3.10 or
+later and a C compiler for the target platform.
+
 ## 5.0.0
 
 Requires a rebuild of the secp256k1 library as it has moved to the

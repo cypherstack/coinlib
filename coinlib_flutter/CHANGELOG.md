@@ -1,3 +1,11 @@
+## Unreleased
+
+The package is no longer an FFI plugin. The secp256k1 library is compiled by
+coinlib's build hook during the Flutter build, removing the platform-specific
+CMake, Gradle and CocoaPods builds and the Windows prebuilt library step. A
+self-provided secp256k1 library can no longer be substituted. This requires
+Dart 3.10 and Flutter 3.38 or later.
+
 ## 5.0.1
 
 Fixes Android builds.
