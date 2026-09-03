@@ -9,7 +9,6 @@ import 'signature_hasher.dart';
 
 /// Produces signature hashes for non-taproot witness inputs
 final class WitnessSignatureHasher with Writable implements SignatureHasher {
-
   static final hashZero = Uint8List(32);
 
   final Transaction tx;
@@ -36,21 +35,20 @@ final class WitnessSignatureHasher with Writable implements SignatureHasher {
 
   @override
   void write(Writer writer) {
-
     final thisIn = tx.inputs[inputN];
 
     final hashPrevouts = !hashType.anyOneCanPay
-      ? hashes.prevouts.doubleHash
-      : hashZero;
+        ? hashes.prevouts.doubleHash
+        : hashZero;
 
-    final hashSequences
-      = !hashType.anyOneCanPay && !hashType.single && !hashType.none
-      ? hashes.sequences.doubleHash
-      : hashZero;
+    final hashSequences =
+        !hashType.anyOneCanPay && !hashType.single && !hashType.none
+        ? hashes.sequences.doubleHash
+        : hashZero;
 
     final hashOutputs = !hashType.single && !hashType.none
-      ? hashes.outputs.doubleHash
-      : hashType.single && inputN < tx.outputs.length
+        ? hashes.outputs.doubleHash
+        : hashType.single && inputN < tx.outputs.length
         ? sha256DoubleHash(tx.outputs[inputN].toBytes())
         : hashZero;
 
@@ -64,10 +62,8 @@ final class WitnessSignatureHasher with Writable implements SignatureHasher {
     writer.writeSlice(hashOutputs);
     writer.writeUInt32(tx.locktime);
     writer.writeUInt32(hashType.value);
-
   }
 
   @override
   Uint8List get hash => sha256DoubleHash(toBytes());
-
 }

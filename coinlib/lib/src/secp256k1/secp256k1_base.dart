@@ -15,10 +15,17 @@ class SigWithRecId {
 }
 
 abstract class Secp256k1Base<
-  CtxPtr, HeapArrayPtr, PubKeyPtr, SizeTPtr, SignaturePtr,
-  RecoverableSignaturePtr, KeyPairPtr, XPubKeyPtr, IntPtr, NullPtr
+  CtxPtr,
+  HeapArrayPtr,
+  PubKeyPtr,
+  SizeTPtr,
+  SignaturePtr,
+  RecoverableSignaturePtr,
+  KeyPairPtr,
+  XPubKeyPtr,
+  IntPtr,
+  NullPtr
 > {
-
   static const contextNone = 1;
   static const compressedFlags = 258;
   static const uncompressedFlags = 2;
@@ -37,44 +44,45 @@ abstract class Secp256k1Base<
   // Functions
   late int Function(CtxPtr, HeapArrayPtr) extEcSeckeyVerify;
   late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr) extEcPubkeyCreate;
-  late int Function(
-    CtxPtr, HeapArrayPtr, SizeTPtr, PubKeyPtr, int,
-  ) extEcPubkeySerialize;
+  late int Function(CtxPtr, HeapArrayPtr, SizeTPtr, PubKeyPtr, int)
+  extEcPubkeySerialize;
   late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr, int) extEcPubkeyParse;
+  late int Function(CtxPtr, HeapArrayPtr, SignaturePtr)
+  extEcdsaSignatureSerializeCompact;
+  late int Function(CtxPtr, SignaturePtr, HeapArrayPtr)
+  extEcdsaSignatureParseCompact;
+  late int Function(CtxPtr, SignaturePtr, SignaturePtr)
+  extEcdsaSignatureNormalize;
+  late int Function(CtxPtr, HeapArrayPtr, SizeTPtr, SignaturePtr)
+  extEcdsaSignatureSerializeDer;
+  late int Function(CtxPtr, SignaturePtr, HeapArrayPtr, int)
+  extEcdsaSignatureParseDer;
   late int Function(
-    CtxPtr, HeapArrayPtr, SignaturePtr,
-  ) extEcdsaSignatureSerializeCompact;
-  late int Function(
-    CtxPtr, SignaturePtr, HeapArrayPtr,
-  ) extEcdsaSignatureParseCompact;
-  late int Function(
-    CtxPtr, SignaturePtr, SignaturePtr,
-  ) extEcdsaSignatureNormalize;
-  late int Function(
-    CtxPtr, HeapArrayPtr, SizeTPtr, SignaturePtr,
-  ) extEcdsaSignatureSerializeDer;
-  late int Function(
-    CtxPtr, SignaturePtr, HeapArrayPtr, int,
-  ) extEcdsaSignatureParseDer;
-  late int Function(
-    CtxPtr, SignaturePtr, HeapArrayPtr, HeapArrayPtr, NullPtr, NullPtr,
-  ) extEcdsaSign;
-  late int Function(
-    CtxPtr, SignaturePtr, HeapArrayPtr, PubKeyPtr,
-  ) extEcdsaVerify;
-  late int Function(
-    CtxPtr, HeapArrayPtr, IntPtr, RecoverableSignaturePtr,
-  ) extEcdsaRecoverableSignatureSerializeCompact;
-  late int Function(
-    CtxPtr, RecoverableSignaturePtr, HeapArrayPtr, int,
-  ) extEcdsaRecoverableSignatureParseCompact;
-  late int Function(
-    CtxPtr, RecoverableSignaturePtr, HeapArrayPtr, HeapArrayPtr, NullPtr,
+    CtxPtr,
+    SignaturePtr,
+    HeapArrayPtr,
+    HeapArrayPtr,
     NullPtr,
-  ) extEcdsaSignRecoverable;
+    NullPtr,
+  )
+  extEcdsaSign;
+  late int Function(CtxPtr, SignaturePtr, HeapArrayPtr, PubKeyPtr)
+  extEcdsaVerify;
+  late int Function(CtxPtr, HeapArrayPtr, IntPtr, RecoverableSignaturePtr)
+  extEcdsaRecoverableSignatureSerializeCompact;
+  late int Function(CtxPtr, RecoverableSignaturePtr, HeapArrayPtr, int)
+  extEcdsaRecoverableSignatureParseCompact;
   late int Function(
-    CtxPtr, PubKeyPtr, RecoverableSignaturePtr, HeapArrayPtr,
-  ) extEcdsaRecover;
+    CtxPtr,
+    RecoverableSignaturePtr,
+    HeapArrayPtr,
+    HeapArrayPtr,
+    NullPtr,
+    NullPtr,
+  )
+  extEcdsaSignRecoverable;
+  late int Function(CtxPtr, PubKeyPtr, RecoverableSignaturePtr, HeapArrayPtr)
+  extEcdsaRecover;
   late int Function(CtxPtr, HeapArrayPtr, HeapArrayPtr) extEcSeckeyTweakAdd;
   late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr) extEcPubkeyTweakAdd;
   late int Function(CtxPtr, HeapArrayPtr) extEcSeckeyNegate;
@@ -83,14 +91,24 @@ abstract class Secp256k1Base<
   late int Function(CtxPtr, KeyPairPtr, HeapArrayPtr) extKeypairCreate;
   late int Function(CtxPtr, XPubKeyPtr, HeapArrayPtr) extXOnlyPubkeyParse;
   late int Function(
-    CtxPtr, HeapArrayPtr, HeapArrayPtr, KeyPairPtr, HeapArrayPtr,
-  ) extSchnorrSign32;
+    CtxPtr,
+    HeapArrayPtr,
+    HeapArrayPtr,
+    KeyPairPtr,
+    HeapArrayPtr,
+  )
+  extSchnorrSign32;
+  late int Function(CtxPtr, HeapArrayPtr, HeapArrayPtr, int, XPubKeyPtr)
+  extSchnorrVerify;
   late int Function(
-    CtxPtr, HeapArrayPtr, HeapArrayPtr, int, XPubKeyPtr,
-  ) extSchnorrVerify;
-  late int Function(
-    CtxPtr, HeapArrayPtr, PubKeyPtr, HeapArrayPtr, NullPtr, NullPtr,
-  ) extEcdh;
+    CtxPtr,
+    HeapArrayPtr,
+    PubKeyPtr,
+    HeapArrayPtr,
+    NullPtr,
+    NullPtr,
+  )
+  extEcdh;
 
   // Heap arrays
 
@@ -116,22 +134,24 @@ abstract class Secp256k1Base<
   late NullPtr nullPtr;
 
   Uint8List _serializePubKeyFromPtr(bool compressed) {
-
     sizeT = compressed
-      ? Secp256k1Base.compressedPubkeySize
-      : Secp256k1Base.uncompressedPubkeySize;
+        ? Secp256k1Base.compressedPubkeySize
+        : Secp256k1Base.uncompressedPubkeySize;
 
     final flags = compressed
-      ? Secp256k1Base.compressedFlags
-      : Secp256k1Base.uncompressedFlags;
+        ? Secp256k1Base.compressedFlags
+        : Secp256k1Base.uncompressedFlags;
 
     extEcPubkeySerialize(
-      ctxPtr, serializedPubKeyArray.ptr, sizeTPtr, pubKeyPtr, flags,
+      ctxPtr,
+      serializedPubKeyArray.ptr,
+      sizeTPtr,
+      pubKeyPtr,
+      flags,
     );
 
     // Return copy of public key
     return serializedPubKeyArray.list.sublist(0, sizeT);
-
   }
 
   Uint8List _serializeSignatureFromPtr() {
@@ -141,33 +161,34 @@ abstract class Secp256k1Base<
 
   void _parsePubkeyIntoPtr(Uint8List pubKey) {
     serializedPubKeyArray.load(pubKey);
-    if (
-      extEcPubkeyParse(
-        ctxPtr, pubKeyPtr, serializedPubKeyArray.ptr, pubKey.length,
-      ) != 1
-    ) {
+    if (extEcPubkeyParse(
+          ctxPtr,
+          pubKeyPtr,
+          serializedPubKeyArray.ptr,
+          pubKey.length,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid public key");
     }
   }
 
   void _parseSignatureIntoPtr(Uint8List signature) {
     serializedSigArray.load(signature);
-    if (
-      extEcdsaSignatureParseCompact(
-        ctxPtr, sigPtr, serializedSigArray.ptr,
-      ) != 1
-    ) {
+    if (extEcdsaSignatureParseCompact(ctxPtr, sigPtr, serializedSigArray.ptr) !=
+        1) {
       throw Secp256k1Exception("Invalid compact signature");
     }
   }
 
   void _parseRecoverableSignatureIntoPtr(Uint8List signature, int recid) {
     serializedSigArray.load(signature);
-    if (
-      extEcdsaRecoverableSignatureParseCompact(
-        ctxPtr, recSigPtr, serializedSigArray.ptr, recid,
-      ) != 1
-    ) {
+    if (extEcdsaRecoverableSignatureParseCompact(
+          ctxPtr,
+          recSigPtr,
+          serializedSigArray.ptr,
+          recid,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid compact recoverable signature");
     }
   }
@@ -220,20 +241,20 @@ abstract class Secp256k1Base<
   }
 
   /// Returns true if a compressed or uncompressed public key is valid.
-  bool pubKeyVerify(Uint8List pubKey)
-    => _noRaiseAfterRequireLoad(() => _parsePubkeyIntoPtr(pubKey));
+  bool pubKeyVerify(Uint8List pubKey) =>
+      _noRaiseAfterRequireLoad(() => _parsePubkeyIntoPtr(pubKey));
 
   /// Returns true if the compact [signature] can be parsed with valid R and S
   /// values
-  bool ecdsaCompactSignatureVerify(Uint8List signature)
-    => _noRaiseAfterRequireLoad(() => _parseSignatureIntoPtr(signature));
+  bool ecdsaCompactSignatureVerify(Uint8List signature) =>
+      _noRaiseAfterRequireLoad(() => _parseSignatureIntoPtr(signature));
 
   /// Returns true if the compact recoverable signature can be parsed given the
   /// [signature] and [recid]
-  bool ecdsaCompactRecoverableSignatureVerify(Uint8List signature, int recid)
-    => _noRaiseAfterRequireLoad(
-      () => _parseRecoverableSignatureIntoPtr(signature, recid),
-    );
+  bool ecdsaCompactRecoverableSignatureVerify(Uint8List signature, int recid) =>
+      _noRaiseAfterRequireLoad(
+        () => _parseRecoverableSignatureIntoPtr(signature, recid),
+      );
 
   /// Converts a 32-byte [privKey] into a either a 33-byte compressed or a
   /// 65-byte uncompressed public key.
@@ -248,7 +269,6 @@ abstract class Secp256k1Base<
     }
 
     return _serializePubKeyFromPtr(compressed);
-
   }
 
   /// Takes a [signature] and returns an equally valid signature that has a low
@@ -271,7 +291,6 @@ abstract class Secp256k1Base<
     extEcdsaSignatureSerializeDer(ctxPtr, derSigArray.ptr, sizeTPtr, sigPtr);
 
     return derSigArray.list.sublist(0, sizeT);
-
   }
 
   /// Takes a BIP66 DER ([der]) representation of a signature and returns the
@@ -281,16 +300,17 @@ abstract class Secp256k1Base<
 
     derSigArray.load(der);
 
-    if (
-      extEcdsaSignatureParseDer(
-        ctxPtr, sigPtr, derSigArray.ptr, der.length,
-      ) != 1
-    ) {
+    if (extEcdsaSignatureParseDer(
+          ctxPtr,
+          sigPtr,
+          derSigArray.ptr,
+          der.length,
+        ) !=
+        1) {
       throw Secp256k1Exception("Invalid DER signature");
     }
 
     return _serializeSignatureFromPtr();
-
   }
 
   /// Constructs a signature in the compact format using a 32-byte message
@@ -299,8 +319,10 @@ abstract class Secp256k1Base<
   /// Signatures are deterministic according to RFC6979. Additional entropy may
   /// be added as 32 bytes with [extraEntropy].
   Uint8List ecdsaSign(
-    Uint8List hash, Uint8List privKey, [Uint8List? extraEntropy,]
-  ) {
+    Uint8List hash,
+    Uint8List privKey, [
+    Uint8List? extraEntropy,
+  ]) {
     _requireLoad();
 
     key32Array.load(privKey);
@@ -308,25 +330,26 @@ abstract class Secp256k1Base<
     if (extraEntropy != null) entropyArray.load(extraEntropy);
 
     // Sign
-    if (
-      extEcdsaSign(
-        ctxPtr, sigPtr, hashArray.ptr, key32Array.ptr,
-        // Passing null will give secp256k1_nonce_function_rfc6979. If secp256k1
-        // changes this default function in the future,
-        // secp256k1_nonce_function_rfc6979 should be used directly.
-        // Using null as it doesn't require passing an additional constant from
-        // the web and io implementations.
-        nullPtr,
-        // The pointer is not actually null when entropy is provided but NullPtr
-        // works for void pointers too
-        extraEntropy == null ? nullPtr : entropyArray.ptr as NullPtr,
-      ) != 1
-    ) {
+    if (extEcdsaSign(
+          ctxPtr,
+          sigPtr,
+          hashArray.ptr,
+          key32Array.ptr,
+          // Passing null will give secp256k1_nonce_function_rfc6979. If secp256k1
+          // changes this default function in the future,
+          // secp256k1_nonce_function_rfc6979 should be used directly.
+          // Using null as it doesn't require passing an additional constant from
+          // the web and io implementations.
+          nullPtr,
+          // The pointer is not actually null when entropy is provided but NullPtr
+          // works for void pointers too
+          extraEntropy == null ? nullPtr : entropyArray.ptr as NullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot sign message with private key");
     }
 
     return _serializeSignatureFromPtr();
-
   }
 
   /// Verifies a compact [signature] against a 32-byte [hash] for a [pubKey] that
@@ -339,7 +362,6 @@ abstract class Secp256k1Base<
     hashArray.load(hash);
 
     return extEcdsaVerify(ctxPtr, sigPtr, hashArray.ptr, pubKeyPtr) == 1;
-
   }
 
   SigWithRecId ecdsaSignRecoverable(Uint8List hash, Uint8List privKey) {
@@ -348,19 +370,25 @@ abstract class Secp256k1Base<
     key32Array.load(privKey);
     hashArray.load(hash);
 
-    if (
-      extEcdsaSignRecoverable(
-        ctxPtr, recSigPtr, hashArray.ptr, key32Array.ptr, nullPtr, nullPtr,
-      ) != 1
-    ) {
+    if (extEcdsaSignRecoverable(
+          ctxPtr,
+          recSigPtr,
+          hashArray.ptr,
+          key32Array.ptr,
+          nullPtr,
+          nullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot sign message with private key");
     }
 
     extEcdsaRecoverableSignatureSerializeCompact(
-      ctxPtr, serializedSigArray.ptr, recIdPtr, recSigPtr,
+      ctxPtr,
+      serializedSigArray.ptr,
+      recIdPtr,
+      recSigPtr,
     );
     return SigWithRecId(serializedSigArray.list.sublist(0), internalRecId);
-
   }
 
   /// Takes a compact recoverable [signature] with [recid] and message [hash]
@@ -368,7 +396,10 @@ abstract class Secp256k1Base<
   /// public key will be compressed or else it shall be uncompressed. Will
   /// return null if no public key can be extracted.
   Uint8List? ecdaSignatureRecoverPubKey(
-    Uint8List signature, int recid, Uint8List hash, bool compressed,
+    Uint8List signature,
+    int recid,
+    Uint8List hash,
+    bool compressed,
   ) {
     _requireLoad();
 
@@ -380,7 +411,6 @@ abstract class Secp256k1Base<
     }
 
     return _serializePubKeyFromPtr(compressed);
-
   }
 
   /// Tweaks a 32-byte private key ([privKey]) by a [scalar]. Returns null if a
@@ -397,7 +427,6 @@ abstract class Secp256k1Base<
 
     // Return copy of private key or contents are subject to change
     return Uint8List.fromList(key32Array.list);
-
   }
 
   /// Tweaks a public key ([pubKey]) by adding the generator point multiplied by
@@ -416,7 +445,6 @@ abstract class Secp256k1Base<
     }
 
     return _serializePubKeyFromPtr(compressed);
-
   }
 
   /// Takes a 32-byte private key ([privKey]) and negates it.
@@ -430,7 +458,6 @@ abstract class Secp256k1Base<
     }
 
     return Uint8List.fromList(key32Array.list);
-
   }
 
   /// Constructs a 64-byte Schnorr signature for the 32-byte message [hash] and
@@ -439,24 +466,27 @@ abstract class Secp256k1Base<
   /// but the Peercoin client does not use it and it causes signatures to lose
   /// determinism.
   Uint8List schnorrSign(
-    Uint8List hash, Uint8List privKey, [Uint8List? extraEntropy,]
-  ) {
+    Uint8List hash,
+    Uint8List privKey, [
+    Uint8List? extraEntropy,
+  ]) {
     _requireLoad();
 
     _parsePrivKeyIntoKeyPairPtr(privKey);
     hashArray.load(hash);
 
-    if (
-      extSchnorrSign32(
-        ctxPtr, serializedSigArray.ptr, hashArray.ptr, keyPairPtr,
-        extraEntropy == null ? nullPtr as HeapArrayPtr : entropyArray.ptr,
-      ) != 1
-    ) {
+    if (extSchnorrSign32(
+          ctxPtr,
+          serializedSigArray.ptr,
+          hashArray.ptr,
+          keyPairPtr,
+          extraEntropy == null ? nullPtr as HeapArrayPtr : entropyArray.ptr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot sign Schnorr signature");
     }
 
     return serializedSigArray.list.sublist(0);
-
   }
 
   /// Verifies a 64-byte Schnorr [signature] against a 32-byte [hash] with a
@@ -469,9 +499,13 @@ abstract class Secp256k1Base<
     _parseXPubKeyIntoPtr(xPubKey);
 
     return extSchnorrVerify(
-      ctxPtr, serializedSigArray.ptr, hashArray.ptr, 32, xPubKeyPtr,
-    ) == 1;
-
+          ctxPtr,
+          serializedSigArray.ptr,
+          hashArray.ptr,
+          32,
+          xPubKeyPtr,
+        ) ==
+        1;
   }
 
   /// Generates a Diffie-Hellman shared 32-byte hash between a private and
@@ -482,17 +516,19 @@ abstract class Secp256k1Base<
     key32Array.load(privKey);
     _parsePubkeyIntoPtr(pubkey);
 
-    if (
-      extEcdh(
-        ctxPtr, hashArray.ptr, pubKeyPtr, key32Array.ptr, nullPtr,
-        nullPtr,
-      ) != 1
-    ) {
+    if (extEcdh(
+          ctxPtr,
+          hashArray.ptr,
+          pubKeyPtr,
+          key32Array.ptr,
+          nullPtr,
+          nullPtr,
+        ) !=
+        1) {
       throw Secp256k1Exception("Cannot generate ECDH shared key");
     }
 
     return hashArray.list.sublist(0);
-
   }
 
   /// Specialised sub-classes should override to set the value behind the
@@ -506,5 +542,4 @@ abstract class Secp256k1Base<
   /// Specialised sub-classes should override to obtain the value behind the
   /// recIdPtr
   int get internalRecId;
-
 }

@@ -6,40 +6,38 @@ import "secp256k1.ffi.g.dart";
 import "secp256k1_base.dart";
 
 /// Specialises Secp256k1Base to use the FFI
-class Secp256k1 extends Secp256k1Base<
-  Pointer<secp256k1_context>,
-  UCharPointer,
-  Pointer<secp256k1_pubkey>,
-  Pointer<Size>,
-  Pointer<secp256k1_ecdsa_signature>,
-  Pointer<secp256k1_ecdsa_recoverable_signature>,
-  Pointer<secp256k1_keypair>,
-  Pointer<secp256k1_xonly_pubkey>,
-  Pointer<Int>,
-  Pointer<Never>
-> {
-
+class Secp256k1
+    extends
+        Secp256k1Base<
+          Pointer<secp256k1_context>,
+          UCharPointer,
+          Pointer<secp256k1_pubkey>,
+          Pointer<Size>,
+          Pointer<secp256k1_ecdsa_signature>,
+          Pointer<secp256k1_ecdsa_recoverable_signature>,
+          Pointer<secp256k1_keypair>,
+          Pointer<secp256k1_xonly_pubkey>,
+          Pointer<Int>,
+          Pointer<Never>
+        > {
   Secp256k1() {
-
     // Set functions
     extEcSeckeyVerify = secp256k1_ec_seckey_verify;
     extEcPubkeyCreate = secp256k1_ec_pubkey_create;
     extEcPubkeySerialize = secp256k1_ec_pubkey_serialize;
     extEcPubkeyParse = secp256k1_ec_pubkey_parse;
     extEcdsaSign = secp256k1_ecdsa_sign;
-    extEcdsaSignatureSerializeCompact
-      = secp256k1_ecdsa_signature_serialize_compact;
-    extEcdsaSignatureParseCompact
-      = secp256k1_ecdsa_signature_parse_compact;
+    extEcdsaSignatureSerializeCompact =
+        secp256k1_ecdsa_signature_serialize_compact;
+    extEcdsaSignatureParseCompact = secp256k1_ecdsa_signature_parse_compact;
     extEcdsaSignatureNormalize = secp256k1_ecdsa_signature_normalize;
-    extEcdsaSignatureSerializeDer =
-      secp256k1_ecdsa_signature_serialize_der;
+    extEcdsaSignatureSerializeDer = secp256k1_ecdsa_signature_serialize_der;
     extEcdsaSignatureParseDer = secp256k1_ecdsa_signature_parse_der;
     extEcdsaVerify = secp256k1_ecdsa_verify;
-    extEcdsaRecoverableSignatureSerializeCompact
-      = secp256k1_ecdsa_recoverable_signature_serialize_compact;
-    extEcdsaRecoverableSignatureParseCompact
-      = secp256k1_ecdsa_recoverable_signature_parse_compact;
+    extEcdsaRecoverableSignatureSerializeCompact =
+        secp256k1_ecdsa_recoverable_signature_serialize_compact;
+    extEcdsaRecoverableSignatureParseCompact =
+        secp256k1_ecdsa_recoverable_signature_parse_compact;
     extEcdsaSignRecoverable = secp256k1_ecdsa_sign_recoverable;
     extEcdsaRecover = secp256k1_ecdsa_recover;
     extEcSeckeyTweakAdd = secp256k1_ec_seckey_tweak_add;
@@ -85,7 +83,6 @@ class Secp256k1 extends Secp256k1Base<
     if (secp256k1_context_randomize(ctxPtr, randArray.ptr) != 1) {
       throw Secp256k1Exception("Secp256k1 context couldn't be randomised");
     }
-
   }
 
   @override
@@ -96,5 +93,4 @@ class Secp256k1 extends Secp256k1Base<
 
   @override
   int get internalRecId => recIdPtr.value;
-
 }

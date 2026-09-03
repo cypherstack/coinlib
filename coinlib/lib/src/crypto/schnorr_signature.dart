@@ -8,7 +8,6 @@ import 'ec_public_key.dart';
 class InvalidSchnorrSignature extends Error {}
 
 class SchnorrSignature {
-
   static const length = 64;
 
   final Uint8List _data;
@@ -36,15 +35,13 @@ class SchnorrSignature {
     if (!sig.verify(privkey.pubkey, hash)) throw InvalidSchnorrSignature();
 
     return sig;
-
   }
 
   /// Takes a 32-byte message [hash] and [publickey] and returns true if the
   /// signature is valid for the public key and hash.
-  bool verify(ECPublicKey publickey, Uint8List hash)
-    => secp256k1.schnorrVerify(_data, checkBytes(hash, 32), publickey.x);
+  bool verify(ECPublicKey publickey, Uint8List hash) =>
+      secp256k1.schnorrVerify(_data, checkBytes(hash, 32), publickey.x);
 
   /// The serialized 32 byte r and s values of a schnorr signature
   Uint8List get data => Uint8List.fromList(_data);
-
 }

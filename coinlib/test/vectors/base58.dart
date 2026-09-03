@@ -4,7 +4,7 @@ import 'package:coinlib/src/common/hex.dart';
 class Base58Vector {
   final Uint8List data;
   final String encoded;
-  Base58Vector({ required String hex, required this.encoded })
+  Base58Vector({required String hex, required this.encoded})
     : data = hexToBytes(hex);
 }
 
@@ -18,10 +18,7 @@ final base58ValidVectors = [
     hex: "ffffffffffffffffffffffffffffffffffffffffff",
     encoded: "2n1XR4oJkmBdJMxhBGQGb96gQ88xUyGML1i",
   ),
-  Base58Vector(
-    hex: "",
-    encoded: "3QJmnh",
-  ),
+  Base58Vector(hex: "", encoded: "3QJmnh"),
   // zero private key WIF with compression
   Base58Vector(
     hex: "80000000000000000000000000000000000000000000000000000000000000000001",
@@ -47,4 +44,3 @@ final base58InvalidChecksumVectors = [
   "1111111111111111111113oLvT2",
   "3QJmn",
 ];
-

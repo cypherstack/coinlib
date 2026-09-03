@@ -8,7 +8,6 @@ typedef FreeFunction = int Function(int);
 /// Encapsulates a WASM heap-allocated unsigned char array, accessible as a
 /// Uint8List
 class HeapArrayWasm extends HeapArrayBase<int> {
-
   static final Finalizer<void Function()> _finalizer = Finalizer(
     (free) => free(),
   );
@@ -24,7 +23,10 @@ class HeapArrayWasm extends HeapArrayBase<int> {
   }
 
   factory HeapArrayWasm(
-    int size, Uint8List memory, MallocFunction malloc, FreeFunction free,
+    int size,
+    Uint8List memory,
+    MallocFunction malloc,
+    FreeFunction free,
   ) {
     final ptr = malloc(size);
     final list = Uint8List.view(memory.buffer, ptr, size);
@@ -33,13 +35,11 @@ class HeapArrayWasm extends HeapArrayBase<int> {
 
   @override
   load(Uint8List data) => list.setAll(0, data);
-
 }
 
 /// Provides [HeapArrayWasm] objects with the same memory and malloc and free
 /// functions.
 class HeapArrayWasmFactory {
-
   final Uint8List memory;
   final MallocFunction malloc;
   final FreeFunction free;
@@ -47,5 +47,4 @@ class HeapArrayWasmFactory {
   HeapArrayWasmFactory(this.memory, this.malloc, this.free);
 
   HeapArrayWasm create(int size) => HeapArrayWasm(size, memory, malloc, free);
-
 }

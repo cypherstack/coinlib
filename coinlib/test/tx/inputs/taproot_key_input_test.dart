@@ -5,9 +5,7 @@ import '../../vectors/signatures.dart';
 import '../../vectors/inputs.dart';
 
 void main() {
-
   group("TaprootKeyInput", () {
-
     late SchnorrInputSignature insig;
 
     setUpAll(() async {
@@ -21,9 +19,7 @@ void main() {
     getWitness(bool hasSig) => [if (hasSig) insig.bytes];
 
     test("valid key-path taproot inputs inc. addSignature", () {
-
       expectTaprootKeyInput(TaprootKeyInput input, bool hasSig) {
-
         expectInput(input);
 
         expect(input.complete, hasSig);
@@ -39,7 +35,6 @@ void main() {
         expect(input.witness, getWitness(hasSig));
         expect(input.size, rawWitnessInputBytes.length);
         expect(input.toBytes(), rawWitnessInputBytes);
-
       }
 
       final noSig = TaprootKeyInput(prevOut: prevOut, sequence: sequence);
@@ -62,11 +57,9 @@ void main() {
       );
       expect(matched, isA<TaprootKeyInput>());
       expectTaprootKeyInput(matched as TaprootKeyInput, true);
-
     });
 
     test("doesn't match non key-spend inputs", () {
-
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
         TaprootKeyInput.match(
           RawInput(
@@ -85,16 +78,12 @@ void main() {
       expectNoMatch("", [...getWitness(true), ...getWitness(true)]);
       // Not allowing annex
       expectNoMatch("", [...getWitness(true), hexToBytes("5001020304")]);
-      expectNoMatch(
-        "",
-        [
-          Uint8List.fromList([
-            ...hexToBytes(validDerSigs[0]),
-            SigHashType.noneValue,
-          ]),
-        ],
-      );
-
+      expectNoMatch("", [
+        Uint8List.fromList([
+          ...hexToBytes(validDerSigs[0]),
+          SigHashType.noneValue,
+        ]),
+      ]);
     });
 
     test("filterSignatures", () {
@@ -102,7 +91,5 @@ void main() {
       expect(input.filterSignatures((insig) => false).insig, isNull);
       expect(input.filterSignatures((insig) => true).insig, isNotNull);
     });
-
   });
-
 }

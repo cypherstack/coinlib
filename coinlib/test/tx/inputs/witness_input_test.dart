@@ -5,19 +5,20 @@ import '../../vectors/inputs.dart';
 import '../../vectors/tx.dart';
 
 void main() {
-
   group("WitnessInput", () {
-
     final prevOutHash = Uint8List(32);
     final prevOutN = 0xfeedbeef;
     final sequence = 0xbeeffeed;
 
     final raw = RawInput.fromReader(BytesReader(rawWitnessInputBytes));
-    final witness = [Uint8List.fromList([0, 1, 0xff])];
+    final witness = [
+      Uint8List.fromList([0, 1, 0xff]),
+    ];
 
     test("matches witness inputs", () {
       for (final witIn in [
-        Input.match(raw, witness), WitnessInput.match(raw, witness),
+        Input.match(raw, witness),
+        WitnessInput.match(raw, witness),
       ]) {
         expect(witIn, isA<WitnessInput>());
         expect(witIn!.prevOut.hash, prevOutHash);
@@ -41,7 +42,6 @@ void main() {
     });
 
     test("witness elements are immutable", () {
-
       final mutatedWitness = [hexToBytes("0000")];
 
       final input = WitnessInput(
@@ -53,9 +53,6 @@ void main() {
       expect(input.witness, [hexToBytes("0000")]);
 
       expect(() => input.witness[0] = Uint8List(1), throwsA(anything));
-
     });
-
   });
-
 }

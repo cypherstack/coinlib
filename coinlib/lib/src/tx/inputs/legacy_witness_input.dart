@@ -11,7 +11,6 @@ import 'witness_input.dart';
 
 /// Represents v0 witness program inputs
 abstract class LegacyWitnessInput extends WitnessInput {
-
   LegacyWitnessInput({
     required super.prevOut,
     required super.witness,
@@ -52,5 +51,4 @@ abstract class LegacyWitnessInput extends WitnessInput {
     ),
     hashType,
   );
-
 }

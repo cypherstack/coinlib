@@ -8,7 +8,6 @@ class InvalidPublicKey implements Exception {}
 /// Represents an ECC public key on the secp256k1 curve that has an associated
 /// private key
 class ECPublicKey {
-
   /// Either 33 compressed or 65 uncompressed bytes
   final Uint8List _data;
 
@@ -28,9 +27,8 @@ class ECPublicKey {
 
   /// Constructs a public key from a 32-byte X coordinate where the Y coordinate
   /// is made even.
-  ECPublicKey.fromXOnly(Uint8List xcoord) : this(
-    Uint8List.fromList([2, ...checkBytes(xcoord, 32, name: "xcoord")]),
-  );
+  ECPublicKey.fromXOnly(Uint8List xcoord)
+    : this(Uint8List.fromList([2, ...checkBytes(xcoord, 32, name: "xcoord")]));
   ECPublicKey.fromXOnlyHex(String hex) : this.fromXOnly(hexToBytes(hex));
 
   /// Tweaks the public key with a scalar multiplied by the generator point. In
@@ -60,18 +58,21 @@ class ECPublicKey {
   /// the Y-coorindate is not even, then the odd equivilent can be obtained via
   /// [xonly].
   bool get yIsEven
-    // Compressed even type
-    => _data[0] == 2
-    // Uncompressed even type
-    || _data[0] == 6
-    // Uncompressed and check for even
-    || (_data[0] == 4 && (_data.last & 1 == 0));
+  // Compressed even type
+  =>
+      _data[0] == 2
+      // Uncompressed even type
+      ||
+      _data[0] == 6
+      // Uncompressed and check for even
+      ||
+      (_data[0] == 4 && (_data.last & 1 == 0));
 
   @override
-  bool operator ==(Object other)
-    => (other is ECPublicKey) && bytesEqual(_data, other._data);
+  bool operator ==(Object other) =>
+      (other is ECPublicKey) && bytesEqual(_data, other._data);
 
   @override
-  int get hashCode => _data[1] | _data[2] << 8 | _data[3] << 16 | _data[4] << 24;
-
+  int get hashCode =>
+      _data[1] | _data[2] << 8 | _data[3] << 16 | _data[4] << 24;
 }

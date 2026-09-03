@@ -9,7 +9,6 @@ typedef UCharPointer = Pointer<UnsignedChar>;
 /// Encapsulates a FFI heap-allocated unsigned char array, accessible as a
 /// Uint8List
 class HeapArrayFfi extends HeapArrayBase<UCharPointer> {
-
   static final Finalizer<UCharPointer> _finalizer = Finalizer(
     (ptr) => malloc.free(ptr),
   );
@@ -26,5 +25,4 @@ class HeapArrayFfi extends HeapArrayBase<UCharPointer> {
   Uint8List get list => ptr.cast<Uint8>().asTypedList(size);
   @override
   load(Uint8List data) => list.setAll(0, data);
-
 }

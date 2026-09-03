@@ -8,7 +8,6 @@ void signatureHasherTester(
   Uint8List Function(Transaction tx, int inputN, SigHashVector vec) hasher,
   String Function(SigHashVector vec) hashFromVec,
 ) => group(name, () {
-
   late Transaction tx;
   setUpAll(() async {
     await loadCoinlib();
@@ -28,7 +27,8 @@ void signatureHasherTester(
   test("doesn't allow SIGHASH_DEFAULT", () {
     expect(
       () => hasher(
-        tx, 0,
+        tx,
+        0,
         SigHashVector(
           inputN: 0,
           scriptCodeAsm: "",
@@ -40,5 +40,4 @@ void signatureHasherTester(
       throwsArgumentError,
     );
   });
-
 });

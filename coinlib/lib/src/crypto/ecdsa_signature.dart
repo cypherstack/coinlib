@@ -9,7 +9,6 @@ import 'ec_public_key.dart';
 class InvalidECDSASignature implements Exception {}
 
 class ECDSASignature {
-
   static const compactLength = 64;
 
   final Uint8List _compact;
@@ -18,9 +17,10 @@ class ECDSASignature {
   /// [InvalidECDSASignature] will be thrown if the signature is not valid.
   ECDSASignature.fromCompact(Uint8List compact)
     : _compact = copyCheckBytes(
-      compact, compactLength,
-      name: "Compact ECDSA signature",
-  ) {
+        compact,
+        compactLength,
+        name: "Compact ECDSA signature",
+      ) {
     if (!secp256k1.ecdsaCompactSignatureVerify(compact)) {
       throw InvalidECDSASignature();
     }
@@ -47,8 +47,8 @@ class ECDSASignature {
 
   /// Takes a BIP66 DER formatted signature as a HEX string.
   /// See [ECDSASignature.fromDer].
-  factory ECDSASignature.fromDerHex(String hex)
-    => ECDSASignature.fromDer(hexToBytes(hex));
+  factory ECDSASignature.fromDerHex(String hex) =>
+      ECDSASignature.fromDer(hexToBytes(hex));
 
   /// Creates a signature using a private key ([privkey]) for a given 32-byte
   /// [hash]. The signature will be generated deterministically and shall be the
@@ -57,9 +57,9 @@ class ECDSASignature {
   /// be skipped until a signature with a low r-value is found.
   factory ECDSASignature.sign(
     ECPrivateKey privkey,
-    Uint8List hash,
-    { bool forceLowR = true, }
-  ) {
+    Uint8List hash, {
+    bool forceLowR = true,
+  }) {
     checkBytes(hash, 32);
 
     Uint8List compact;
@@ -81,23 +81,21 @@ class ECDSASignature {
     if (!sig.verify(privkey.pubkey, hash)) throw InvalidECDSASignature();
 
     return sig;
-
   }
 
   /// Takes a 32-byte message [hash] and [publickey] and returns true if the
   /// signature is valid for the public key and hash. This accepts malleable
   /// signatures with high and low S-values.
-  bool verify(ECPublicKey publickey, Uint8List hash)
-    => secp256k1.ecdsaVerify(
-      secp256k1.ecdsaSignatureNormalize(_compact),
-      checkBytes(hash, 32),
-      publickey.data,
-    );
+  bool verify(ECPublicKey publickey, Uint8List hash) => secp256k1.ecdsaVerify(
+    secp256k1.ecdsaSignatureNormalize(_compact),
+    checkBytes(hash, 32),
+    publickey.data,
+  );
 
   /// Returns the DER encoding for the signature
   Uint8List get der => secp256k1.ecdsaSignatureToDer(_compact);
+
   /// A compact representation of a ECDSASignature containing a big-endian
   /// 32-byte R value and big-endian 32-byte S value.
   Uint8List get compact => Uint8List.fromList(_compact);
-
 }

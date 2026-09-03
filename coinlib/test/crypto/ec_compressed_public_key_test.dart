@@ -3,16 +3,13 @@ import 'package:test/test.dart';
 import '../vectors/keys.dart';
 
 void main() {
-
   group("ECCompressedPublicKey", () {
-
     setUpAll(loadCoinlib);
 
     test("requires 33 bytes", () {
-
       for (final failing in [
         // Too small
-        pubkeyVec.substring(0, 32*2),
+        pubkeyVec.substring(0, 32 * 2),
         // Too large
         longPubkeyVec,
         "${pubkeyVec}ff",
@@ -22,7 +19,6 @@ void main() {
           throwsA(isA<InvalidPublicKey>()),
         );
       }
-
     });
 
     test("accepts compressed types", () {
@@ -35,13 +31,15 @@ void main() {
       }
     });
 
-    test(".fromXOnly", () => expect(
+    test(
+      ".fromXOnly",
+      () => expect(
         ECCompressedPublicKey.fromXOnlyHex(xOnlyPubkeyVec).hex,
         "02$xOnlyPubkeyVec",
-    ),);
+      ),
+    );
 
     test(".fromPubkey", () {
-
       void expectCompressedKey(String pubkey, String compressed) => expect(
         ECCompressedPublicKey.fromPubkey(ECPublicKey.fromHex(pubkey)).hex,
         compressed,
@@ -57,9 +55,6 @@ void main() {
         "07576168b540f6f80e4d2a325f8cbd420ceb170ff42cd07e96bffc5e6a4a4ea04b1208f618306fd629cd2972cea45aa81ae7b24a64bf2e86704d7a63d82fd97a8f",
         "03576168b540f6f80e4d2a325f8cbd420ceb170ff42cd07e96bffc5e6a4a4ea04b",
       );
-
     });
-
   });
-
 }

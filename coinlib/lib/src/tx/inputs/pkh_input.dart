@@ -8,7 +8,6 @@ import 'input_signature.dart';
 /// A mixin for Public Key Hash input types, providing the [ECPublicKey] and
 /// [ECDSAInputSignature] required in these inputs.
 abstract mixin class PKHInput {
-
   ECPublicKey get publicKey;
   ECDSAInputSignature? get insig;
   PKHInput addSignature(ECDSAInputSignature insig);
@@ -21,5 +20,4 @@ abstract mixin class PKHInput {
     }
     return key;
   }
-
 }

@@ -8,7 +8,6 @@ import 'package:coinlib/src/taproot.dart';
 
 /// Pay-to-Taproot program taking a 32-byte Taproot tweaked key.
 class P2TR extends P2Witness {
-
   /// Construct using an output script.
   P2TR.fromScript(super.script) : super.fromScript() {
     if (data.length != 32 || version != 1) throw NoProgramMatch();
@@ -30,5 +29,4 @@ class P2TR extends P2Witness {
   P2TR.fromTaproot(Taproot taproot) : this.fromTweakedKey(taproot.tweakedKey);
 
   ECPublicKey get tweakedKey => ECPublicKey.fromXOnly(data);
-
 }

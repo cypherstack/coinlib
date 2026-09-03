@@ -9,7 +9,6 @@ import 'package:coinlib/src/scripts/script.dart';
 /// Pay-to-Public-Key-Hash program taking a 20-byte public key hash that can
 /// satisfy this script with a signature.
 class P2PKH implements Program {
-
   static final template = Script.fromAsm(
     "OP_DUP OP_HASH160 <20-bytes> OP_EQUALVERIFY OP_CHECKSIG",
   );
@@ -29,10 +28,10 @@ class P2PKH implements Program {
   P2PKH.fromAsm(String asm) : this.fromScript(Script.fromAsm(asm));
 
   P2PKH.fromHash(Uint8List pkHash)
-    : _pkHash = copyCheckBytes(pkHash, 20), script = template.fill([pkHash]);
+    : _pkHash = copyCheckBytes(pkHash, 20),
+      script = template.fill([pkHash]);
 
   P2PKH.fromPublicKey(ECPublicKey pk) : this.fromHash(hash160(pk.data));
 
   Uint8List get pkHash => Uint8List.fromList(_pkHash);
-
 }

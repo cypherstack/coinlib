@@ -9,7 +9,6 @@ import 'signature_hasher.dart';
 
 /// Produces signature hashes for taproot inputs
 final class TaprootSignatureHasher with Writable implements SignatureHasher {
-
   static final tapSigHash = getTaggedHasher("TapSighash");
 
   final Transaction tx;
@@ -38,27 +37,28 @@ final class TaprootSignatureHasher with Writable implements SignatureHasher {
     this.leafHash,
     this.codeSeperatorPos = 0xFFFFFFFF,
   }) : txHashes = TransactionSignatureHashes(tx),
-  prevOutHashes = PrevOutSignatureHashes(prevOuts) {
-
+       prevOutHashes = PrevOutSignatureHashes(prevOuts) {
     SignatureHasher.checkInputN(tx, inputN);
 
     if (hashType.single && inputN >= tx.outputs.length) {
       throw ArgumentError.value(
-        inputN, "inputN", "has no corresponing output for SIGHASH_SINGLE",
+        inputN,
+        "inputN",
+        "has no corresponing output for SIGHASH_SINGLE",
       );
     }
 
     if (prevOuts.length != tx.inputs.length) {
       throw ArgumentError.value(
-        prevOuts.length, "prevOuts.length", "must be same length as inputs",
+        prevOuts.length,
+        "prevOuts.length",
+        "must be same length as inputs",
       );
     }
-
   }
 
   @override
   void write(Writer writer) {
-
     final extFlag = leafHash == null ? 0 : 1;
 
     writer.writeUInt8(0); // "Epoch"
@@ -103,10 +103,8 @@ final class TaprootSignatureHasher with Writable implements SignatureHasher {
       writer.writeUInt8(0); // Key version = 0
       writer.writeUInt32(codeSeperatorPos);
     }
-
   }
 
   @override
   Uint8List get hash => tapSigHash(toBytes());
-
 }

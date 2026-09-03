@@ -2,17 +2,18 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 import '../vectors/keys.dart';
 
-final privKey = WIF.fromString(
-  "UBGjv7kuxKmN1JHLJxQypz9jE7mYkKTZ9U6C1p1N2nEWbPZLiEkT",
-  version: Network.mainnet.wifPrefix,
-).privkey;
+final privKey = WIF
+    .fromString(
+      "UBGjv7kuxKmN1JHLJxQypz9jE7mYkKTZ9U6C1p1N2nEWbPZLiEkT",
+      version: Network.mainnet.wifPrefix,
+    )
+    .privkey;
 final addrs = [
   P2PKHAddress.fromPublicKey(
-    privKey.pubkey, version: Network.mainnet.p2pkhPrefix,
+    privKey.pubkey,
+    version: Network.mainnet.p2pkhPrefix,
   ),
-  P2WPKHAddress.fromPublicKey(
-    privKey.pubkey, hrp: Network.mainnet.bech32Hrp,
-  ),
+  P2WPKHAddress.fromPublicKey(privKey.pubkey, hrp: Network.mainnet.bech32Hrp),
 ];
 final msgSigs = [
   [
@@ -29,7 +30,6 @@ final prefix = Network.mainnet.messagePrefix;
 
 void main() {
   group("MessageSignature", () {
-
     setUpAll(loadCoinlib);
 
     test("can sign messages", () {
@@ -89,7 +89,5 @@ void main() {
         false,
       );
     });
-
   });
-
 }

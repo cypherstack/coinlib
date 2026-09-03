@@ -9,7 +9,6 @@ import 'package:coinlib/src/scripts/script.dart';
 /// witness script whereby the witness script and other push data is to be
 /// provided as witness data.
 class P2WSH extends P2Witness {
-
   /// Construct using an output script, not to be confused with the witness
   /// script. For that use [P2WSH.fromWitnessScript].
   P2WSH.fromScript(super.script) : super.fromScript() {
@@ -28,5 +27,4 @@ class P2WSH extends P2Witness {
     : this.fromHash(sha256Hash(witnessScript.compiled));
 
   Uint8List get scriptHash => data;
-
 }

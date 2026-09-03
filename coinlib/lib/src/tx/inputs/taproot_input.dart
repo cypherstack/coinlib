@@ -11,7 +11,6 @@ import 'witness_input.dart';
 
 /// Represents v1 Taproot program inputs
 abstract class TaprootInput extends WitnessInput {
-
   TaprootInput({
     required super.prevOut,
     required super.witness,
@@ -54,5 +53,4 @@ abstract class TaprootInput extends WitnessInput {
     ),
     hashType,
   );
-
 }

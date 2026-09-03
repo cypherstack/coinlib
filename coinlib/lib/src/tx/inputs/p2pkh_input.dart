@@ -17,7 +17,6 @@ import 'raw_input.dart';
 /// corresponding [ECPrivateKey] or a signature can be added without checks
 /// using [addSignature].
 class P2PKHInput extends LegacyInput with PKHInput {
-
   @override
   final ECPublicKey publicKey;
   @override
@@ -31,17 +30,16 @@ class P2PKHInput extends LegacyInput with PKHInput {
     this.insig,
     super.sequence = Input.sequenceFinal,
   }) : super(
-    scriptSig: Script([
-      if (insig != null) ScriptPushData(insig.bytes),
-      ScriptPushData(publicKey.data),
-    ]).compiled,
-  );
+         scriptSig: Script([
+           if (insig != null) ScriptPushData(insig.bytes),
+           ScriptPushData(publicKey.data),
+         ]).compiled,
+       );
 
   /// Checks if the [RawInput] matches the expected format for a [P2PKHInput],
   /// with or without a signature. If it does it returns a [P2PKHInput] for the
   /// input or else it returns null.
   static P2PKHInput? match(RawInput raw) {
-
     final script = raw.script;
     if (script == null) return null;
     final ops = script.ops;
@@ -59,7 +57,6 @@ class P2PKHInput extends LegacyInput with PKHInput {
       insig: insig,
       sequence: raw.sequence,
     );
-
   }
 
   @override
@@ -89,15 +86,16 @@ class P2PKHInput extends LegacyInput with PKHInput {
   );
 
   @override
-  P2PKHInput filterSignatures(bool Function(InputSignature insig) predicate)
-    => insig == null || predicate(insig!) ? this : P2PKHInput(
-      prevOut: prevOut,
-      publicKey: publicKey,
-      insig: null,
-      sequence: sequence,
-    );
+  P2PKHInput filterSignatures(bool Function(InputSignature insig) predicate) =>
+      insig == null || predicate(insig!)
+      ? this
+      : P2PKHInput(
+          prevOut: prevOut,
+          publicKey: publicKey,
+          insig: null,
+          sequence: sequence,
+        );
 
   @override
   Script get script => super.script!;
-
 }

@@ -22,8 +22,16 @@ const validBech32m = [
 
 final invalidBech32 = [
   [" 1nwldj5", "  is an invalid bech32 HRP"],
-  ["\x7f""1axkwrx", "\x7f is an invalid bech32 HRP"],
-  ["\x80""1eym55h", "\x80 is an invalid bech32 HRP"],
+  [
+    "\x7f"
+        "1axkwrx",
+    "\x7f is an invalid bech32 HRP",
+  ],
+  [
+    "\x80"
+        "1eym55h",
+    "\x80 is an invalid bech32 HRP",
+  ],
   [
     "an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx",
     "Bech32 too long",
@@ -34,7 +42,7 @@ final invalidBech32 = [
   ["li1dgmt3", "Checksum too short"],
   ["de1lg7wt\xff", "Invalid character"],
   ["10a06t8", "Missing HRP"],
-  ["1qzzfhee",  "Missing HRP"],
+  ["1qzzfhee", "Missing HRP"],
   ["a12UEL5L", "Bech32 cannot be mixed case"],
   ["A12uEL5L", "Bech32 cannot be mixed case"],
 ];
