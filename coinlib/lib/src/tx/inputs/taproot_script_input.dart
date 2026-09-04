@@ -31,7 +31,7 @@ class TaprootScriptInput extends TaprootInput {
     super.sequence = InputSequence.enforceLocktime,
   }) : super(
           witness: [
-            if (stack != null) ...stack,
+            ...?stack,
             tapscript.compiled,
             controlBlock,
           ],
