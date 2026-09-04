@@ -6,9 +6,7 @@ import '../../vectors/signatures.dart';
 import '../../vectors/inputs.dart';
 
 void main() {
-
   group("P2WPKHInput", () {
-
     final der = validDerSigs[0];
     final pkBytes = hexToBytes(pubkeyVec);
     late ECPublicKey pk;
@@ -24,17 +22,13 @@ void main() {
     });
 
     getWitness(bool hasSig) => [
-      if (hasSig) Uint8List.fromList([
-        ...hexToBytes(der),
-        SigHashType.noneValue,
-      ]),
+      if (hasSig)
+        Uint8List.fromList([...hexToBytes(der), SigHashType.noneValue]),
       hexToBytes(pubkeyVec),
     ];
 
     test("valid p2wpkh inputs inc. addSignature", () {
-
       expectP2WPKHInput(P2WPKHInput input, bool hasSig) {
-
         expectInput(input);
 
         expect(input.publicKey.hex, pubkeyVec);
@@ -51,7 +45,6 @@ void main() {
         expect(input.witness, getWitness(hasSig));
         expect(input.size, rawWitnessInputBytes.length);
         expect(input.toBytes(), rawWitnessInputBytes);
-
       }
 
       final noSig = P2WPKHInput(
@@ -82,11 +75,9 @@ void main() {
 
       expectMatched(false);
       expectMatched(true);
-
     });
 
     test("doesn't match non p2wpkh inputs", () {
-
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
         P2WPKHInput.match(
           RawInput(
@@ -109,22 +100,13 @@ void main() {
       expectNoMatch("", [pkBytes.sublist(32)]);
       expectNoMatch("", [hexToBytes(invalidPubKeys[0])]);
       expectNoMatch("", [hexToBytes(invalidSignatures[0]), pkBytes]);
-
     });
 
     test("filterSignatures", () {
-
-      final input = P2WPKHInput(
-        prevOut: prevOut,
-        publicKey: pk,
-        insig: insig,
-      );
+      final input = P2WPKHInput(prevOut: prevOut, publicKey: pk, insig: insig);
 
       expect(input.filterSignatures((insig) => false).insig, isNull);
       expect(input.filterSignatures((insig) => true).insig, isNotNull);
-
     });
-
   });
-
 }

@@ -3,7 +3,6 @@ import '../../vectors/tx.dart';
 import 'signature_hasher_tester.dart';
 
 void main() {
-
   signatureHasherTester(
     "WitnessSignatureHasher",
     (Transaction tx, int inputN, SigHashVector vec) => WitnessSignatureHasher(
@@ -15,5 +14,4 @@ void main() {
     ).hash,
     (SigHashVector vec) => vec.witnessHash,
   );
-
 }

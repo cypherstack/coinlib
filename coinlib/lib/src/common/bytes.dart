@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 
 /// Throws an [ArgumentError] if the [bytes] are not of the required [length]
 /// and returns the [bytes].
-Uint8List checkBytes(Uint8List bytes, int length, { String name = "Bytes" }) {
+Uint8List checkBytes(Uint8List bytes, int length, {String name = "Bytes"}) {
   if (bytes.length != length) {
     throw ArgumentError("$name should have length of $length", "bytes");
   }
@@ -13,8 +13,10 @@ Uint8List checkBytes(Uint8List bytes, int length, { String name = "Bytes" }) {
 /// Throws an [ArgumentError] if the [bytes] are not of the required [length]
 /// and returns a copy of the [bytes].
 Uint8List copyCheckBytes(
-  Uint8List bytes, int length, { String name = "Bytes", }
-) => Uint8List.fromList(checkBytes(bytes, length, name: name));
+  Uint8List bytes,
+  int length, {
+  String name = "Bytes",
+}) => Uint8List.fromList(checkBytes(bytes, length, name: name));
 
 /// Determines if two [Uint8List] lists are equal
 bool bytesEqual(Uint8List a, Uint8List b) => ListEquality<int>().equals(a, b);

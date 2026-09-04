@@ -13,15 +13,11 @@ final witness = [script.compiled, controlBlock];
 final stack = [hexToBytes("0102030405"), hexToBytes("01020304")];
 
 void main() {
-
   group("TaprootScriptInput", () {
-
     setUpAll(loadCoinlib);
 
     test("valid script-path taproot inputs", () {
-
       expectTaprootScriptInput(TaprootScriptInput input, bool withStack) {
-
         expectInput(input);
 
         expect(input.complete, true);
@@ -34,7 +30,6 @@ void main() {
         expect(input.witness, [if (withStack) ...stack, ...witness]);
         expect(input.size, rawWitnessInputBytes.length);
         expect(input.toBytes(), rawWitnessInputBytes);
-
       }
 
       for (final withStack in [false, true]) {
@@ -59,23 +54,24 @@ void main() {
           withStack,
         );
         expectTaprootScriptInput(
-          Input.match(
-            RawInput.fromReader(BytesReader(rawWitnessInputBytes)),
-            [if (withStack) ...stack, ...witness],
-          ) as TaprootScriptInput,
+          Input.match(RawInput.fromReader(BytesReader(rawWitnessInputBytes)), [
+                if (withStack) ...stack,
+                ...witness,
+              ])
+              as TaprootScriptInput,
           withStack,
         );
       }
-
     });
 
     test("control blocks up-to 128 hashes accepted", () {
       expect(
         TaprootScriptInput(
           prevOut: prevOut,
-          controlBlock: Uint8List.fromList(
-            [...controlBlock.take(33), ...Uint8List(32*128)],
-          ),
+          controlBlock: Uint8List.fromList([
+            ...controlBlock.take(33),
+            ...Uint8List(32 * 128),
+          ]),
           tapscript: script,
         ),
         isA<TaprootScriptInput>(),
@@ -83,7 +79,6 @@ void main() {
     });
 
     test("doesn't match non script-spend inputs", () {
-
       expectNoMatch(String asm, List<Uint8List> witness) => expect(
         TaprootScriptInput.match(
           RawInput(
@@ -104,44 +99,40 @@ void main() {
       // Control block must be correct size
       expectNoMatch("", [script.compiled, hexToBytes("c1")]);
       expectNoMatch("", [script.compiled, Uint8List(0)]);
-      expectNoMatch(
-        "",
-        [script.compiled, controlBlock.sublist(0, controlBlock.length-1)],
-      );
-      expectNoMatch(
-        "",
-        [
-          script.compiled,
-          Uint8List.fromList([...controlBlock.take(33), ...Uint8List(32*129)]),
-        ],
-      );
+      expectNoMatch("", [
+        script.compiled,
+        controlBlock.sublist(0, controlBlock.length - 1),
+      ]);
+      expectNoMatch("", [
+        script.compiled,
+        Uint8List.fromList([...controlBlock.take(33), ...Uint8List(32 * 129)]),
+      ]);
       // Control block must have valid tapscript version.
-      expectNoMatch(
-        "",
-        [
-          script.compiled,
-          Uint8List.fromList([0xc2, ...controlBlock.sublist(1)]),
-        ],
-      );
+      expectNoMatch("", [
+        script.compiled,
+        Uint8List.fromList([0xc2, ...controlBlock.sublist(1)]),
+      ]);
       // Script must be valid and minimal
       expectNoMatch("", [hexToBytes("0201"), controlBlock]);
       expectNoMatch("", [hexToBytes("0101"), controlBlock]);
     });
 
-    test("sign() not implemented", () => expect(
-      () => TaprootScriptInput.fromTaprootLeaf(
-        prevOut: prevOut,
-        taproot: taprootVec.object,
-        leaf: taprootVec.object.leaves[0],
-      ).sign(
-        tx: Transaction(inputs: [], outputs: []),
-        inputN: 0,
-        key: ECPrivateKey.generate(),
-        prevOuts: [],
+    test(
+      "sign() not implemented",
+      () => expect(
+        () =>
+            TaprootScriptInput.fromTaprootLeaf(
+              prevOut: prevOut,
+              taproot: taprootVec.object,
+              leaf: taprootVec.object.leaves[0],
+            ).sign(
+              tx: Transaction(inputs: [], outputs: []),
+              inputN: 0,
+              key: ECPrivateKey.generate(),
+              prevOuts: [],
+            ),
+        throwsA(isA<CannotSignInput>()),
       ),
-      throwsA(isA<CannotSignInput>()),
-    ),);
-
+    );
   });
-
 }

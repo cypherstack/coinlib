@@ -7,7 +7,6 @@ import 'output.dart';
 
 /// Reference to an [Output] by transaction hash and index
 class OutPoint with Writable {
-
   final Uint8List _hash;
   final int n;
 
@@ -21,7 +20,8 @@ class OutPoint with Writable {
     : this(Uint8List.fromList(hexToBytes(hash).reversed.toList()), n);
 
   OutPoint.fromReader(BytesReader reader)
-    : _hash = reader.readSlice(32), n = reader.readUInt32();
+    : _hash = reader.readSlice(32),
+      n = reader.readUInt32();
 
   @override
   void write(Writer writer) {
@@ -30,17 +30,15 @@ class OutPoint with Writable {
   }
 
   Uint8List get hash => Uint8List.fromList(_hash);
+
   /// True if this out point is the type found in a coinbase
   bool get coinbase => _hash.every((e) => e == 0) && n == 0xffffffff;
 
   @override
-  bool operator ==(Object other)
-    => (other is OutPoint)
-    && bytesEqual(_hash, other._hash)
-    && n == other.n;
+  bool operator ==(Object other) =>
+      (other is OutPoint) && bytesEqual(_hash, other._hash) && n == other.n;
 
   @override
-  int get hashCode
-    => _hash[1] | _hash[2] << 8 | _hash[3] << 16 | _hash[4] << 24 | n;
-
+  int get hashCode =>
+      _hash[1] | _hash[2] << 8 | _hash[3] << 16 | _hash[4] << 24 | n;
 }

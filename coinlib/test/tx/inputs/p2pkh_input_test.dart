@@ -6,9 +6,7 @@ import '../../vectors/signatures.dart';
 import '../../vectors/inputs.dart';
 
 void main() {
-
   group("P2PKHInput", () {
-
     final der = validDerSigs[0];
     late ECPublicKey pk;
     late ECDSAInputSignature insig;
@@ -19,30 +17,41 @@ void main() {
         ECDSASignature.fromDerHex(der),
         SigHashType.single(),
       );
-
     });
 
     test("valid p2pkh inputs inc. addSignature", () {
-
       final noSigScript = Script.fromAsm(pubkeyVec).compiled;
       final sigScript = Script.fromAsm("${der}03 $pubkeyVec").compiled;
 
       final noSigBytes = Uint8List.fromList([
         ...prevOutHash,
-        0xef, 0xbe, 0xed, 0xfe,
-        noSigScript.length, ...noSigScript,
-        0xed, 0xfe, 0xef, 0xbe,
+        0xef,
+        0xbe,
+        0xed,
+        0xfe,
+        noSigScript.length,
+        ...noSigScript,
+        0xed,
+        0xfe,
+        0xef,
+        0xbe,
       ]);
 
       final sigBytes = Uint8List.fromList([
         ...prevOutHash,
-        0xef, 0xbe, 0xed, 0xfe,
-        sigScript.length, ...sigScript,
-        0xed, 0xfe, 0xef, 0xbe,
+        0xef,
+        0xbe,
+        0xed,
+        0xfe,
+        sigScript.length,
+        ...sigScript,
+        0xed,
+        0xfe,
+        0xef,
+        0xbe,
       ]);
 
       expectP2PKHInput(P2PKHInput input, bool hasSig) {
-
         expectInput(input);
 
         expect(input.publicKey.hex, pubkeyVec);
@@ -61,7 +70,6 @@ void main() {
         final bytes = hasSig ? sigBytes : noSigBytes;
         expect(input.size, bytes.length);
         expect(input.toBytes(), bytes);
-
       }
 
       final noSig = P2PKHInput(
@@ -89,7 +97,6 @@ void main() {
 
       expectMatched(noSigBytes, false);
       expectMatched(sigBytes, true);
-
     });
 
     test("doesn't match non p2pkh inputs", () {
@@ -117,18 +124,10 @@ void main() {
     });
 
     test("filterSignatures", () {
-
-      final input = P2PKHInput(
-        prevOut: prevOut,
-        publicKey: pk,
-        insig: insig,
-      );
+      final input = P2PKHInput(prevOut: prevOut, publicKey: pk, insig: insig);
 
       expect(input.filterSignatures((insig) => false).insig, isNull);
       expect(input.filterSignatures((insig) => true).insig, isNotNull);
-
     });
-
   });
-
 }

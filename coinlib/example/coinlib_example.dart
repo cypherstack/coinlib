@@ -1,7 +1,6 @@
 import "package:coinlib/coinlib.dart";
 
 void main() async {
-
   // Always remember to load the library for web use
   // Flutter applications should use the coinlib_flutter plugin with the
   // CoinlibLoader widget instead.
@@ -41,13 +40,11 @@ void main() async {
     prefix: Network.mainnet.messagePrefix,
   );
 
-  if (
-    msgSig.verifyAddress(
-      address: address,
-      message: msg,
-      prefix: Network.mainnet.messagePrefix,
-    )
-  ) {
+  if (msgSig.verifyAddress(
+    address: address,
+    message: msg,
+    prefix: Network.mainnet.messagePrefix,
+  )) {
     print("Msg signature is valid: $msgSig");
   }
 
@@ -65,9 +62,7 @@ void main() async {
     inputs: [
       P2PKHInput(prevOut: OutPoint(prevHash, 1), publicKey: key1.publicKey),
     ],
-    outputs: [
-      Output.fromAddress(BigInt.from(2000000), address),
-    ],
+    outputs: [Output.fromAddress(BigInt.from(2000000), address)],
   );
 
   if (!tx.complete) {
@@ -92,7 +87,8 @@ void main() async {
 
   // Print P2TR address
   final trAddr = P2TRAddress.fromTaproot(
-    taproot, hrp: Network.mainnet.bech32Hrp,
+    taproot,
+    hrp: Network.mainnet.bech32Hrp,
   );
   print("Taproot address: $trAddr");
 
@@ -103,16 +99,16 @@ void main() async {
     P2TR.fromTaproot(taproot),
   );
 
-  final trTx = Transaction(
-    inputs: [TaprootKeyInput(prevOut: OutPoint(prevHash, 1))],
-    outputs: [trOutput],
-  ).sign(
-    inputN: 0,
-    // Private keys must be tweaked by the Taproot object
-    key: taproot.tweakPrivateKey(key1.privateKey),
-    prevOuts: [trOutput],
-  );
+  final trTx =
+      Transaction(
+        inputs: [TaprootKeyInput(prevOut: OutPoint(prevHash, 1))],
+        outputs: [trOutput],
+      ).sign(
+        inputN: 0,
+        // Private keys must be tweaked by the Taproot object
+        key: taproot.tweakPrivateKey(key1.privateKey),
+        prevOuts: [trOutput],
+      );
 
   print("TR Tx hex = ${trTx.toHex()}");
-
 }

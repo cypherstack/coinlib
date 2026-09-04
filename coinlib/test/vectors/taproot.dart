@@ -1,7 +1,6 @@
 import 'package:coinlib/coinlib.dart';
 
 class TaprootVector {
-
   final Taproot object;
   final String tweakScalarHex;
   final String xTweakedKeyHex;
@@ -16,23 +15,21 @@ class TaprootVector {
     this.leafHashes = const [],
     this.controlBlocks = const [],
   });
-
 }
 
-TapLeaf leafFromHex(String hex) => TapLeaf(
-  Script.decompile(hexToBytes(hex)),
-);
+TapLeaf leafFromHex(String hex) => TapLeaf(Script.decompile(hexToBytes(hex)));
 
 final taprootVectors = [
-
   TaprootVector(
     object: Taproot(
       internalKey: ECPublicKey.fromXOnlyHex(
         "d6889cb081036e0faefa3a35157ad71086b123b2b144b649798b494c300a961d",
       ),
     ),
-    tweakScalarHex: "b86e7be8f39bab32a6f2c0443abbc210f0edac0e2c53d501b36b64437d9c6c70",
-    xTweakedKeyHex: "53a1f6e454df1aa2776a2814a721372d6258050de330b3c6d10ee8f4e0dda343",
+    tweakScalarHex:
+        "b86e7be8f39bab32a6f2c0443abbc210f0edac0e2c53d501b36b64437d9c6c70",
+    xTweakedKeyHex:
+        "53a1f6e454df1aa2776a2814a721372d6258050de330b3c6d10ee8f4e0dda343",
   ),
 
   TaprootVector(
@@ -44,8 +41,10 @@ final taprootVectors = [
         "20d85a959b0290bf19bb89ed43c916be835475d013da4b362117393e25a48229b8ac",
       ),
     ),
-    tweakScalarHex: "cbd8679ba636c1110ea247542cfbd964131a6be84f873f7f3b62a777528ed001",
-    xTweakedKeyHex: "147c9c57132f6e7ecddba9800bb0c4449251c92a1e60371ee77557b6620f3ea3",
+    tweakScalarHex:
+        "cbd8679ba636c1110ea247542cfbd964131a6be84f873f7f3b62a777528ed001",
+    xTweakedKeyHex:
+        "147c9c57132f6e7ecddba9800bb0c4449251c92a1e60371ee77557b6620f3ea3",
     leafHashes: [
       "5b75adecf53548f3ec6ad7d78383bf84cc57b55a3127c72b9a2481752dd88b21",
     ],
@@ -63,8 +62,10 @@ final taprootVectors = [
         "20b617298552a72ade070667e86ca63b8f5789a9fe8731ef91202a91c9f3459007ac",
       ),
     ),
-    tweakScalarHex: "6af9e28dbf9d6aaf027696e2598a5b3d056f5fd2355a7fd5a37a0e5008132d30",
-    xTweakedKeyHex: "e4d810fd50586274face62b8a807eb9719cef49c04177cc6b76a9a4251d5450e",
+    tweakScalarHex:
+        "6af9e28dbf9d6aaf027696e2598a5b3d056f5fd2355a7fd5a37a0e5008132d30",
+    xTweakedKeyHex:
+        "e4d810fd50586274face62b8a807eb9719cef49c04177cc6b76a9a4251d5450e",
     leafHashes: [
       "c525714a7f49c28aedbbba78c005931a81c234b2f6c99a73e4d06082adc8bf2b",
     ],
@@ -85,8 +86,10 @@ final taprootVectors = [
         leafFromHex("07546170726f6f74"),
       ),
     ),
-    tweakScalarHex: "639f0281b7ac49e742cd25b7f188657626da1ad169209078e2761cefd91fd65e",
-    xTweakedKeyHex: "77e30a5522dd9f894c3f8b8bd4c4b2cf82ca7da8a3ea6a239655c39c050ab220",
+    tweakScalarHex:
+        "639f0281b7ac49e742cd25b7f188657626da1ad169209078e2761cefd91fd65e",
+    xTweakedKeyHex:
+        "77e30a5522dd9f894c3f8b8bd4c4b2cf82ca7da8a3ea6a239655c39c050ab220",
     leafHashes: [
       "64512fecdb5afa04f98839b50e6f0cb7b1e539bf6f205f67934083cdcc3c8d89",
       "2cb2b90daa543b544161530c925f285b06196940d6085ca9474d41dc3822c5cb",
@@ -116,8 +119,10 @@ final taprootVectors = [
         ),
       ),
     ),
-    tweakScalarHex: "b57bfa183d28eeb6ad688ddaabb265b4a41fbf68e5fed2c72c74de70d5a786f4",
-    xTweakedKeyHex: "91b64d5324723a985170e4dc5a0f84c041804f2cd12660fa5dec09fc21783605",
+    tweakScalarHex:
+        "b57bfa183d28eeb6ad688ddaabb265b4a41fbf68e5fed2c72c74de70d5a786f4",
+    xTweakedKeyHex:
+        "91b64d5324723a985170e4dc5a0f84c041804f2cd12660fa5dec09fc21783605",
     leafHashes: [
       "2645a02e0aac1fe69d69755733a9b7621b694bb5b5cde2bbfc94066ed62b9817",
       "ba982a91d4fc552163cb1c0da03676102d5b7a014304c01f0c77b2b8e888de1c",
@@ -149,8 +154,10 @@ final taprootVectors = [
         ),
       ),
     ),
-    tweakScalarHex: "6579138e7976dc13b6a92f7bfd5a2fc7684f5ea42419d43368301470f3b74ed9",
-    xTweakedKeyHex: "75169f4001aa68f15bbed28b218df1d0a62cbbcf1188c6665110c293c907b831",
+    tweakScalarHex:
+        "6579138e7976dc13b6a92f7bfd5a2fc7684f5ea42419d43368301470f3b74ed9",
+    xTweakedKeyHex:
+        "75169f4001aa68f15bbed28b218df1d0a62cbbcf1188c6665110c293c907b831",
     leafHashes: [
       "f154e8e8e17c31d3462d7132589ed29353c6fafdb884c5a6e04ea938834f0d9d",
       "737ed1fe30bc42b8022d717b44f0d93516617af64a64753b7a06bf16b26cd711",
@@ -162,5 +169,4 @@ final taprootVectors = [
       "c155adf4e8967fbd2e29f20ac896e60c3b0f1d5b0efa9d34941b5958c7b0a0312d737ed1fe30bc42b8022d717b44f0d93516617af64a64753b7a06bf16b26cd711f154e8e8e17c31d3462d7132589ed29353c6fafdb884c5a6e04ea938834f0d9d",
     ],
   ),
-
 ];

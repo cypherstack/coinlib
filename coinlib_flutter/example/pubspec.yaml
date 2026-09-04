@@ -5,13 +5,19 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  coinlib_flutter: ^2.2.0
+  coinlib_flutter:
+    path: ../
   cupertino_icons: ^1.0.2
+
+dependency_overrides:
+  # Use the coinlib package from this repository rather than pub.dev.
+  coinlib:
+    path: ../../coinlib
 
 dev_dependencies:
   flutter_test:

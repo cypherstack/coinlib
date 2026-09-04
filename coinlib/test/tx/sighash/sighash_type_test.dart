@@ -2,16 +2,16 @@ import 'package:coinlib/coinlib.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group("SigHashType", () {
-
     test("valid values", () {
-
       expectValid(
-        SigHashType obj, int value, bool all, bool none, bool single,
+        SigHashType obj,
+        int value,
+        bool all,
+        bool none,
+        bool single,
         bool anyOneCanPay,
       ) {
-
         expect(SigHashType.validValue(value), true);
 
         final objs = [obj, SigHashType.fromValue(value)];
@@ -25,22 +25,35 @@ void main() {
           expect(o.anyOneCanPay, anyOneCanPay);
           expect(o.schnorrDefault, false);
         }
-
       }
 
       expectValid(SigHashType.all(), 1, true, false, false, false);
       expectValid(
-        SigHashType.all(anyOneCanPay: true), 0x81, true, false, false, true,
+        SigHashType.all(anyOneCanPay: true),
+        0x81,
+        true,
+        false,
+        false,
+        true,
       );
       expectValid(SigHashType.none(), 2, false, true, false, false);
       expectValid(
-        SigHashType.none(anyOneCanPay: true), 0x82, false, true, false, true,
+        SigHashType.none(anyOneCanPay: true),
+        0x82,
+        false,
+        true,
+        false,
+        true,
       );
       expectValid(SigHashType.single(), 3, false, false, true, false);
       expectValid(
-        SigHashType.single(anyOneCanPay: true), 0x83, false, false, true, true,
+        SigHashType.single(anyOneCanPay: true),
+        0x83,
+        false,
+        false,
+        true,
+        true,
       );
-
     });
 
     test("default Schnorr", () {
@@ -61,7 +74,5 @@ void main() {
         expect(() => SigHashType.fromValue(invalid), throwsArgumentError);
       }
     });
-
   });
-
 }

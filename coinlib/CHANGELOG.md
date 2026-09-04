@@ -1,3 +1,12 @@
+## Unreleased
+
+The secp256k1 library is now compiled from vendored sources by a build hook
+using [native assets](https://dart.dev/tools/hooks), replacing the Docker,
+autotools, CMake and MinGW build scripts. Loading a self-provided library,
+whether from `build/`, a system location or `LD_LIBRARY_PATH`, is no longer
+supported: the hook-built library is always used. This requires Dart 3.10 or
+later and a C compiler for the target platform.
+
 ## 2.2.0
 
 Add `ECCompressedPublicKey` class that forces compressed public keys.

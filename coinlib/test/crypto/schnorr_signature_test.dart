@@ -4,22 +4,15 @@ import 'package:test/test.dart';
 import '../vectors/signatures.dart';
 
 void main() {
-
   group("SchnorrSignature", () {
-
     setUpAll(loadCoinlib);
 
     final validSig = validSignatures[0];
 
     test("requires 64-bytes", () {
-
       for (final failing in [validSig.substring(2), "${validSig}00"]) {
-        expect(
-          () => SchnorrSignature.fromHex(failing),
-          throwsArgumentError,
-        );
+        expect(() => SchnorrSignature.fromHex(failing), throwsArgumentError);
       }
-
     });
 
     test(".data is copied cannot be mutated", () {
@@ -30,9 +23,7 @@ void main() {
       expect(bytesToHex(sig.data), validSignatures[0]);
     });
 
-
     test(".sign()", () {
-
       void expectValid(ECPrivateKey privkey, Uint8List hash, String expSig) {
         final sig = SchnorrSignature.sign(privkey, hash);
         expect(bytesToHex(sig.data), expSig);
@@ -59,7 +50,6 @@ void main() {
         Uint8List.fromList(List.filled(32, 0xff)),
         "84a54df8662c0458c075fabc1f12cbbd1da75d88b57931066ccbf817f0278e39cb343d41b9f6bbcba221c61aee421f9c15028d936a978de7ef6b83b4c58b857b",
       );
-
     });
 
     test(".verify() success", () {
@@ -76,21 +66,21 @@ void main() {
     });
 
     test(".verify() failure", () {
-
       final hash = hexToBytes(
         "243f6a8885a308d313198a2e03707344a4093822299f31d0082efa98ec4e6c89",
       );
 
       void expectFail(String pk, String sig) {
         expect(
-          SchnorrSignature.fromHex(sig)
-          .verify(ECPublicKey.fromXOnlyHex(pk), hash),
+          SchnorrSignature.fromHex(
+            sig,
+          ).verify(ECPublicKey.fromXOnlyHex(pk), hash),
           false,
         );
       }
 
-      final reusedPk
-        = "dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659";
+      final reusedPk =
+          "dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659";
 
       expectFail(
         reusedPk,
@@ -131,9 +121,6 @@ void main() {
         reusedPk,
         "6cff5c3ba86c69ea4b7376f31a9bcb4f74c1976089b2d9963da2e5543e177769fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141",
       );
-
     });
-
   });
-
 }

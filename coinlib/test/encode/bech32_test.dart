@@ -3,9 +3,7 @@ import 'package:test/test.dart';
 import '../vectors/bech32.dart';
 
 void main() {
-
   group("Bech32", () {
-
     throwsInvalidWithMsg(String msg) => throwsA(
       allOf(
         isA<InvalidBech32>(),
@@ -22,7 +20,8 @@ void main() {
     }
 
     test(
-      "valid bech32", () => expectValidVectors(validBech32, Bech32Type.bech32),
+      "valid bech32",
+      () => expectValidVectors(validBech32, Bech32Type.bech32),
     );
 
     test(
@@ -51,7 +50,6 @@ void main() {
     });
 
     test("validates HRP and words", () {
-
       expect(
         () => Bech32(hrp: "", words: [], type: Bech32Type.bech32),
         throwsInvalidWithMsg("Missing HRP"),
@@ -62,7 +60,11 @@ void main() {
         throwsInvalidWithMsg("€ is an invalid bech32 HRP"),
       );
 
-      for (final badWords in [[0, -1], [32, 1], [0xffffffff]]) {
+      for (final badWords in [
+        [0, -1],
+        [32, 1],
+        [0xffffffff],
+      ]) {
         expect(
           () => Bech32(hrp: "bc", words: badWords, type: Bech32Type.bech32),
           throwsInvalidWithMsg("Words outside of 5-bit range"),
@@ -78,16 +80,16 @@ void main() {
         ),
         throwsInvalidWithMsg("Bech32 too long"),
       );
-
     });
 
     test("encodes correctly given HRP and words", () {
-
       expectBech32(
-        String hrp, List<int> words, Bech32Type type, String expected,
-      ) => expect(
-        Bech32(hrp: hrp, words: words, type: type).encode(), expected,
-      );
+        String hrp,
+        List<int> words,
+        Bech32Type type,
+        String expected,
+      ) =>
+          expect(Bech32(hrp: hrp, words: words, type: type).encode(), expected);
 
       expectBech32(
         "bc",
@@ -116,7 +118,6 @@ void main() {
         Bech32Type.bech32m,
         "abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx",
       );
-
     });
 
     test(".words cannot be mutated", () {
@@ -124,7 +125,5 @@ void main() {
       expect(() => bech32.words[0] = 0, throwsA(anything));
       expect(bech32.words, [1]);
     });
-
   });
-
 }

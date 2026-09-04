@@ -11,7 +11,6 @@ import 'input_signature.dart';
 /// base for all other inputs as all inputs include a outpoint, script and
 /// sequence number.
 class RawInput extends Input {
-
   @override
   final OutPoint prevOut;
   @override
@@ -38,8 +37,8 @@ class RawInput extends Input {
 
   RawInput.fromReader(BytesReader reader)
     : prevOut = OutPoint.fromReader(reader),
-    scriptSig = reader.readVarSlice(),
-    sequence = reader.readUInt32();
+      scriptSig = reader.readVarSlice(),
+      sequence = reader.readUInt32();
 
   @override
   void write(Writer writer) {
@@ -55,5 +54,4 @@ class RawInput extends Input {
 
   @override
   Input filterSignatures(bool Function(InputSignature insig) predicate) => this;
-
 }

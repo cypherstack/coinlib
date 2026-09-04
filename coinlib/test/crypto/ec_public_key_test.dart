@@ -5,17 +5,14 @@ import 'package:test/test.dart';
 import '../vectors/keys.dart';
 
 void main() {
-
   group("ECPublicKey", () {
-
     setUpAll(loadCoinlib);
 
     test("requires 33 or 65 bytes", () {
-
       for (final failing in [
         // Too small
-        pubkeyVec.substring(0, 32*2),
-        longPubkeyVec.substring(0, 32*2),
+        pubkeyVec.substring(0, 32 * 2),
+        longPubkeyVec.substring(0, 32 * 2),
         // Too large
         "${pubkeyVec}ff",
         "${longPubkeyVec}ff",
@@ -25,7 +22,6 @@ void main() {
           throwsA(isA<InvalidPublicKey>()),
         );
       }
-
     });
 
     test("accepts compressed, uncompressed and hybrid types", () {
@@ -44,7 +40,6 @@ void main() {
     });
 
     test(".fromXOnly", () {
-
       expect(
         ECCompressedPublicKey.fromXOnlyHex(xOnlyPubkeyVec).hex,
         "02$xOnlyPubkeyVec",
@@ -66,10 +61,9 @@ void main() {
           throwsArgumentError,
         );
       }
+    });
 
-  });
-
-  test(".hex", () {
+    test(".hex", () {
       for (final vector in keyPairVectors) {
         expect(vector.publicObj.hex, vector.public);
       }
@@ -97,7 +91,6 @@ void main() {
     });
 
     test("tweak() produces correct key and keeps compression flag", () {
-
       expectTweak(String keyHex, String tweakHex, String resultHex) {
         final key = ECPublicKey.fromHex(keyHex);
         final tweak = hexToBytes(tweakHex);
@@ -125,7 +118,6 @@ void main() {
         "0000000000000000000000000000000000000000000000000000000000000000",
         "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
       );
-
     });
 
     test("invalid tweak scalar returns null", () {
@@ -142,7 +134,5 @@ void main() {
       data[1] = 0xff;
       expect(bytesToHex(key.data), hex);
     });
-
   });
-
 }

@@ -12,7 +12,6 @@ import 'raw_input.dart';
 
 /// A [TaprootInput] which spends using the key-path
 class TaprootKeyInput extends TaprootInput {
-
   final SchnorrInputSignature? insig;
 
   @override
@@ -29,7 +28,6 @@ class TaprootKeyInput extends TaprootInput {
   /// a [TaprootKeyInput], with a signature. If it does it returns a
   /// [TaprootKeyInput] for the input or else it returns null.
   static TaprootKeyInput? match(RawInput raw, List<Uint8List> witness) {
-
     if (raw.scriptSig.isNotEmpty) return null;
     if (witness.length != 1) return null;
 
@@ -42,7 +40,6 @@ class TaprootKeyInput extends TaprootInput {
     } on InvalidInputSignature {
       return null;
     }
-
   }
 
   @override
@@ -55,7 +52,6 @@ class TaprootKeyInput extends TaprootInput {
     required List<Output> prevOuts,
     SigHashType hashType = const SigHashType.all(),
   }) {
-
     if (inputN >= prevOuts.length) {
       throw CannotSignInput(
         "Input is out of range of the previous outputs provided",
@@ -65,9 +61,7 @@ class TaprootKeyInput extends TaprootInput {
     // Check key corresponds to matching prevOut
     final program = prevOuts[inputN].program;
     if (program is! P2TR || key.pubkey.xonly != program.tweakedKey) {
-      throw CannotSignInput(
-        "Key cannot sign for Taproot input's tweaked key",
-      );
+      throw CannotSignInput("Key cannot sign for Taproot input's tweaked key");
     }
 
     return addSignature(
@@ -79,27 +73,20 @@ class TaprootKeyInput extends TaprootInput {
         hashType: hashType,
       ),
     );
-
   }
 
   /// Returns a new [TaprootKeyInput] with the [SchnorrInputSignature] added.
   /// Any existing signature is replaced.
-  TaprootKeyInput addSignature(SchnorrInputSignature insig) => TaprootKeyInput(
-    prevOut: prevOut,
-    insig: insig,
-    sequence: sequence,
-  );
+  TaprootKeyInput addSignature(SchnorrInputSignature insig) =>
+      TaprootKeyInput(prevOut: prevOut, insig: insig, sequence: sequence);
 
   @override
   TaprootKeyInput filterSignatures(
     bool Function(InputSignature insig) predicate,
-  ) => insig == null || predicate(insig!) ? this : TaprootKeyInput(
-    prevOut: prevOut,
-    insig: null,
-    sequence: sequence,
-  );
+  ) => insig == null || predicate(insig!)
+      ? this
+      : TaprootKeyInput(prevOut: prevOut, insig: null, sequence: sequence);
 
   @override
   bool get complete => insig != null;
-
 }
