@@ -53,6 +53,13 @@ ExternalProject_Add(
   CMAKE_GENERATOR ${CMAKE_GENERATOR}
 
   CMAKE_ARGS ${SECP256K1_ARGS}
+  # Force GNUInstallDirs to use "lib" instead of "lib64" on distros that
+  # default to lib64 (NixOS, Fedora, RHEL). The Flutter plugin's linux/
+  # CMakeLists.txt hardcodes the bundled library path as
+  # ${CMAKE_BINARY_DIR}/secp256k1/lib/libsecp256k1.so, so the library must
+  # install under "lib" regardless of the host distro. On Debian/Ubuntu this
+  # is a no-op (GNUInstallDirs already resolves to "lib").
+  -DCMAKE_INSTALL_LIBDIR=lib
 
 )
 
